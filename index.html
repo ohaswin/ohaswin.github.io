@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aswin.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            height: 100dvh;
+            width: 100dvw;
+        }
+
+        body {
+            display: grid;
+            font-family: 'JetBrains Mono';
+        }
+        .header {
+            justify-self: center;
+            margin-top: 10dvh;
+            transition: all 0.3s ease-in-out;
+            pointer-events: visibleStroke;
+            
+        }
+        .subheader {
+            padding-top: 8px;
+            font-size: small;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        .img img {
+            max-width: 30%;
+            height: auto;
+            border-radius: 8px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .img:hover img {
+            filter:  grayscale(80%);
+        }
+
+        @supports (anchor-name: --header) {
+            .header {
+                anchor-name: --header;
+            }
+            .subheader {
+                position: fixed;
+                position-anchor: --header;
+                top: anchor(bottom);
+                left: anchor(left);
+            }
+            .img img {
+                position: fixed;
+                position-anchor: --header;
+                top: anchor(top);
+                bottom: anchor(bottom);
+            }
+
+        }
+
+        @supports not (anchor-name: --header) {
+            .subheader {
+                position: absolute;
+                top: 13%;
+                left: 37%;
+            }
+            .img img {
+                position: absolute;
+                top: 10%;
+            }
+        }
+        .menu {
+            display: grid;
+            justify-self: center;
+            margin-top: 30dvh;
+        }
+        .menu .item {
+            list-style: none;
+            margin: 0 15px;
+            font-weight: 400;
+            padding: 2px;
+        }
+        .menu .item a {
+            color: rgb(37, 35, 35);
+            text-decoration: none;
+            font-size: 18px;
+        }
+        /* .menu .item a::before {
+            content: "🐛";
+            margin-right: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .menu .item a:hover::before {
+            opacity: 1;
+        } */
+        .blog {
+            padding-top: 20%;
+        }
+        .blog ul {
+            padding: 0;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .blog li {
+            margin: 10px 0;
+            font-size: 16px;
+            font-family:  sans-serif;
+        }
+        .blog li small, .blog li small a {
+            color: #888;
+        }
+        .blog li a {
+            text-decoration: none;
+            color: #333;
+        }
+        .footer {
+            padding-bottom: 8px;
+            width: 100%;
+            text-align: center;
+            font-size: small;
+        }
+
+        @media screen and (min-width:800px) {
+            body {
+                display: run-in;
+            }
+            .img img {
+                max-width: 20%;
+            }
+        }
+    </style>
+    <script>
+    function deltadate(date) {
+        const now = new Date();
+        const diff = now - new Date(date);
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        return days > 0 ? `${days} days ago` : 'today';
+    }
+async function getMyLatestCommit() {
+    try {
+        // Get recent events for the user
+        const response = await fetch(`https://api.github.com/users/ohaswin/events?per_page=30`);
+        const events = await response.json();
+
+        // Find the most recent push event
+        const pushEvent = events.find(event => event.type === 'PushEvent');
+        if (!pushEvent) {
+            throw new Error('No recent commits found');
+        }
+
+        // Get the latest commit from the push
+        const latestCommit = pushEvent.payload.commits[pushEvent.payload.commits.length - 1];
+        const repoName = pushEvent.repo.name;
+
+        return {
+            repository: repoName.replace('ohaswin/', ''),
+            hash: latestCommit.sha.substring(0, 7),
+            fullHash: latestCommit.sha,
+            message: latestCommit.message,
+            author: latestCommit.author.name,
+            date: deltadate(pushEvent.created_at),
+            url: `https://github.com/${repoName}/commit/${latestCommit.sha}`
+        };
+    } catch (error) {
+        console.error('Error fetching commit:', error);
+        return null;
+    }}
+    getMyLatestCommit().then(c => {
+        elem = document.querySelector('.commit');
+        if (c) {
+            elem.innerHTML = `<small>[${c.date}] ${c.repository} <br>~ ${c.message} <a href="${c.url}">${c.hash}</a></small>`;
+        }
+        else {
+            elem.innerHTML = `<small>Last commit: <a href="https://github.com/ohaswin">ohaswin</a></small>`;
+        }   
+    });
+    let toggle = true;
+    function flip() {
+        const img = document.querySelector('.img img');
+        const header = document.querySelector('.header');
+        const subheader = document.querySelector('.subheader');
+
+
+        img.src = toggle ? "/out.gif" : "/me.jpeg";
+        header.style.fontFamily = toggle ? "DM Serif Text" : "JetBrains Mono";
+        subheader.style.fontFamily = toggle ? "Lexend Deca" : "JetBrains Mono";
+        subheader.style.fontSize = toggle ? "0.89rem" : "small";
+        subheader.style.lineHeight = toggle ? "1.2" : "1.5";
+        subheader.style.paddingRight = toggle ? "0.5rem" : "0";
+        header.style.fontSize = toggle ? "1.5rem" : "inherit";
+        header.textContent = toggle ? "Aswin ⠀" : "ohaswin, n.";
+        subheader.innerHTML = !toggle ? 
+            `<br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.` : 
+            `<br>I'm a 19 year old CS undergrad. I used to do freelancing out of neccessity, now i study distributed systems, cellular networks, systems programming and build software i find interesting.<br>I've built <a href="https://github.com/ohaswin/pyscan">pyscan</a>, <a href="https://github.com/ohaswin/bookends">bookends</a> and i'm working on more.<br><a href="https://linkedin.com/in/ohaswin">LinkedIn</a> | <a href="https://github.com/ohaswin">GitHub</a> | <a href="/resume.pdf">CV</a>`;
+        toggle = !toggle; 
+    }
+
+    </script>
+</head>
+<body>
+    <div class="img" onclick="flip()"><img src="/me.jpeg" alt="Aswin's Image"></div>
+    <div class="header">ohaswin, n.</div>
+    <div class="subheader"><br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.</div>
+    <div class="menu">
+       <li class="item selected"><a href="/projects">projects</a></li>
+       <li class="item"><a href="/blog">blog</a></li>
+       <li class="item"><a href="/about">about</a></li>
+       <li class="item"><a href="/contact">contact</a></li>
+    </div>
+    <div class="blog">
+        <hr>
+        <ul>
+            <li>
+                <div>
+                    <small>March 16, 2023 (2 days ago)</small>
+                </div><a href="/blog/post1">Understanding Web Development</a></li>
+            <li>
+                <div>
+                    <small>March 17, 2023 (1 day ago)</small>
+                </div><a href="/blog/post2">Exploring Open Source Contributions</a></li>
+            <li>
+                <div>
+                    <small>March 18, 2023 (today)</small>
+                </div><a href="/blog/post3">The Future of AI and Machine Learning</a></li>
+            <li>
+                <div>
+                    <small><a href="/blog">>> /blog (+6)</a></small>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="last-commit">
+        <hr>
+        <div class="commit">
+        </div>
+    </div>
+    <div class="footer">
+        <hr>
+        <small>Made with ❤️ by ohaswin.<br>No AI generated content, unless explicitly stated.</small>
+    </div>
+</body>
+</html>
