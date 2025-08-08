@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>projects | ohaswin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+    <script src="/projects/index.js" defer></script>
+    <style>
+        :root {
+            height: 100dvh;
+            width: 100dvw;
+        }
+        body {
+            display: grid;
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            position: relative;
+            justify-self: center;
+            margin-top: 5dvh;
+            font-family: 'DM Serif Text', serif;
+            font-size: 1.5rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            border-radius: 10px;
+            color: rgb(20, 20, 18);
+            padding: 20px;
+            background-size: cover;
+            background-color: #00ff0070;
+        }
+
+        h1 {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 700;
+            color: #201c1c;
+        }
+        h2 {
+            font-family: 'Lexend Deca', sans-serif;
+            font-size: 1.2rem;
+            margin: 0;
+            font-weight: 300;
+            color: #110a0a;
+        }
+        h3 {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            color: #000000;
+        }
+
+        .stats {
+            position: relative;
+            justify-self: center;
+            margin-top: 2dvh;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #555;
+            padding: 1rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">projects</div>
+    <div class="stats"><span id="repos">0</span> repositories on <a href="https://github.com/ohaswin" target="_blank">GitHub</a>↝
+    </div>
+        <hr style="width: 100dvw;">
+    <div class="cards-grid">
+        <div class="card" data-bg="/assets/image.webp">
+            <h1 class="title">Pyscan</h1><hr>
+            <h2 class="subtitle">Python dependency vulnerability scanner written in Rust.</h2>
+            <h3 class="desc">A tool for scanning Python projects for dependency vulnerabilities. It was featured in <a href="https://example.com" target="_blank">this article</a> and <a href="https://example.com" target="_blank">this article</a>.</h3>
+        </div>
+    </div>
+</body>
+<script>
+    function getCards() {
+        // fetch github user api
+        fetch('https://api.github.com/users/ohaswin')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('repos').textContent = data.public_repos;
+            })
+            .catch(error => console.error('Error fetching GitHub user data:', error));
+        // Fetch project data from a JSON file or API endpoint
+        cards = "/projects.json";
+        fetch(cards)
+            .then(response => response.json())
+            .then(data => {
+                const cardsGrid = document.querySelector('.cards-grid');
+                data.forEach(project => {
+                    const card = document.createElement('div'); 
+                    card.className = 'card psuedocard';
+                    card.style.backgroundImage = `url(${project.image})`;
+                    card.innerHTML = `
+                        <h1 class="title">${project.title}</h1>
+                        <h2 class="subtitle">${project.subtitle}</h2>
+                        <h3 class="desc">${project.description}</h3>
+                    `;
+                    cardsGrid.appendChild(card);
+                });
+            })
+            .catch(error => console.error('Error fetching projects:', error));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        getCards();
+    });
+</script>
+</html>
