@@ -40,19 +40,20 @@
             color: rgb(20, 20, 18);
             padding: 20px;
             background-size: cover;
-            background-color: #00ff0070;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: attr(data-color type(<color>));
         }
 
         h1 {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 1.5rem;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 1.2rem;
             margin: 0;
             font-weight: 700;
             color: #201c1c;
         }
         h2 {
-            font-family: 'Lexend Deca', sans-serif;
-            font-size: 1.2rem;
+            /* font-family: 'Lexend Deca', sans-serif; */
+            font-size: 1rem;
             margin: 0;
             font-weight: 300;
             color: #110a0a;
@@ -74,18 +75,183 @@
             padding: 1rem;
         }
 
+        .last-commit {
+            justify-self: left;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #494444c5;
+        }
+
+        button {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
+            background-color: #f0f0f0;
+            border: none;
+            border: 1px solid #000000;
+            cursor: pointer;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
     </style>
+    <script>
+        function getCachedData(key) {
+            const cachedData = localStorage.getItem(key);
+            if (cachedData) {
+                return JSON.parse(cachedData);
+            }
+            return null;
+        }
+    </script>
 </head>
 <body>
+    <button onclick="window.history.back()">⏴</button>
     <div class="header">projects</div>
-    <div class="stats"><span id="repos">0</span> repositories on <a href="https://github.com/ohaswin" target="_blank">GitHub</a>↝
+    <div class="stats"><span id="repos">0</span> repositories on <a href="https://github.com/ohaswin"
+            target="_blank">GitHub</a>↝
     </div>
-        <hr style="width: 100dvw;">
+    <hr style="width: 100dvw;">
     <div class="cards-grid">
-        <div class="card" data-bg="/assets/image.webp">
-            <h1 class="title">Pyscan</h1><hr>
+        <div class="card" data-color="#e9c9cd">
+            <h1 class="title">Bookends</h1><br><a href="https://github.com/ohaswin/bookends" target="_blank">GitHub</a>
+            <hr>
+            <h2 class="subtitle">A highly customizable encrypted aesthetic private journal.</h2>
+            <h3 class="desc"><i>NOTE: This project is a work in progress. You can compile it yourself from the GitHub repository for a sneak peak.</i></h3>
+            <div class="last-commit">
+                <script>
+                    // check if last commit is cached in localStorage
+                    const cachedCommitData = getCachedData('lastCommitBookends');
+                    if (cachedCommitData) {
+                        const fetchedAt = new Date(cachedCommitData.fetchedAt);
+                        const oneHourAgo = new Date(Date.now() - 3600000); // 1 hour in milliseconds
+                        if (fetchedAt > oneHourAgo) {
+                            // use cached data
+                            const lastCommit = cachedCommitData.date;
+                            const formattedDate = new Date(lastCommit).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            document.querySelector('.last-commit').textContent = `Last commit: ${formattedDate}`;
+                        }
+                    }
+                    else {
+                    fetch('https://api.github.com/repos/ohaswin/bookends/commits?per_page=1')
+                        .then(response => response.json())
+                        .then(data => {
+                            // cache in localStorage for 1 hour
+                            localStorage.setItem('lastCommitBookends', JSON.stringify({
+                                date: data[0].commit.author.date,
+                                fetchedAt: Date.now()
+                            }));
+                            const lastCommit = data[0].commit.author.date;
+                            const formattedDate = new Date(lastCommit).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            document.querySelector('.last-commit').textContent = `Last commit: ${formattedDate}`;
+                        })
+                        .catch(error => console.error('Error fetching last commit:', error));
+                    }
+                </script>
+            </div>
+
+        </div>
+        <div class="card" data-color="#00ff0070">
+            <h1 class="title">Pyscan</h1><br><a href="https://github.com/ohaswin/pyscan" target="_blank">GitHub</a> | <a
+                href="https://pypi.org/project/pyscan-rs/" target="_blank">PyPI</a> | <a
+                href="https://crates.io/crates/pyscan" target="_blank">Crates.io</a>
+            <hr>
             <h2 class="subtitle">Python dependency vulnerability scanner written in Rust.</h2>
-            <h3 class="desc">A tool for scanning Python projects for dependency vulnerabilities. It was featured in <a href="https://example.com" target="_blank">this article</a> and <a href="https://example.com" target="_blank">this article</a>.</h3>
+            <h3 class="desc">A tool for scanning Python projects for dependency vulnerabilities.<br>It aggressively finds dependencies in your codebase from your source code or files like requirements.txt (with support for hatch, filter, pdm, poetry) and finds vulnerabilities in them.<br><br>It was featured in <a
+                    href="https://realpython.com/podcasts/rpp/158/#t=1465" target="_blank">The Real Python Podcast</a> briefly and has <a href="https://pepy.tech/projects/pyscan-rs"
+                    target="_blank">30k+</a> downloads so far.</h3>
+            <div class="last-commit">
+                <script>
+                    // check if last commit is cached in localStorage
+                    const cachedCommit = getCachedData('lastCommitPyscan');
+                    if (cachedCommit) {
+                        const fetchedAt = new Date(cachedCommit.fetchedAt);
+                        const oneHourAgo = new Date(Date.now() - 3600000); // 1 hour in milliseconds
+                        if (fetchedAt > oneHourAgo) {
+                            // use cached data
+                            const lastCommit = cachedCommit.date;
+                            const formattedDate = new Date(lastCommit).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'      
+                            });
+                        }
+                            document.querySelector('.last-commit').textContent = `Last commit: ${formattedDate}`;
+                        }
+                    else {
+                    // fetch last commit from GitHub API
+                    fetch('https://api.github.com/repos/ohaswin/pyscan/commits?per_page=1')
+                        .then(response => response.json())
+                        .then(data => {
+                            // cache in localStorage for 1 hour
+                            localStorage.setItem('lastCommitPyscan', JSON.stringify({
+                                date: data[0].commit.author.date,
+                                fetchedAt: Date.now()
+                            }));
+                            const lastCommit = data[0].commit.author.date;
+                            const formattedDate = new Date(lastCommit).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            document.querySelector('.last-commit').textContent = `Last commit: ${formattedDate}`;
+                        })
+                        .catch(error => console.error('Error fetching last commit:', error));
+                    }
+                </script>
+            </div>
+        </div>
+        <div class="card" data-color="hotpink">
+            <h1 class="title">WeHeartPy</h1><br><a href="https://github.com/ohaswin/weheartpy" target="_blank">GitHub</a> | <a
+                href="https://pypi.org/project/weheartpy/" target="_blank">PyPI</a>
+            <hr>
+            <h2 class="subtitle">An API-like wrapper for weheartit.com</h2>
+            <h3 class="desc"><i>NOTE: This project has been archived as weheartit.com is not a thing anymore.</i><br><br> An API-like interface for the WeHeartIt (a pinterest-like) website, allowing users to interact with the site with or without an account. The site offered no API at the time, so I <a
+                    href="https://example.com" target="_blank">reverse engineered</a> some endpoints and wrapped it in a Python package. My very first open source contribution.</h3>
+            <div class="last-commit whp">
+                <script>
+                    // check if last commit is cached in localStorage
+                    const cachedCommitWhp = getCachedData('lastCommitWhp');
+                    if (cachedCommitWhp) {
+                        const fetchedAt = new Date(cachedCommitWhp.fetchedAt);
+                        const oneHourAgo = new Date(Date.now() - 3600000); //   1 hour in milliseconds
+                        if (fetchedAt > oneHourAgo) {
+                            // use cached data
+                            const lastCommit = cachedCommitWhp.date;    
+                            const formattedDate = new Date(lastCommit).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            document.querySelector('.last-commit.whp').textContent = `Last commit: ${formattedDate}`;
+                        }
+                    }
+                    else {
+                    // fetch last commit from GitHub API
+                    fetch('https://api.github.com/repos/ohaswin/weheartpy/commits?per_page=1')
+                        .then(response => response.json())
+                        .then(data => {
+                            const lastCommit = data[0].commit.author.date;
+                            const formattedDate = new Date(lastCommit).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            document.querySelector('.last-commit.whp').textContent = `Last commit: ${formattedDate}`;
+                        })
+                        .catch(error => console.error('Error fetching last commit:', error));
+                    }
+                </script>
+            </div>
+
         </div>
     </div>
 </body>
