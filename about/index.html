@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>about | ohaswin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            width: 100dvw;
+            height: 100dvh;
+        }
+        body {
+            display: grid;
+            background-image: url('/assets/out.webp');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* .header {
+            justify-self: center;
+            font-size: 2rem;
+            font-family: 'DM Serif Text', serif;
+            color: aliceblue;
+        } */
+        .header {
+            position: relative;
+            justify-self: center;
+            margin-top: 5dvh;
+            font-family: 'DM Serif Text', serif;
+            font-size: 1.5rem;
+            color: #e9ffd9;
+        }
+        .about {
+            display: grid;
+            margin-top: 1rem;
+        }
+
+        .description {
+            font-family: 'Lexend Deca', sans-serif;
+            color: aliceblue;
+            line-height: 1.5;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1rem;
+        }
+        .image1 {
+            width: fit-content;
+            font-family: 'Lexend Deca', sans-serif;
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            margin-top: 1rem;
+            color: yellowgreen;
+        }
+
+        .image1 p {
+            margin-left: 1rem;
+            text-shadow : 0 2px 3px rgb(171, 228, 131);
+            font-size: 0.8rem;
+            color: #d3ffb3;
+            text-shadow: 0 3px 5px rgba(171, 228, 131, 0.637);
+        }
+
+        .image1 img {
+            width: 20dvh;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .interests {
+            font-family:  'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(3px) contrast(80%);
+            border-bottom-left-radius: 2dvh;
+            border-bottom-right-radius: 3dvh;
+            width: fit-content;
+            padding-right: 1rem;
+            color: #e9ffd9;
+            text-shadow: 0 3px 5px rgba(171, 228, 131, 0.637);
+            display: flex;
+            justify-self: right;
+            margin-top: 1rem;
+            border-bottom: 1px solid #465737;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .interests:hover {
+            text-shadow: 0 1px 1px rgb(0, 0, 0);
+            color: rgba(255, 46, 46, 0.836);
+            backdrop-filter: blur(5px) contrast(220%);
+        }
+
+        .image2 {
+            width: fit-content;
+            font-family: 'Lexend Deca', sans-serif;
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            margin-top: 1rem;
+            color: yellowgreen;
+        }
+
+        .image2 img {
+            width: 2.8rem;
+            height: fit-content;
+        }
+        .image2 img:hover {
+            transform:perspective(1000px) rotateY(360deg);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">About</div>
+    <section class="about">
+        <section class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, eaque? Veniam suscipit aliquid voluptas illum doloribus quod facilis voluptate, necessitatibus provident autem itaque debitis harum iure totam consequatur iusto natus?</section>
+        <section class="image1">
+            <img src="/assets/ohaswin.avif" alt="Aswin's soul">
+             <p>← my ideal workstation</p>
+        </section>
+        <section class="interests">
+            <ol>
+                <li>Programming</li>
+                <li>Open Source</li>
+                <li>Web Development</li>
+                <li>Artificial Intelligence</li>
+                <li>Machine Learning</li>
+                <li>Cybersecurity</li>
+                <li>Photography</li>
+            </ol>
+        </section>
+        <section>
+            <section class="image2">
+                <img src="/assets/miles.png" alt="Aswin's soul">
+            </section>
+        </section>
+    </section>
+</body>
+</html>
