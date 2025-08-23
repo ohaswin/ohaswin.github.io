@@ -108,7 +108,7 @@
 <body>
     <button onclick="window.history.back()">⏴</button>
     <div class="header">projects</div>
-    <div class="stats"><span id="repos">0</span> repositories on <a href="https://github.com/ohaswin"
+    <div class="stats"><span id="repos"></span> repositories on <a href="https://github.com/ohaswin"
             target="_blank">GitHub</a>↝
     </div>
     <hr style="width: 100dvw;">
@@ -183,8 +183,8 @@
                                 month: 'long',
                                 day: 'numeric'      
                             });
-                        }
                             document.querySelector('.last-commit').textContent = `Last commit: ${formattedDate}`;
+                        }
                         }
                     else {
                     // fetch last commit from GitHub API
@@ -256,37 +256,27 @@
     </div>
 </body>
 <script>
-    function getCards() {
-        // fetch github user api
-        fetch('https://api.github.com/users/ohaswin')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('repos').textContent = data.public_repos;
+        // hit Cache first, use if data not less than 8 hours old
+        const cachedData = localStorage.getItem('githubUserData');
+        if (cachedData) {
+            const userData = JSON.parse(cachedData);
+            const fetchedAt = new Date(userData.fetchedAt);
+            const eightHoursAgo = new Date(Date.now() - 28800000); // 8 hours in milliseconds
+            if (fetchedAt > eightHoursAgo) {
+                document.getElementById('repos').textContent = userData.public_repos;
+            }
+        }
+        else {
+            // fetch github user api
+            fetch('https://api.github.com/users/ohaswin')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('repos').textContent = data.public_repos;
+                // cache in LocalStorage along with time
+                data.fetchedAt = Date.now();
+                localStorage.setItem('githubUserData', JSON.stringify(data));
             })
             .catch(error => console.error('Error fetching GitHub user data:', error));
-        // Fetch project data from a JSON file or API endpoint
-        cards = "/projects.json";
-        fetch(cards)
-            .then(response => response.json())
-            .then(data => {
-                const cardsGrid = document.querySelector('.cards-grid');
-                data.forEach(project => {
-                    const card = document.createElement('div'); 
-                    card.className = 'card psuedocard';
-                    card.style.backgroundImage = `url(${project.image})`;
-                    card.innerHTML = `
-                        <h1 class="title">${project.title}</h1>
-                        <h2 class="subtitle">${project.subtitle}</h2>
-                        <h3 class="desc">${project.description}</h3>
-                    `;
-                    cardsGrid.appendChild(card);
-                });
-            })
-            .catch(error => console.error('Error fetching projects:', error));
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        getCards();
-    });
+        }
 </script>
 </html>
