@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ohaswin | 🌕</title>
+    <link href="/moonstuff/dist/output.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/suncalc@1.8.0/suncalc.min.js"></script>
+</head>
+<body class="min-h-scree">
+    <div class="container mx-auto px-6 py-12 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-20">
+            <h1 class="text-4xl md:text-6xl font-light mb-6 tracking-wider" style="font-family: 'Crimson Text', serif;">
+                🌕 moonstuff! <small>by ohaswin.</small>
+            </h1>
+            <div class="w-24 h-px bg-white mx-auto mb-8"></div>
+            <div class="text-sm uppercase tracking-widest text-gray-400 font-light" id="current-date" style="font-family: 'Inter', sans-serif;"></div>
+        </header>
+
+        <main class="space-y-16">
+            <!-- Today's Phase Section -->
+            <section class="cult-panel subtle-fade-in">
+                <div class="text-center space-y-8">
+                    <div class="moon-container mx-auto">
+                        <div id="current-moon" class="w-48 h-48 md:w-64 md:h-64 mx-auto relative flex items-center justify-center">
+                            <!-- Moon SVG will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="text-center">
+                            <h2 id="phase-name" class="text-2xl md:text-3xl font-light tracking-wide mb-2" style="font-family: 'Crimson Text', serif;"></h2>
+                            <div id="phase-poetry" class="text-lg italic text-gray-300 mb-3" style="font-family: 'Crimson Text', serif;"></div>
+                            <div id="illumination" class="text-sm uppercase tracking-widest text-gray-400" style="font-family: 'Inter', sans-serif;"></div>
+                        </div>
+
+                        <!-- Illumination Progress Bar -->
+                        <!-- <div class="max-w-xs mx-auto">
+                            <div class="text-xs uppercase tracking-widest text-gray-500 mb-2 text-center">lunar illumination</div>
+                            <div class="h-1 bg-gray-800 rounded-full overflow-hidden">
+                                <div id="illumination-bar" class="h-full bg-gradient-to-r from-gray-400 to-white transition-all duration-1000 ease-out"></div>
+                            </div>
+                        </div> -->
+
+                        <!-- Rise/Set Timing Arc -->
+                        <div class="max-w-sm mx-auto">
+                            <div class="text-xs uppercase tracking-widest text-gray-500 mb-3 text-center">lunar trajectory</div>
+                            <div class="relative">
+                                <svg id="lunar-arc" width="100%" height="80" viewBox="0 0 200 80" class="overflow-visible">
+                                    <defs>
+                                        <linearGradient id="arc-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#374151;stop-opacity:1" />
+                                            <stop offset="50%" style="stop-color:#9ca3af;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#374151;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path id="arc-path" stroke="url(#arc-gradient)" stroke-width="2" fill="none" />
+                                    <circle id="moon-position" r="4" fill="#f3f4f6" />
+                                </svg>
+                                <div class="flex justify-between text-xs text-gray-500 mt-2" style="font-family: 'Inter', sans-serif;">
+                                    <span id="moonrise-time">--:--</span>
+                                    <span class="text-gray-600">zenith</span>
+                                    <span id="moonset-time">--:--</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-gray-800">
+                            <div class="grid grid-cols-2 gap-8 text-center max-w-md mx-auto">
+                                <div>
+                                    <div class="text-xs uppercase tracking-widest text-gray-500 mb-2">next phase</div>
+                                    <div id="next-phase" class="text-sm font-light" style="font-family: 'Crimson Text', serif;"></div>
+                                </div>
+                                <div>
+                                    <div class="text-xs uppercase tracking-widest text-gray-500 mb-2">time until</div>
+                                    <div id="time-until" class="text-sm font-light" style="font-family: 'Crimson Text', serif;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7-Day Forecast Section -->
+            <section class="cult-panel subtle-fade-in">
+                <div class="text-center mb-8">
+                    <button id="toggle-forecast" class="group w-full hover-lift">
+                        <h2 class="text-xl md:text-2xl font-light tracking-wide mb-4" style="font-family: 'Crimson Text', serif;">
+                            seven day forecast
+                            <span id="toggle-icon" class="inline-block ml-2 transition-transform duration-300">→</span>
+                        </h2>
+                        <div class="w-16 h-px bg-white mx-auto group-hover:w-24 transition-all duration-300"></div>
+                    </button>
+                </div>
+                
+                <div id="forecast-container" class="forecast-container">
+                    <div id="forecast-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 sm:gap-4 md:gap-6 mt-8 sm:mt-12">
+                        <!-- Forecast items will be inserted here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-20 pt-12 border-t border-gray-900">
+            <div class="text-xs tracking-widest text-gray-600" style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+            <pre>“Last time la luna,<br>
+I light my torch<br>
+And wave it for the new moon on Monday.” - <a href="https://www.youtube.com/watch?v=m3a4OTh2Y8w">𝅘𝅥𝅮 Duran Duran 𝅘𝅥𝅮</a></pre>
+            </div>
+        </footer>
+        
+        <!-- Gyroscope Permission Prompt (Mobile) -->
+        <div id="gyroscope-prompt" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+            <div class="cult-panel max-w-sm mx-4 text-center">
+                <h3 class="text-lg font-light mb-4" style="font-family: 'Crimson Text', serif;">
+                    enhance your experience
+                </h3>
+                <p class="text-sm text-gray-400 mb-6" style="font-family: 'Inter', sans-serif;">
+                    Allow device orientation to make the moon respond to your movement
+                </p>
+                <div class="flex gap-4 justify-center">
+                    <button id="enable-gyroscope" class="px-6 py-2 bg-white text-black text-sm uppercase tracking-wider font-medium hover:bg-gray-200 transition-colors">
+                        Enable
+                    </button>
+                    <button id="skip-gyroscope" class="px-6 py-2 border border-gray-600 text-gray-400 text-sm uppercase tracking-wider font-medium hover:border-gray-400 transition-colors">
+                        Skip
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/moonstuff/src/moon-phases.js"></script>
+    <script src="/moonstuff/src/main.js"></script>
+</body>
+</html>

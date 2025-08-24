@@ -1,0 +1,367 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-feature-settings: "kern", "liga", "clig", "calt";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Swiss Design inspired grid system */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Bauhaus-inspired geometric precision */
+  .geometric-precision {
+    border-radius: 0;
+    letter-spacing: 0.05em;
+  }
+
+  /* Japanese ma (negative space) principles */
+  .ma-space {
+    margin: clamp(1rem, 5vw, 3rem) 0;
+  }
+}
+
+@layer components {
+  /* Constellation cursor trail */
+  .constellation-trail {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    animation: constellation-fade 2s ease-out forwards;
+  }
+
+  .constellation-trail.large {
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  .constellation-trail.small {
+    width: 2px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  @keyframes constellation-fade {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+  }
+
+  /* Cult-like minimalist panels - Swiss Design inspired */
+  .cult-panel {
+    padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2rem);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+  }
+
+  /* Brutalist influenced hover state */
+  .cult-panel:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+
+  /* Swiss grid-inspired subtle guides */
+  .cult-panel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.02) 20%, 
+      rgba(255, 255, 255, 0.02) 80%, 
+      transparent 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .cult-panel:hover::after {
+    opacity: 1;
+  }
+
+  /* Moon container styling - Japanese aesthetics */
+  .moon-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: clamp(2rem, 6vw, 4rem) auto;
+  }
+
+  /* Wabi-sabi inspired imperfect circle */
+  .moon-container::before {
+    content: '';
+    position: absolute;
+    inset: clamp(-1.5rem, -4vw, -2rem);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: breathe 12s ease-in-out infinite;
+  }
+
+  /* Organic breathing animation */
+  @keyframes breathe {
+    0%, 100% { 
+      transform: scale(1); 
+      opacity: 0.04;
+    }
+    50% { 
+      transform: scale(1.02); 
+      opacity: 0.08;
+    }
+  }
+
+  /* Forecast container */
+  .forecast-container {
+    transition: max-height 0.8s cubic-bezier(0.23, 1, 0.320, 1),
+                opacity 0.6s ease-out;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  .forecast-container.open {
+    max-height: 1000px;
+    opacity: 1;
+  }
+
+  /* Forecast item styling */
+  .forecast-item {
+    padding: 0.75rem 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    word-wrap: break-word;
+    overflow: hidden;
+  }
+
+  @media (min-width: 640px) {
+    .forecast-item {
+      padding: 1rem 0.75rem;
+      min-height: 140px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .forecast-item {
+      padding: 1.25rem 0.5rem;
+      min-height: 160px;
+      min-width: 0; /* Prevent flex shrinking issues */
+      flex: 1 1 0%; /* Ensure equal width distribution */
+    }
+  }
+  
+  /* Ensure moon SVGs maintain aspect ratio in grid */
+  .forecast-item .moon-svg {
+    max-width: 100%;
+    max-height: 234px;
+    width: auto;
+    height: auto;
+  }
+
+  /* Ensure text fits in mobile */
+  @media (max-width: 639px) {
+    .forecast-item {
+      font-size: 0.875rem;
+      line-height: 1.2;
+    }
+    
+    .forecast-item .text-xs {
+      font-size: 0.75rem;
+    }
+    
+    .forecast-item .text-sm {
+      font-size: 0.8rem;
+    }
+  }
+
+  .forecast-item:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  /* SVG moon styling - minimal and clean */
+  .moon-svg {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                filter 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform-origin: center center;
+    will-change: transform, filter;
+  }
+  
+  /* Enhanced moon interactivity */
+  .moon-svg:hover {
+    transform: scale(1.02) !important;
+  }
+  
+  /* Gyroscope-enabled moon gets more fluid animation */
+  .moon-svg.gyroscope-active {
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+                filter 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  /* Moon breathing animation for ambient motion */
+  @keyframes moonPulse {
+    0%, 100% { 
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8)) brightness(1);
+    }
+    50% { 
+      filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.6)) brightness(1.05);
+    }
+  }
+  
+  .moon-svg.ambient-pulse {
+    animation: moonPulse 8s ease-in-out infinite;
+  }
+
+  /* Button styling */
+  button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* Subtle animations */
+  .subtle-fade-in {
+    animation: subtleFadeIn 0.8s ease-out;
+  }
+
+  @keyframes subtleFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Loading state */
+  .loading-shimmer {
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.1), 
+      transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.8s infinite ease-in-out;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Typography improvements - International Typographic Style */
+  .mono-caps {
+    font-variant: small-caps;
+    letter-spacing: 0.15em;
+  }
+
+  .optical-kerning {
+    font-kerning: auto;
+    font-optical-sizing: auto;
+  }
+
+  /* Bauhaus-inspired modular scale */
+  .modular-scale-1 { font-size: clamp(0.95rem, 1vw, 0.875rem); }
+  .modular-scale-2 { font-size: clamp(0.875rem, 1.25vw, 1rem); }
+  .modular-scale-3 { font-size: clamp(1rem, 1.5vw, 1.125rem); }
+  .modular-scale-4 { font-size: clamp(1.125rem, 2vw, 1.25rem); }
+  .modular-scale-5 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
+
+  /* Swiss-inspired divider lines with perfect mathematical precision */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.1) 23.6%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      rgba(255, 255, 255, 0.1) 76.4%, 
+      transparent 100%);
+  }
+
+  .divider-vertical {
+    width: 1px;
+    background: linear-gradient(180deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.08) 38.2%, 
+      rgba(255, 255, 255, 0.15) 61.8%, 
+      transparent 100%);
+  }
+
+  /* Golden ratio inspired spacing system */
+  .phi-spacing-sm { margin: 1rem 0; }
+  .phi-spacing-md { margin: 1.618rem 0; }
+  .phi-spacing-lg { margin: 2.618rem 0; }
+  .phi-spacing-xl { margin: 4.236rem 0; }
+}
+
+@layer utilities {
+  /* Spacing utilities for cult aesthetic */
+  .space-cult > * + * {
+    margin-top: 2rem;
+  }
+
+  .space-cult-sm > * + * {
+    margin-top: 1rem;
+  }
+
+  /* Text shadow for readability */
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Subtle hover effects */
+  .hover-lift {
+    transition: transform 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Responsive typography scales */
+  .text-display {
+    font-size: clamp(2rem, 5vw, 4rem);
+  }
+
+  .text-heading {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .text-body {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+  }
+
+  .text-caption {
+    font-size: clamp(0.75rem, 1vw, 0.875rem);
+  }
+}
