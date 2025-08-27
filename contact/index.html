@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ohaswin | contact</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            height: 100dvh;
+            width: 100dvw;
+        }
+        .header {
+            position: relative;
+            justify-self: center;
+            margin-top: 5dvh;
+            font-family: 'DM Serif Text', serif;
+            font-size: 1.5rem;
+        }
+        body {
+            display: grid;
+            font-family: 'Lexend Deca', sans-serif;
+            line-height: 1.6;
+            padding: 1rem;
+            background-color: #f4f4f4;
+        }
+        hr {
+            width: 100%;
+            border-radius: 3rem;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #333;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        p {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        #back {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            /* box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1); */
+            background-color: #f0f0f0;
+            border: none;
+            font-size: 0.8rem;
+            border: 1px solid #000000;
+            cursor: pointer;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        .info {
+            font-family: 'DM Serif Text', math;
+            line-height: 1.5;
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: -22px;
+            margin-bottom: 22px;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .info li {
+            margin: 0.5rem;
+        }
+
+        .poster {
+            display: flex;
+            align-items: center;
+        }
+        .poster hr {
+            height: min-content;
+            width: 100%;
+            border-radius: unset;
+            transition: all 1s ease-in-out;
+        }
+
+        #boy {
+            filter: grayscale(100%);
+            border-radius: 0.5rem;
+            transition: filter 0.3s ease-in-out;
+        }
+        #cd {
+            filter: grayscale(100%);
+            border-radius: 0.5rem;
+            transition: filter 0.1s ease-in-out;
+        }
+
+        .sponsor {
+            display: flex;
+            margin: 1rem;
+        }
+        footer {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            margin: 0;
+            width: 50%;
+            font-size: x-small;
+        }
+    </style>
+    <script>
+        function flip(obj) {
+            const object = document.getElementById(obj);
+            const info = document.getElementById('infobox');
+            const spotify = document.getElementById('spotify');
+            object.style.filter = object.style.filter === 'grayscale(100%)' ? 'grayscale(0%)' : 'grayscale(100%)';
+            switch(obj) {
+                case 'boy':
+                    info.style.marginTop = info.style.marginTop === '-22px' ? '8px' : '-22px';
+                    break;
+                case 'cd':
+                    // object.style.marginLeft = object.style.marginLeft === '0px' ? '3rem' : '0px';
+                    spotify.style.display = spotify.style.display === 'none' ? 'inline' : 'none';
+                    break;
+            }
+        }
+    </script>
+</head>
+<body>
+    <button id="back" onclick="window.history.back()">back</button>
+    <div class="header">contact</div>
+    <section class="poster">
+        <hr> <img id="boy" src="/assets/boy.png" height="100" onclick="flip('boy')">
+    </section>
+    <br>
+    <code>| <a href="https://pinterest.com/ohaswin" >pinterest</a> |</code>
+    <script>document.getElementById('boy').style.filter = 'grayscale(100%)'</script>
+    <div class="info" id="infobox" onclick="flip()">
+    <ol style="list-style-type: none; padding-left: 0;">
+        <li>Email <a href="mailto:aswindebug@gmail.com">aswindebug@gmail.com</a></li>
+        <li>GitHub <a href="https://github.com/ohaswin" target="_blank">ohaswin</a></li>
+        <li>LinkedIn <a href="https://www.linkedin.com/in/ohaswin/" target="_blank">ohaswin</a></li>
+        <li>Discord <code>aswinturing</code></li>
+        <li>Twitter <a href="https://x.com/ohaswin" target="_blank">ohaswin</a></li>
+    </ol>
+    </div><script>document.getElementById('infobox').style.marginTop = '-22px';</script>
+    <br>
+    <section class="poster">
+        <a href="https://www.last.fm/user/goldenharmony" id="spotify" target="_blank" style="display: none; margin-right: 12px;transition: all 1s ease-in-out;">last.fm<br></a><img id="cd" src="/assets/cd.png" height="100" onclick="flip('cd')"><hr>
+    </section> <script>document.getElementById('cd').style.marginLeft = '0px';</script>
+    <script>document.getElementById('cd').style.filter = 'grayscale(100%)'</script>
+    <div>
+    </div>
+    </div>
+    <footer>
+    <pre>tap the images for sumn extra.</pre>
+    </footer>
+</body>
+</html>
