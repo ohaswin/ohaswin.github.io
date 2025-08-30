@@ -3,10 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aswin.</title>
+    <title>ohaswin.</title>
+    <meta name="description" content="Aswin S - Computer enthusiast, aspiring researcher, and open source developer">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/preloader.js" as="script">
+    <link rel="preload" href="/assets/me.jpeg" as="image">
+    
+    <!-- Font loading optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+    
+    <script src="preloader.js" defer></script>
     <style>
         :root {
             height: 100dvh;
@@ -169,6 +179,15 @@
             height: 20px;
             border: none;
             cursor: pointer;
+            animation: vibrate 0.6s ease-in-out;
+        }
+
+        @keyframes vibrate {
+            0% { transform: translate(0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
+            100% { transform: translate(0); }
         }
 
         @media screen and (min-width:800px) {
@@ -181,6 +200,237 @@
 
             .menu .item a::before {
                 opacity: 0;
+            }
+        }
+
+        /* Comprehensive Desktop Media Query */
+        @media screen and (min-width: 768px) {
+            :root {
+                height: 100vh;
+                width: 100vw;
+            }
+
+            body {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem;
+                display: grid;
+                grid-template-areas: 
+                    "header header"
+                    "subheader image"
+                    "menu menu"
+                    "blog blog"
+                    "commit commit"
+                    "footer footer";
+                grid-template-columns: 2fr 1fr;
+                grid-template-rows: auto auto auto auto auto auto;
+                gap: 2rem 3rem;
+                min-height: 100vh;
+                align-content: start;
+            }
+
+            .header {
+                grid-area: header;
+                justify-self: start;
+                margin-top: 1rem;
+                font-size: 3.5rem;
+            }
+
+            .subheader {
+                grid-area: subheader;
+                position: static;
+                padding-top: 0;
+                font-size: 1.1rem;
+                font-weight: 300;
+                line-height: 1.6;
+                max-width: 50dvw;
+                margin-top: 0;
+            }
+
+            .img {
+                grid-area: image;
+                justify-self: end;
+                align-self: start;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .img img {
+                position: static;
+                max-width: 250px;
+                height: auto;
+                border-radius: 12px;
+                margin-top: 0;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .img img:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            }
+
+            .menu {
+                grid-area: menu;
+                margin-top: 1rem;
+                justify-self: start;
+            }
+
+            .menu ol {
+                display: flex;
+                gap: 3rem;
+                padding: 0;
+                margin: 0;
+            }
+
+            .menu .item {
+                margin: 0;
+                padding: 0.5rem 0;
+                position: relative;
+            }
+
+            .menu .item a {
+                font-size: 1.2rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                position: relative;
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+            }
+
+            .menu .item a:hover {
+                background-color: rgba(0, 0, 0, 0.05);
+                transform: translateY(-2px);
+            }
+
+            .menu .item a::after {
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                left: 50%;
+                width: 0;
+                height: 2px;
+                background: #333;
+                transition: all 0.3s ease;
+                transform: translateX(-50%);
+            }
+
+            .menu .item a:hover::after {
+                width: 80%;
+            }
+
+            .blog {
+                grid-area: blog;
+                padding-top: 1rem;
+            }
+
+            .blog ul {
+                max-width: 800px;
+                margin: 2rem 0;
+            }
+
+            .blog li {
+                margin: 1.5rem 0;
+                font-size: 1.1rem;
+                padding: 1rem;
+                border-bottom: 1px solid #eee;
+                transition: all 0.3s ease;
+            }
+
+            .blog li:hover {
+                background-color: rgba(0, 0, 0, 0.02);
+            }
+
+            .blog li a {
+                font-size: 1.1rem;
+                font-weight: 500;
+            }
+
+            .blog li small {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+
+            .last-commit {
+                grid-area: commit;
+                margin-top: 1rem;
+            }
+
+            .commit {
+                padding: 1.5rem;
+                background: rgba(0, 0, 0, 0.02);
+                border-radius: 0.5rem;
+                border-left: 3px solid #33333357;
+            }
+
+            .commit small {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .footer {
+                grid-area: footer;
+                margin-top: 2rem;
+                font-size: 1rem;
+                padding: 2rem 0;
+            }
+
+            .bg-color-picker {
+                top: 2rem;
+                right: 2rem;
+            }
+
+            .bg-color-picker input {
+                width: 30px;
+                height: 30px;
+            }
+
+            /* Remove anchor positioning for desktop - use grid instead */
+            @supports (anchor-name: --header) {
+                .header {
+                    anchor-name: none;
+                }
+                .subheader {
+                    position: static;
+                }
+                .img img {
+                    position: static;
+                }
+            }
+
+            /* Override mobile-specific positioning */
+            @supports not (anchor-name: --header) {
+                .header {
+                    left: auto;
+                }
+                .subheader {
+                    position: static;
+                    top: auto;
+                    left: auto;
+                }
+                .img img {
+                    position: static;
+                    margin-top: 0;
+                }
+            }
+
+            /* Improve typography hierarchy */
+            hr {
+                border: none;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #ccc, transparent);
+                margin: 2rem 0;
+            }
+
+            /* Better link styling */
+            a {
+                transition: all 0.2s ease;
+            }
+
+            a:hover {
+                color: #0056b3;
             }
         }
     </style>
@@ -227,6 +477,7 @@ async function getMyLatestCommit() {
         }   
     });
     let toggle = true;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
     function flip() {
         const img = document.querySelector('.img img');
         const header = document.querySelector('.header');
@@ -239,13 +490,13 @@ async function getMyLatestCommit() {
         header.style.fontFamily = toggle ? "DM Serif Text" : "JetBrains Mono";
         subheader.style.marginRight = toggle ? "1rem" : "inherit";
         subheader.style.fontFamily = toggle ? "Lexend Deca" : "JetBrains Mono";
-        subheader.style.fontSize = toggle ? "0.89rem" : "small";
-        header.style.fontSize = toggle ? "1.5rem" : "inherit";
-        header.textContent = toggle ? "Aswin S, 19" : "ohaswin, n.";
+        subheader.style.fontSize = isMobile ? (toggle ? "0.89rem" : "small"): (toggle ? "1.5rem" : "1.1rem");
+        header.style.fontSize = isMobile ? (toggle ? "1.5rem" : "inherit") : (toggle ? "3.5rem" : "3.5rem");
+        header.textContent = isMobile ? (toggle ? "Aswin S, 19" : "ohaswin, n."): (toggle ? "Aswin S": "ohaswin, n.")
         menu.style.marginTop = toggle ? "40dvh" : "20dvh";
         subheader.innerHTML = !toggle ? 
             `<br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.` : 
-            `<br>I'm a second year CS undergrad. Former freelancer, now I study distributed systems, cellular networks, systems programming and build software I find interesting or useful.<br>Built: <a href="https://github.com/ohaswin/pyscan">pyscan</a> (30k+ downloads)<br>Building: <a href="https://github.com/ohaswin/bookends">bookends</a> (WIP)<br><a href="https://linkedin.com/in/ohaswin">LinkedIn</a> | <a href="https://github.com/ohaswin">GitHub</a> | <a href="/resume.pdf">CV</a>`;
+            `<br>I'm a second year CS undergrad. Former freelancer, now I study distributed systems, cellular networks, systems programming and build software I find interesting or useful.<br><br>Built: <a href="https://github.com/ohaswin/pyscan">pyscan</a> (30k+ downloads)<br>Building: <a href="https://github.com/ohaswin/bookends">bookends</a> (WIP)<br><a href="https://linkedin.com/in/ohaswin">LinkedIn</a> | <a href="https://github.com/ohaswin">GitHub</a> | <a href="/resume.pdf">CV</a>`;
         toggle = !toggle; 
     }
 
@@ -266,10 +517,10 @@ async function getMyLatestCommit() {
     <div class="subheader"><br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.</div>
     <div class="menu">
         <ol>
-            <li class="item selected"><a href="/projects">projects</a></li>
-            <li class="item"><a href="/blog">blog</a></li>
-            <li class="item"><a href="/about">about</a></li>
-            <li class="item"><a href="/contact">contact</a></li>
+            <li class="item selected"><a href="/projects/index.html">projects</a></li>
+            <li class="item"><a href="/blog/index.html">blog</a></li>
+            <li class="item"><a href="/about/index.html">about</a></li>
+            <li class="item"><a href="/contact/index.html">contact</a></li>
         </ol>
     </div>
     <div class="blog">
