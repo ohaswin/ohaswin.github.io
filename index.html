@@ -153,6 +153,24 @@
             font-size: small;
         }
 
+        .bg-color-picker {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background-color: transparent;
+            width: fit-content;
+            height: fit-content;
+        }
+
+        .bg-color-picker input {
+            width: 20px;
+            background-color: transparent;
+            height: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
         @media screen and (min-width:800px) {
             body {
                 display: run-in;
@@ -234,6 +252,15 @@ async function getMyLatestCommit() {
     </script>
 </head>
 <body>
+    <div class="bg-color-picker">
+        <input type="color" id="bgColor" name="bgColor" value="#ffffff">
+        <script>
+            const bgColorInput = document.getElementById('bgColor');
+            bgColorInput.addEventListener('input', (event) => {
+                document.body.style.backgroundColor = event.target.value;
+            });
+        </script>
+    </div>
     <div class="img" onclick="flip()" ><img src="/assets/me.jpeg" alt="Aswin's Image"></div>
     <div class="header">ohaswin, n.</div>
     <div class="subheader"><br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.</div>
