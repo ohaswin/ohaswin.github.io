@@ -33,9 +33,11 @@
             margin-top: 5dvh;
             /* transition: all 0.3s ease-in-out; */
             pointer-events: visibleStroke;
+            color: #585858;
             
         }
         .subheader {
+            color: #585858;
             padding-top: 8px;
             font-size: small;
             word-wrap: break-word;
@@ -124,7 +126,8 @@
             padding: 2px;
         }
         .menu .item a {
-            color: rgb(37, 35, 35);
+            color: #585858;
+            /* color: rgb(37, 35, 35); */
             text-decoration: none;
             font-size: 18px;
         }
@@ -150,17 +153,19 @@
             font-family:  sans-serif;
         }
         .blog li small, .blog li small a {
-            color: #888;
+            color: #585858;
         }
         .blog li a {
             text-decoration: none;
-            color: #333;
+            color: #585858;
+            /* color: #333; */
         }
         .footer {
             padding-bottom: 8px;
             width: 100%;
             text-align: center;
             font-size: small;
+            color: #585858;
         }
 
         .bg-color-picker {
@@ -355,6 +360,7 @@
 
             .last-commit {
                 grid-area: commit;
+                color: #585858;
                 margin-top: 1rem;
             }
 
@@ -504,7 +510,7 @@ async function getMyLatestCommit() {
 </head>
 <body>
     <div class="bg-color-picker">
-        <input type="color" id="bgColor" name="bgColor" value="#ffffff">
+        <input type="color" id="bgColor" name="bgColor" value="#8ff0a4">
         <script>
             const bgColorInput = document.getElementById('bgColor');
             bgColorInput.addEventListener('input', (event) => {
@@ -512,7 +518,7 @@ async function getMyLatestCommit() {
             });
         </script>
     </div>
-    <div class="img" onclick="flip()" ><img src="/assets/me.jpeg" alt="Aswin's Image"></div>
+    <div tabindex="0" class="img" onclick="flip()" ><img src="/assets/me.jpeg" alt="Aswin's Image (click to flip)"></div>
     <div class="header">ohaswin, n.</div>
     <div class="subheader"><br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.</div>
     <div class="menu">
