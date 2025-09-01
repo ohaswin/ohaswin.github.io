@@ -5,7 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ohaswin.</title>
     <meta name="description" content="Aswin S - Computer enthusiast, aspiring researcher, and open source developer">
+    <!-- Primary Meta Tags -->
+    <title>ohaswin.</title>
+    <meta name="title" content="ohaswin." />
+    <meta name="description" content="computer enthusiast, open source developer and aspiring researcher." />
     
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://metatags.io/" />
+    <meta property="og:title" content="ohaswin." />
+    <meta property="og:description" content="computer enthusiast, open source developer and aspiring researcher." />
+    <meta property="og:image" content="https://media.discordapp.net/attachments/1363727877551554654/1411973548511199385/Picsart_25-08-31_15-36-33-557.jpg?ex=68b69a57&is=68b548d7&hm=c79a4a2b1ff0b29242edea38d07a8d7a159c4853a02394ecb5978069ca84abe2&=&format=webp&width=1425&height=803" />
+    
+    <!-- X (Twitter) -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://metatags.io/" />
+    <meta property="twitter:title" content="ohaswin." />
+    <meta property="twitter:description" content="computer enthusiast, open source developer and aspiring researcher." />
+    <meta property="twitter:image" content="https://media.discordapp.net/attachments/1363727877551554654/1411973548511199385/Picsart_25-08-31_15-36-33-557.jpg?ex=68b69a57&is=68b548d7&hm=c79a4a2b1ff0b29242edea38d07a8d7a159c4853a02394ecb5978069ca84abe2&=&format=webp&width=1425&height=803" />
+
+
     <!-- Preload critical resources -->
     <link rel="preload" href="/preloader.js" as="script">
     <link rel="preload" href="/assets/me.jpeg" as="image">
@@ -490,7 +509,7 @@ async function getMyLatestCommit() {
         const subheader = document.querySelector('.subheader');
         const menu = document.querySelector('.menu');
 
-
+        document.title = toggle ? "Aswin S" : "ohaswin, n.";
         img.src = toggle ? "/assets/outp.webp" : "/assets/me.jpeg";
         document.querySelector('.img').style.animation = "none";
         header.style.fontFamily = toggle ? "DM Serif Text" : "JetBrains Mono";
