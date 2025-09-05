@@ -27,14 +27,24 @@
 
     <!-- Preload critical resources -->
     <link rel="preload" href="/preloader.js" as="script">
-    <link rel="preload" href="/assets/me.jpeg" as="image">
     
     <!-- Font loading optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
-    
+
+    <link rel="prefetch" href="/assets/me.avif" as="image">
+    <link rel="prefetch" href="/assets/outp.webp" as="image">
+    <link rel="prefetch" href="/assets/cd.avif" as="image">
+    <link rel="prefetch" href="/assets/boy.avif" as="image">
+    <link rel="prefetch" href="/assets/speak.avif" as="image">
+    <link rel="prefetch" href="/projects/index.html" as="document">
+    <link rel="prefetch" href="/blog/index.html" as="document">
+    <link rel="prefetch" href="/about/index.html" as="document">
+    <link rel="prefetch" href="/contact/index.html" as="document">
+
+
     <script src="preloader.js" defer></script>
     <style>
         :root {
@@ -510,7 +520,7 @@ async function getMyLatestCommit() {
         const menu = document.querySelector('.menu');
 
         document.title = toggle ? "Aswin S" : "ohaswin, n.";
-        img.src = toggle ? "/assets/outp.webp" : "/assets/me.jpeg";
+        img.src = toggle ? "/assets/outp.webp" : "/assets/me.avif";
         document.querySelector('.img').style.animation = "none";
         header.style.fontFamily = toggle ? "DM Serif Text" : "JetBrains Mono";
         subheader.style.marginRight = toggle ? "1rem" : "inherit";
@@ -537,7 +547,7 @@ async function getMyLatestCommit() {
             });
         </script>
     </div>
-    <div tabindex="0" class="img" onclick="flip()" ><img src="/assets/me.jpeg" alt="Aswin's Image (click to flip)"></div>
+    <div tabindex="0" class="img" onclick="flip()" ><img src="/assets/me.avif" alt="Aswin's Image (click to flip)"></div>
     <div class="header">ohaswin, n.</div>
     <div class="subheader"><br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.</div>
     <div class="menu">
