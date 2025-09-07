@@ -1,5 +1,6 @@
 const CACHE_NAME = 'ohaswin-cache-v1';
 const DEBUG = true;
+const DEV_MODE = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port !== '';
 
 const STATIC_RESOURCES = [
   '/',
@@ -17,16 +18,22 @@ const STATIC_RESOURCES = [
 ];
 
 function log(msg) {
-  if (DEBUG) console.log('[SW]', msg);
+  if (DEBUG) console.log('[SW]', DEV_MODE ? '[DEV]' : '[PROD]', msg);
 }
 
 // Install - cache static resources (only if not already cached)
 self.addEventListener('install', event => {
   log('Installing...');
+  
+  if (DEV_MODE) {
+    log('Dev mode: Skipping cache installation');
+    self.skipWaiting();
+    return;
+  }
+
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(async cache => {
-        // Check which resources are already cached
         const cachePromises = STATIC_RESOURCES.map(async url => {
           const cached = await cache.match(url);
           if (cached) {
@@ -65,6 +72,13 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // In dev mode, always fetch from network
+  if (DEV_MODE) {
+    log('Dev mode: Bypassing cache for ' + event.request.url);
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   const url = new URL(event.request.url);
   const isAsset = url.pathname.startsWith('/assets/');
   const isHTML = event.request.headers.get('Accept').includes('text/html');
@@ -75,13 +89,12 @@ self.addEventListener('fetch', event => {
         if (cachedResponse) {
           log('✓ From cache: ' + event.request.url);
           
-          // Different staleness rules for different content
           const cacheDate = cachedResponse.headers.get('date');
-          const staleTime = isAsset ? 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000; // Assets: 24h, HTML: 8h
+          const staleTime = isAsset ? 24 * 60 * 60 * 1000 : 3 * 60 * 60 * 1000;
           const isStale = !cacheDate || 
             (Date.now() - new Date(cacheDate).getTime()) > staleTime;
 
-          if (isStale && isHTML) { // Only update HTML in background
+          if (isStale && isHTML) {
             fetch(event.request)
               .then(networkResponse => {
                 if (networkResponse.ok) {
@@ -95,7 +108,6 @@ self.addEventListener('fetch', event => {
           return cachedResponse;
         }
         
-        // Not in cache
         log('→ From network: ' + event.request.url);
         return fetch(event.request).then(networkResponse => {
           if (networkResponse.ok) {

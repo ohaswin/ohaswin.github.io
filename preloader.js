@@ -2,20 +2,32 @@
 (function() {
   'use strict';
 
+  // Detect development environment
+  const DEV_MODE = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port !== '';
+  
   // Track what we've already preloaded to avoid duplicates
   const preloadedUrls = new Set();
+
+  function log(msg) {
+    console.log('[Preloader]', DEV_MODE ? '[DEV]' : '[PROD]', msg);
+  }
 
   // Register service worker
   function initServiceWorker() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
-        .then(() => console.log('[Preloader] SW registered'))
-        .catch(() => console.log('[Preloader] SW failed'));
+        .then(() => log('SW registered'))
+        .catch(() => log('SW failed'));
     }
   }
 
   // Check if URL is already cached
   async function isUrlCached(url) {
+    if (DEV_MODE) {
+      log('Dev mode: Skipping cache check');
+      return false; // Always treat as not cached in dev mode
+    }
+
     if ('caches' in window) {
       try {
         const cache = await caches.open('ohaswin-cache-v1');
@@ -32,17 +44,22 @@
   async function preloadPage(url) {
     if (!url || url.startsWith('http') || url.includes('#')) return;
     
+    if (DEV_MODE) {
+      log(`Dev mode: Skipping preload of ${url}`);
+      return;
+    }
+    
     // Skip if already preloaded in this session
     if (preloadedUrls.has(url)) {
-      console.log('[Preloader] Already preloaded:', url);
+      log('Already preloaded:', url);
       return;
     }
 
     // Check if already cached
     const isCached = await isUrlCached(url);
     if (isCached) {
-      console.log('[Preloader] Already cached:', url);
-      preloadedUrls.add(url); // Mark as handled
+      log('Already cached:', url);
+      preloadedUrls.add(url);
       return;
     }
 
@@ -53,15 +70,17 @@
     fetch(url, { method: 'GET' })
       .then(response => {
         if (response.ok) {
-          console.log('[Preloader] Cached:', url);
+          log('Cached:', url);
         }
       })
-      .catch(() => {}); // Silent fail
+      .catch(() => {});
   }
 
   // Preload on hover (debounced)
   let hoverTimeout;
   function handleHover(e) {
+    if (DEV_MODE) return; // Skip hover preloading in dev mode
+
     const link = e.target.closest('a');
     if (!link) return;
 
@@ -76,13 +95,18 @@
 
   // Initialize
   function init() {
-    // Only add hover preloading
+    if (DEV_MODE) {
+      log('Development mode detected - caching and preloading disabled');
+    }
+
     document.addEventListener('mouseover', handleHover);
 
-    // Preload main pages after 2 seconds (only if not cached)
-    setTimeout(() => {
-      ['/projects/index.html', '/blog/index.html', '/about/index.html', '/contact/index.html'].forEach(preloadPage);
-    }, 2000);
+    // Skip preloading in dev mode
+    if (!DEV_MODE) {
+      setTimeout(() => {
+        ['/projects/index.html', '/blog/index.html', '/about/index.html', '/contact/index.html'].forEach(preloadPage);
+      }, 2000);
+    }
   }
 
   // Start when ready
