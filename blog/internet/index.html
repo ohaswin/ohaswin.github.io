@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Font loading optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/blog/style.css">
+    <title>Justifying the Internet</title>
+
+    <script>
+        function addElapsedDate() {
+            const timeElements = document.querySelectorAll("time");
+            timeElements.forEach(timeElement => {
+                const date = new Date(timeElement.getAttribute("datetime"));
+                const now = new Date();
+                const elapsed = now - date;
+                const days = Math.floor(elapsed / (1000 * 60 * 60 * 24));
+                const hours = Math.floor(elapsed / (1000 * 60 * 60));
+                const minutes = Math.floor(elapsed / (1000 * 60));
+                if (days > 0) {
+                    timeElement.textContent += ` (${days} days ago)`;
+                } else if (hours > 0) {
+                    timeElement.textContent += ` (${hours} hours ago)`;
+                } else {
+                    timeElement.textContent += ` (${minutes} minutes ago)`;
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="header">ohaswin.</div>
+    <article>
+        <h1>Justifying the Internet</h1>
+        <time datetime="2025-09-07T00:00:00Z">September 7, 2025</time><script>addElapsedDate();</script>
+        <hr>
+        <h2>The internet is not a place for communication.</h2>
+        <p>We talk, shitpost, shop, and consume content, but the internet as originally intended (in my opinion) is a power redistribution platform.</p>
+        <p><b>Exhibit A:</b> Contractor at CERN, Tim Berners-Lee proposes <a href="https://en.wikipedia.org/wiki/Hypertext">hypertext</a>, a concept that allows for the linking of documents and the creation of an interconnected web of information so scientists can stop depending on traditional methods to update each other. Faster, freer information access = less reliance on gatekeepers, potential saboteurs and more power to the individual.</p>
+        <p><b>Exhibit B:</b> Satoshi Nakamoto, anonymous creator of Bitcoin, introduces a decentralized digital currency that allows for peer-to-peer (bankless) transactions without the need for intermediaries. This innovation challenges traditional financial systems and empowers individuals to hhttps://en.wiktionary.org/wiki/schizopost#Englishave more control over their own money.</p>
+        <p><b>Exhibit C:</b> The rise of social media platforms has enabled individuals to share their thoughts and ideas without the need for traditional media gatekeepers. This has led to a more diverse range of voices being heard, including that of degenerates, bad faith agents and attention needy people.
+        </p>
+        <p>How I justify the internet will mostly surround around Exhibit C.</p>
+
+        <hr>
+        <h2>The internet is a second home for the isolated, marginalized, and misunderstood. Also mentally ill people. (see: <a href="https://en.wiktionary.org/wiki/schizopost#English">schizoposting</a>)</h2>
+        <br>
+        <p>I didn't talk a lot growing up. The adults </p>
+    </article>
+</body>
+</html>
