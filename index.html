@@ -543,12 +543,14 @@
                 blogContainer.appendChild(listItem);
             });
             
-            // Add "more posts" link using totalPosts from JSON
-            const remainingPosts = blogData.totalPosts - recentPosts.length;
-            if (remainingPosts > 0) {
+            // Always add "more posts" link if there are any posts
+            if (blogData.totalPosts > 0) {
+                const remainingPosts = Math.max(0, blogData.totalPosts - recentPosts.length);
                 const moreItem = document.createElement('li');
                 moreItem.innerHTML = `
-                        <small><a href="/blog">>> /blog (+${remainingPosts})</a></small>
+                    <div>
+                        <small><a href="/blog">>> /blog${remainingPosts > 0 ? ` (+${remainingPosts})` : ''}</a></small>
+                    </div>
                 `;
                 blogContainer.appendChild(moreItem);
             }
@@ -556,8 +558,17 @@
         } catch (error) {
             console.error('Error fetching blog posts:', error);
             
-            // Keep existing fallback content if fetch fails
-            // Don't override the noscript fallback
+            // Fallback: add a basic "view blog" link
+            const blogContainer = document.querySelector('.blog ul');
+            if (!blogContainer.querySelector('li:not(noscript li)')) {
+                const fallbackItem = document.createElement('li');
+                fallbackItem.innerHTML = `
+                    <div>
+                        <small><a href="/blog">>> /blog</a></small>
+                    </div>
+                `;
+                blogContainer.appendChild(fallbackItem);
+            }
         }
     }
 
