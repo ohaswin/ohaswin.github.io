@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Flashcards by Claude And Aswin.</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font:14px/1.6 'Segoe UI',monospace;background:#f5f5dc;color:#333;padding:20px}
+.filter{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap;align-items:center}
+.filter button{padding:6px 12px;border:1px solid #999;background:#fff;cursor:pointer;border-radius:3px;transition:all .2s}
+.filter button:hover{background:#f0f0f0}
+.filter button.active{background:#dda0dd;color:#fff;border-color:#dda0dd}
+.filter label{font-weight:bold;color:#8b4513;margin-right:5px}
+.card{background:#fff;border:1px solid #ccc;padding:18px;margin-bottom:15px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,.05)}
+.card.hidden{display:none}
+.unit{font-size:11px;color:#888;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.topic{font-size:10px;color:#999;margin-bottom:8px;font-style:italic}
+.q{font-weight:600;margin-bottom:12px;color:#2c3e50;font-size:15px}
+.a{margin-top:12px;padding:14px;background:#f9f9f9;border-left:4px solid #dda0dd;display:none;line-height:1.8;border-radius:3px}
+.a.show{display:block}
+.a strong{color:#8b4513}
+.a br{display:block;content:"";margin:4px 0}
+.cloze{background:#ffeb3b;padding:3px 6px;border-radius:2px;font-weight:600}
+.cloze.revealed{background:transparent;color:#27ae60}
+.btns{margin-top:12px;display:flex;gap:8px}
+button{padding:6px 12px;border:1px solid #999;background:#fff;cursor:pointer;font-size:12px;border-radius:3px;transition:all .2s}
+button:hover{background:#e8e8e8;border-color:#666}
+h1{font-size:22px;margin-bottom:20px;color:#8b4513;font-weight:700}
+.filters-container{background:#fff;padding:15px;border-radius:6px;margin-bottom:20px;border:1px solid #ddd}
+</style>
+</head>
+<body>
+<h1>📚 Data Structures Flashcards</h1>
+<div class="filters-container">
+<div class="filter" id="unitFilter"></div>
+<div class="filter" id="topicFilter" style="margin-top:10px"></div>
+</div>
+<div id="cards"></div>
+
+<script>
+const data=[
+{u:"II",topic:"Stack",q:"What is a Stack?",a:"<strong>LIFO</strong> (Last In First Out) linear data structure<br><br>• Operations at one end (TOP)"},
+{u:"II",topic:"Stack",q:"Basic Stack operations?",a:"• <strong>PUSH</strong>: insert at top<br><br>• <strong>POP</strong>: remove from top<br><br>• <strong>PEEK/TOP</strong>: view top<br><br>• isEmpty, isFull"},
+{u:"II",topic:"Stack",q:"PUSH algorithm steps?",a:"1. Check overflow (TOP=MAX-1)<br><br>2. TOP++<br><br>3. STACK[TOP]=ITEM"},
+{u:"II",topic:"Stack",q:"POP algorithm steps?",a:"1. Check underflow (TOP=-1)<br><br>2. ITEM=STACK[TOP]<br><br>3. TOP--"},
+{u:"II",topic:"Stack",q:"Array implementation limitation?",a:"• Fixed size<br><br>• <strong>Overflow</strong> if TOP=MAX-1<br><br>• <strong>Underflow</strong> if TOP=-1"},
+{u:"II",topic:"Stack",q:"Linked list stack advantage?",a:"• Dynamic size, no overflow<br><br>• TOP = head pointer<br><br>• PUSH at head, POP from head"},
+{u:"II",topic:"Stack",q:"How stack supports recursion?",a:"Stores <strong>activation records</strong> for each function call:<br><br>• Local variables<br><br>• Return address<br><br>• Parameters"},
+{u:"II",topic:"Stack",q:"Convert A+B*C to postfix?",a:"<strong>ABC*+</strong><br><br>• Operators after operands<br><br>• Higher precedence first"},
+{u:"II",topic:"Stack",q:"Evaluate postfix expression?",a:"• Scan left to right<br><br>• Push operands<br><br>• Pop 2 for operator<br><br>• Push result"},
+{u:"II",topic:"Stack",q:"Stack applications?",a:"• Recursion<br><br>• Expression conversion<br><br>• Parentheses matching<br><br>• Backtracking<br><br>• Undo/redo<br><br>• Browser history"},
+{u:"II",topic:"Stack",q:"When does stack overflow occur?",a:"When PUSH attempted and <strong>TOP = MAX-1</strong><br><br>(array is full)"},
+{u:"II",topic:"Stack",q:"When does stack underflow occur?",a:"When POP attempted and <strong>TOP = -1</strong><br><br>(stack is empty)"},
+{u:"II",topic:"Stack",q:"Check balanced parentheses?",a:"1. Push '(' to stack<br><br>2. Pop for ')'<br><br>3. Empty stack at end = balanced"},
+{u:"II",topic:"Stack",q:"Tower of Hanoi uses?",a:"<strong>Recursion/Stack</strong><br><br>To move n disks:<br><br>• Move n-1 to auxiliary<br><br>• Move nth to destination<br><br>• Move n-1 to destination"},
+{u:"II",topic:"Queue",q:"What is a Queue?",a:"<strong>FIFO</strong> (First In First Out) linear structure<br><br>• Insert at REAR<br><br>• Delete from FRONT"},
+{u:"II",topic:"Queue",q:"Basic Queue operations?",a:"• <strong>ENQUEUE</strong>: insert at rear<br><br>• <strong>DEQUEUE</strong>: delete from front<br><br>• <strong>PEEK</strong>: view front<br><br>• isEmpty, isFull"},
+{u:"II",topic:"Queue",q:"ENQUEUE algorithm?",a:"1. Check overflow (REAR=MAX-1)<br><br>2. REAR++<br><br>3. Q[REAR]=ITEM"},
+{u:"II",topic:"Queue",q:"DEQUEUE algorithm?",a:"1. Check underflow (FRONT>REAR)<br><br>2. ITEM=Q[FRONT]<br><br>3. FRONT++"},
+{u:"II",topic:"Queue",q:"Circular queue advantage?",a:"• Reuses empty spaces<br><br>• REAR = (REAR+1) % MAX<br><br>• Full when (REAR+1)%MAX = FRONT"},
+{u:"II",topic:"Queue",q:"What is Deque?",a:"<strong>Double-ended queue</strong><br><br>• Insert at both ends<br><br>• Delete from both ends"},
+{u:"II",topic:"Queue",q:"Input Restricted Deque?",a:"• Insert at one end (REAR)<br><br>• Delete at both ends"},
+{u:"II",topic:"Queue",q:"Output Restricted Deque?",a:"• Insert at both ends<br><br>• Delete from one end (FRONT)"},
+{u:"II",topic:"Queue",q:"Queue applications?",a:"• CPU scheduling<br><br>• Printer spooling<br><br>• BFS traversal<br><br>• Buffers<br><br>• Customer service"},
+{u:"II",topic:"Queue",q:"Priority Queue?",a:"Element with <strong>highest priority</strong> dequeued first<br><br>• Implemented using heap"},
+{u:"II",topic:"Queue",q:"Problem with linear queue array?",a:"<strong>Wasted space</strong><br><br>• Even if queue empty, can't insert if REAR=MAX-1"},
+{u:"II",topic:"Queue",q:"Queue using linked list?",a:"• <strong>FRONT</strong> points to first node<br><br>• <strong>REAR</strong> points to last node<br><br>• ENQUEUE at REAR<br><br>• DEQUEUE from FRONT"},
+{u:"III",topic:"Trees - Basic",q:"What is a Tree?",a:"<strong>Non-linear hierarchical</strong> structure<br><br>• Root node<br><br>• Parent-child relationships<br><br>• No cycles"},
+{u:"III",topic:"Trees - Basic",q:"Key tree terms?",a:"• Root, leaf, parent, child<br><br>• Sibling, ancestor, descendant<br><br>• Degree, height, depth, level"},
+{u:"III",topic:"Trees - Binary",q:"Binary Tree definition?",a:"Each node has <strong>max 2 children</strong> (left, right)<br><br>• Max nodes at level i = 2^i"},
+{u:"III",topic:"Trees - Binary",q:"Complete Binary Tree?",a:"• All levels filled except last<br><br>• Last level filled <strong>left to right</strong>"},
+{u:"III",topic:"Trees - Binary",q:"Full Binary Tree?",a:"Every node has <strong>0 or 2 children</strong><br><br>• No node with 1 child"},
+{u:"III",topic:"Trees - Binary",q:"Skewed Binary Tree?",a:"• <strong>Left-skewed</strong>: only left children<br><br>• <strong>Right-skewed</strong>: only right children"},
+{u:"III",topic:"Trees - Binary",q:"Expression Tree?",a:"• Operators at <strong>internal nodes</strong><br><br>• Operands at <strong>leaves</strong><br><br>• Used for expression evaluation"},
+{u:"III",topic:"Trees - Binary",q:"Binary tree properties?",a:"• Max nodes = 2^(h+1) - 1<br><br>• Min height = log₂(n+1)<br><br>• Leaf nodes = Internal nodes with 2 children + 1"},
+{u:"III",topic:"Trees - Binary",q:"Degree of a node?",a:"Number of children<br><br>• Max degree of binary tree = <strong>2</strong>"},
+{u:"III",topic:"Trees - Binary",q:"Height of tree?",a:"Max distance from root to leaf<br><br>• Height of root = 0 or 1 (convention varies)"},
+{u:"III",topic:"Trees - Binary",q:"Count leaves in binary tree?",a:"If internal nodes with 2 children = i<br><br>Then leaves = <strong>i + 1</strong>"},
+{u:"III",topic:"Trees - Binary",q:"Strict binary tree?",a:"Same as <strong>full binary tree</strong><br><br>• Every node has 0 or 2 children"},
+{u:"III",topic:"Trees - Binary",q:"Perfect binary tree?",a:"• All internal nodes have 2 children<br><br>• AND all leaves at <strong>same level</strong>"},
+{u:"III",topic:"Trees - Representation",q:"Array representation formula?",a:"<strong>Parent at i:</strong><br><br>• Left child: 2i+1<br><br>• Right child: 2i+2<br><br><strong>Child at i:</strong><br><br>• Parent: (i-1)/2"},
+{u:"III",topic:"Trees - Representation",q:"Linked representation?",a:"<strong>Node structure:</strong><br><br>• Data<br><br>• Left pointer<br><br>• Right pointer<br><br>• Root pointer points to root"},
+{u:"III",topic:"Trees - Traversal",q:"Inorder traversal?",a:"<strong>Left-Root-Right</strong><br><br>• Gives sorted sequence for BST<br><br>• Recursive: traverse left → visit → traverse right"},
+{u:"III",topic:"Trees - Traversal",q:"Preorder traversal?",a:"<strong>Root-Left-Right</strong><br><br>• Used for copying tree<br><br>• Polish notation"},
+{u:"III",topic:"Trees - Traversal",q:"Postorder traversal?",a:"<strong>Left-Right-Root</strong><br><br>• Used for deleting tree<br><br>• Reverse Polish notation"},
+{u:"III",topic:"Trees - Traversal",q:"Level order traversal?",a:"Visit nodes <strong>level by level</strong> (BFS)<br><br>• Use queue"},
+{u:"III",topic:"Trees - Traversal",q:"Non-recursive traversal?",a:"Use <strong>stack</strong><br><br>For inorder:<br><br>• Go left pushing nodes<br><br>• Pop and visit<br><br>• Go right"},
+{u:"III",topic:"Trees - BST",q:"Binary Search Tree?",a:"<strong>Left subtree &lt; Root &lt; Right subtree</strong><br><br>• Enables binary search<br><br>• Time: O(log n) average"},
+{u:"III",topic:"Trees - BST",q:"BST insertion?",a:"1. Start at root<br><br>2. Go left if smaller, right if larger<br><br>3. Insert at NULL position"},
+{u:"III",topic:"Trees - BST",q:"BST deletion cases?",a:"<strong>Case 1 - Leaf:</strong> remove directly<br><br><strong>Case 2 - One child:</strong> replace with child<br><br><strong>Case 3 - Two children:</strong> replace with inorder successor/predecessor"},
+{u:"III",topic:"Trees - BST",q:"BST search algorithm?",a:"1. Start at root<br><br>2. If key &lt; node, go left<br><br>3. If key &gt; node, go right<br><br>4. If NULL, not found<br><br>• Time: O(h)"},
+{u:"III",topic:"Trees - BST",q:"Find min/max in BST?",a:"• <strong>Min:</strong> leftmost node<br><br>• <strong>Max:</strong> rightmost node"},
+{u:"III",topic:"Trees - BST",q:"Inorder successor in BST?",a:"<strong>If right child exists:</strong><br><br>• Min of right subtree<br><br><strong>Else:</strong><br><br>• Nearest ancestor for which node is in left subtree"},
+{u:"III",topic:"Trees - AVL",q:"AVL Tree?",a:"<strong>Self-balancing BST</strong><br><br>• Height difference of subtrees ≤ 1<br><br>• Operations: O(log n)"},
+{u:"III",topic:"Trees - AVL",q:"Balance factor in AVL?",a:"BF = height(left) - height(right)<br><br>• Must be <strong>-1, 0, or 1</strong>"},
+{u:"III",topic:"Trees - AVL",q:"AVL rotation types?",a:"• <strong>LL</strong>: right rotation<br><br>• <strong>RR</strong>: left rotation<br><br>• <strong>LR</strong>: left-right rotation<br><br>• <strong>RL</strong>: right-left rotation"},
+{u:"III",topic:"Trees - Applications",q:"Tree applications?",a:"• File system<br><br>• DOM (HTML/XML)<br><br>• Expression parsing<br><br>• BST for searching<br><br>• Decision trees<br><br>• Heap"},
+{u:"III",topic:"Graph - Basic",q:"What is a Graph?",a:"<strong>G = (V, E)</strong><br><br>• V: Set of vertices<br><br>• E: Set of edges<br><br>• Non-linear structure"},
+{u:"III",topic:"Graph - Basic",q:"Graph terms?",a:"• Vertex, edge, adjacent<br><br>• Degree, path, cycle<br><br>• Connected, complete graph"},
+{u:"III",topic:"Graph - Types",q:"Directed Graph?",a:"Edges have <strong>direction</strong> (arrows)<br><br>• In-degree<br><br>• Out-degree"},
+{u:"III",topic:"Graph - Types",q:"Undirected Graph?",a:"Edges <strong>bidirectional</strong><br><br>• Degree = number of edges"},
+{u:"III",topic:"Graph - Types",q:"Weighted Graph?",a:"Edges have <strong>weights/costs</strong><br><br>• Used for shortest path algorithms"},
+{u:"III",topic:"Graph - Types",q:"Complete Graph edges?",a:"Every vertex connected to every other<br><br>• Edges = <strong>n(n-1)/2</strong> for undirected"},
+{u:"III",topic:"Graph - Types",q:"Path in graph?",a:"Sequence of vertices where each adjacent pair connected by edge"},
+{u:"III",topic:"Graph - Types",q:"Cycle in graph?",a:"Path that starts and ends at <strong>same vertex</strong><br><br>• No repeated edges"},
+{u:"III",topic:"Graph - Types",q:"Connected graph?",a:"Path exists between <strong>every pair</strong> of vertices<br><br>• For directed: strongly connected"},
+{u:"III",topic:"Graph - Types",q:"Spanning tree?",a:"Subgraph containing:<br><br>• All vertices<br><br>• Min edges (<strong>V-1</strong>)<br><br>• Forms tree (no cycles)"},
+{u:"III",topic:"Graph - Representation",q:"Adjacency Matrix?",a:"2D array: A[i][j] = 1 if edge exists<br><br>• Space: <strong>O(V²)</strong><br><br>• Good for dense graphs"},
+{u:"III",topic:"Graph - Representation",q:"Adjacency List?",a:"Array of linked lists<br><br>• List[i] = neighbors of vertex i<br><br>• Space: <strong>O(V+E)</strong>"},
+{u:"III",topic:"Graph - Traversal",q:"Depth First Search?",a:"Go <strong>deep</strong> using stack/recursion<br><br>• Mark visited<br><br>• Time: O(V+E)"},
+{u:"III",topic:"Graph - Traversal",q:"Breadth First Search?",a:"<strong>Level-wise</strong> using queue<br><br>• Mark visited<br><br>• Shortest path in unweighted<br><br>• Time: O(V+E)"},
+{u:"III",topic:"Graph - Traversal",q:"DFS implementation?",a:"1. Push start, mark visited<br><br>2. Pop, process node<br><br>3. Push unvisited neighbors<br><br>• Use stack"},
+{u:"III",topic:"Graph - Traversal",q:"BFS implementation?",a:"1. Enqueue start, mark visited<br><br>2. Dequeue, process node<br><br>3. Enqueue unvisited neighbors<br><br>• Use queue"},
+{u:"III",topic:"Graph - Traversal",q:"Degree sum theorem?",a:"Sum of degrees of all vertices = <strong>2 × number of edges</strong>"},
+{u:"III",topic:"Graph - Applications",q:"Graph applications?",a:"• Social networks<br><br>• Maps/GPS navigation<br><br>• Web crawling<br><br>• Network routing<br><br>• Dependency resolution"},
+{u:"IV",topic:"Sorting - Basics",q:"What is Sorting?",a:"Arranging elements in a specific order<br><br>• <strong>Ascending</strong> or <strong>Descending</strong><br><br>• Makes data easier to search and analyze"},
+{u:"IV",topic:"Sorting - Basics",q:"Internal vs External Sorting?",a:"<strong>Internal:</strong> All data fits in memory<br><br>• Fast, uses RAM<br><br><strong>External:</strong> Data stored externally (disk)<br><br>• Used for large datasets"},
+{u:"IV",topic:"Sorting - Selection",q:"Selection Sort algorithm?",a:"1. Find minimum element from unsorted part<br><br>2. Swap with first unsorted position<br><br>3. Move boundary forward<br><br>• Time: O(n²)"},
+{u:"IV",topic:"Sorting - Selection",q:"Selection Sort characteristics?",a:"• <strong>Unstable</strong> sorting<br><br>• Fewer swaps than bubble sort<br><br>• Time: O(n²) all cases<br><br>• Space: O(1)"},
+{u:"IV",topic:"Sorting - Bubble",q:"Bubble Sort algorithm?",a:"1. Compare adjacent elements<br><br>2. Swap if in wrong order<br><br>3. Repeat until no swaps needed<br><br>• Larger elements 'bubble up'"},
+{u:"IV",topic:"Sorting - Bubble",q:"Bubble Sort characteristics?",a:"• Simple but inefficient<br><br>• <strong>Stable</strong> sorting<br><br>• Best: O(n), Worst: O(n²)<br><br>• Good for small/nearly sorted data"},
+{u:"IV",topic:"Sorting - Exchange",q:"Exchange Sort?",a:"Repeatedly <strong>exchanges/swaps</strong> elements<br><br>• Bubble sort is an exchange sort<br><br>• Compares and swaps adjacent pairs"},
+{u:"IV",topic:"Sorting - Merge",q:"Merge Sort algorithm?",a:"<strong>Divide & Conquer:</strong><br><br>1. Divide array into two halves<br><br>2. Recursively sort each half<br><br>3. Merge sorted halves"},
+{u:"IV",topic:"Sorting - Merge",q:"Merge Sort characteristics?",a:"• <strong>Stable</strong> sorting<br><br>• Time: O(n log n) all cases<br><br>• Space: O(n) - needs auxiliary array<br><br>• Good for large datasets"},
+{u:"IV",topic:"Sorting - Merge",q:"Merge operation?",a:"Compare first elements of two sorted lists<br><br>• Take smaller element<br><br>• Repeat until both lists empty"},
+{u:"IV",topic:"Sorting - Quick",q:"Quick Sort algorithm?",a:"<strong>Divide & Conquer:</strong><br><br>1. Choose pivot element<br><br>2. Partition: elements < pivot left, > pivot right<br><br>3. Recursively sort partitions"},
+{u:"IV",topic:"Sorting - Quick",q:"Quick Sort characteristics?",a:"• <strong>Unstable</strong> sorting<br><br>• Best/Avg: O(n log n)<br><br>• Worst: O(n²) - bad pivot<br><br>• Space: O(log n)<br><br>• Fast in practice"},
+{u:"IV",topic:"Sorting - Quick",q:"Quick Sort vs Merge Sort?",a:"<strong>Quick:</strong> In-place, faster avg, O(n²) worst<br><br><strong>Merge:</strong> O(n log n) guaranteed, needs extra space<br><br>• Quick better for arrays, Merge for linked lists"},
+{u:"IV",topic:"Searching - Linear",q:"Linear Search algorithm?",a:"1. Start from first element<br><br>2. Compare with target<br><br>3. Move to next if no match<br><br>4. Return index or -1"},
+{u:"IV",topic:"Searching - Linear",q:"Linear Search characteristics?",a:"• Sequential checking<br><br>• Works on unsorted data<br><br>• Time: O(n)<br><br>• Space: O(1)<br><br>• Simple but slow"},
+{u:"IV",topic:"Searching - Binary",q:"Binary Search algorithm?",a:"1. Find middle element<br><br>2. Compare with target<br><br>3. If match, return index<br><br>4. If target < mid, search left half<br><br>5. If target > mid, search right half"},
+{u:"IV",topic:"Searching - Binary",q:"Binary Search characteristics?",a:"• Requires <strong>sorted</strong> array<br><br>• Divide and conquer<br><br>• Time: O(log n)<br><br>• Space: O(1) iterative, O(log n) recursive"},
+{u:"IV",topic:"Searching - Binary",q:"Binary Search vs Linear Search?",a:"<strong>Binary:</strong> O(log n), needs sorted data, faster<br><br><strong>Linear:</strong> O(n), works on unsorted, simpler<br><br>• Binary efficient for large sorted datasets"},
+{u:"IV",topic:"Hashing - Basics",q:"What is a Hash Table?",a:"Data structure for <strong>key-value</strong> storage<br><br>• Uses hash function to compute index<br><br>• Average O(1) insert/search/delete"},
+{u:"IV",topic:"Hashing - Basics",q:"What is a Hash Function?",a:"Maps key to array index<br><br>• Should distribute keys uniformly<br><br>• Example: h(k) = k % table_size"},
+{u:"IV",topic:"Hashing - Basics",q:"Common Hash Functions?",a:"• <strong>Division:</strong> h(k) = k mod m<br><br>• <strong>Multiplication:</strong> h(k) = ⌊m(kA mod 1)⌋<br><br>• <strong>Mid-square:</strong> square key, extract middle digits<br><br>• <strong>Folding:</strong> divide key into parts, add"},
+{u:"IV",topic:"Hashing - Collision",q:"What is a Collision?",a:"Two keys map to <strong>same index</strong><br><br>• Inevitable with limited table size<br><br>• Resolved using collision resolution techniques"},
+{u:"IV",topic:"Hashing - Collision",q:"Collision Resolution methods?",a:"<strong>Open Hashing:</strong> Chaining<br><br><strong>Closed Hashing:</strong> Open addressing<br><br>• Linear probing<br><br>• Quadratic probing<br><br>• Double hashing"},
+{u:"IV",topic:"Hashing - Chaining",q:"Chaining (Separate Chaining)?",a:"Each table slot has <strong>linked list</strong><br><br>• Colliding elements stored in list<br><br>• Simple, handles any load factor<br><br>• Extra memory for pointers"},
+{u:"IV",topic:"Hashing - Chaining",q:"Chaining operations?",a:"<strong>Insert:</strong> Add to list at index<br><br><strong>Search:</strong> Traverse list at index<br><br><strong>Delete:</strong> Remove from list<br><br>• Time: O(1 + α) where α = n/m"},
+{u:"IV",topic:"Hashing - Probing",q:"Linear Probing?",a:"Probe sequence: h(k), h(k)+1, h(k)+2, ...<br><br>• Check next slot if occupied<br><br>• <strong>Primary clustering</strong> problem<br><br>• Good cache performance"},
+{u:"IV",topic:"Hashing - Probing",q:"Quadratic Probing?",a:"Probe sequence: h(k), h(k)+1², h(k)+2², ...<br><br>• Reduces primary clustering<br><br>• <strong>Secondary clustering</strong> can occur<br><br>• Better distribution"},
+{u:"IV",topic:"Hashing - Probing",q:"Double Hashing?",a:"Use two hash functions h1 and h2<br><br>• Probe: h1(k), h1(k)+h2(k), h1(k)+2h2(k), ...<br><br>• No clustering<br><br>• Best distribution"},
+{u:"IV",topic:"Hashing - Probing",q:"Open Addressing vs Chaining?",a:"<strong>Open Addressing:</strong><br><br>• All data in table, no pointers<br><br>• Better cache, worse with high load<br><br><strong>Chaining:</strong><br><br>• Linked lists, extra memory<br><br>• Handles overflow gracefully"},
+{u:"IV",topic:"Hashing - Load Factor",q:"Load Factor α?",a:"α = n / m<br><br>• n = number of keys<br><br>• m = table size<br><br>• Affects performance<br><br>• Keep < 0.7 for open addressing"},
+{u:"II",topic:"Stack",q:"Stack follows {{c1::LIFO}} principle with operations at {{c1::one end}}."},
+{u:"II",topic:"Queue",q:"Queue follows {{c1::FIFO}} principle with insert at {{c1::REAR}} and delete at {{c1::FRONT}}."},
+{u:"III",topic:"Trees - Binary",q:"Max nodes in complete binary tree of height h = {{c1::2^(h+1)-1}}."},
+{u:"III",topic:"Trees - BST",q:"In BST, {{c1::left subtree}} < root < {{c1::right subtree}}."},
+{u:"III",topic:"Trees - Traversal",q:"Inorder traversal: {{c1::Left}}-{{c1::Root}}-{{c1::Right}}."},
+{u:"III",topic:"Graph - Representation",q:"Adjacency matrix space: {{c1::O(V²)}}. Adjacency list space: {{c1::O(V+E)}}."},
+{u:"II",topic:"Queue",q:"In circular queue, REAR = {{c1::(REAR+1)%MAX}}."},
+{u:"III",topic:"Trees - Binary",q:"Minimum height of binary tree with n nodes = {{c1::log₂(n+1)}}."},
+{u:"IV",topic:"Sorting - Quick",q:"In Quick Sort, partitioning places {{c1::smaller elements left}}, pivot in {{c1::correct position}}, {{c1::larger elements right}}."},
+{u:"IV",topic:"Sorting - Merge",q:"Merge Sort time complexity: {{c1::O(n log n)}} in all cases."},
+{u:"IV",topic:"Searching - Binary",q:"Binary Search time complexity: {{c1::O(log n)}}. Requires {{c1::sorted}} array."},
+{u:"IV",topic:"Hashing - Basics",q:"Average hash table operations: {{c1::O(1)}} for insert, search, delete."},
+{u:"IV",topic:"Hashing - Collision",q:"Two collision resolution categories: {{c1::Open Hashing (Chaining)}} and {{c1::Closed Hashing (Open Addressing)}}."},
+];
+
+const units = [...new Set(data.map(d=>d.u))];
+const topics = [...new Set(data.map(d=>d.topic))];
+let unitFilter = 'All';
+let topicFilter = 'All';
+
+function init(){
+  const uf = document.getElementById('unitFilter');
+  uf.innerHTML = '<label>Unit:</label><button class="active" onclick="setUnitFilter(\'All\')">All</button>';
+  units.forEach(u=>{
+    uf.innerHTML += `<button onclick="setUnitFilter('${u}')">Unit ${u}</button>`;
+  });
+  
+  const tf = document.getElementById('topicFilter');
+  tf.innerHTML = '<label>Topic:</label><button class="active" onclick="setTopicFilter(\'All\')">All</button>';
+  
+  render();
+}
+
+function setUnitFilter(u){
+  unitFilter = u;
+  document.querySelectorAll('#unitFilter button').forEach(b=>{
+    b.classList.toggle('active', (u==='All' && b.textContent==='All') || b.textContent==='Unit '+u);
+  });
+  updateTopicFilter();
+  render();
+}
+
+function updateTopicFilter(){
+  const tf = document.getElementById('topicFilter');
+  const filteredTopics = unitFilter === 'All' 
+    ? topics 
+    : [...new Set(data.filter(d=>d.u===unitFilter).map(d=>d.topic))];
+  
+  tf.innerHTML = '<label>Topic:</label><button class="active" onclick="setTopicFilter(\'All\')">All</button>';
+  filteredTopics.forEach(t=>{
+    tf.innerHTML += `<button onclick="setTopicFilter('${t.replace(/'/g,"\\'")}')">${t}</button>`;
+  });
+  topicFilter = 'All';
+}
+
+function setTopicFilter(t){
+  topicFilter = t;
+  document.querySelectorAll('#topicFilter button').forEach(b=>{
+    b.classList.toggle('active', b.textContent===t);
+  });
+  render();
+}
+
+function render(){
+  const c = document.getElementById('cards');
+  c.innerHTML = '';
+  data.forEach((d,i)=>{
+    const unitMatch = unitFilter==='All' || d.u===unitFilter;
+    const topicMatch = topicFilter==='All' || d.topic===topicFilter;
+    const show = unitMatch && topicMatch;
+    const isCloze = d.q.includes('{{c1::');
+    
+    let html = `<div class="card ${show?'':'hidden'}">
+      <div class="unit">Unit ${d.u}</div>
+      <div class="topic">${d.topic}</div>
+      <div class="q">${isCloze ? d.q.replace(/\{\{c1::(.*?)\}\}/g,'<span class="cloze">$1</span>') : d.q}</div>`;
+    
+    if(!isCloze){
+      html += `<div class="a" id="a${i}">${d.a||''}</div>
+        <div class="btns">
+          <button onclick="toggle(${i})">Reveal</button>
+          <button onclick="copy(\`${d.q}\`,\`${d.a||''}\`)">Copy</button>
+        </div>`;
+    } else {
+      html += `<div class="btns">
+        <button onclick="revealCloze(${i})">Reveal</button>
+        <button onclick="copyCloze(\`${d.q}\`)">Copy</button>
+      </div>`;
+    }
+    html += '</div>';
+    c.innerHTML += html;
+  });
+}
+
+function toggle(i){
+  document.getElementById('a'+i).classList.toggle('show');
+}
+
+function revealCloze(i){
+  document.querySelectorAll('.card')[i].querySelectorAll('.cloze').forEach(el=>{
+    el.classList.add('revealed');
+  });
+}
+
+function copy(q,a){
+  const clean = s => s.replace(/<br>/g,' ').replace(/<[^>]*>/g,'');
+  navigator.clipboard.writeText(`${clean(q)}\t${clean(a)}`);
+}
+
+function copyCloze(q){
+  navigator.clipboard.writeText(q);
+}
+
+init();
+</script>
+</body>
+</html>
