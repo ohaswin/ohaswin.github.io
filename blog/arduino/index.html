@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arduino Flashcards</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,#e0f7fa 0%,#b2ebf2 50%,#80deea 100%);color:#1a1a1a;padding:20px;min-height:100vh}.filter{position:sticky;top:0;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);padding:18px;border-radius:12px;margin-bottom:25px;box-shadow:0 4px 15px rgba(0,188,212,.2);border:1px solid rgba(129,212,250,.3);z-index:10}select{padding:10px 14px;border:2px solid #4dd0e1;border-radius:8px;background:linear-gradient(to bottom,#fff,#e1f5fe);font-size:14px;margin-right:10px;cursor:pointer;transition:.3s}select:hover{border-color:#00acc1;box-shadow:0 2px 8px rgba(0,188,212,.3)}.card{background:linear-gradient(to bottom right,#ffffff,#f1f8f9);border-left:5px solid #26c6da;margin:18px 0;padding:18px;border-radius:10px;box-shadow:0 3px 10px rgba(38,198,218,.15);border:1px solid rgba(129,212,250,.2);transition:.3s}.card:hover{box-shadow:0 6px 20px rgba(38,198,218,.25);transform:translateY(-2px)}.card h3{color:#00838f;margin-bottom:10px;font-size:17px;font-weight:600;text-shadow:0 1px 2px rgba(0,131,143,.1)}.front{margin:12px 0;line-height:1.7;color:#263238}.back{margin:12px 0;padding:12px;background:linear-gradient(135deg,#e0f7fa,#b2ebf2);border-radius:8px;border:1px solid #80deea;display:none;color:#006064}.cloze{background:linear-gradient(135deg,#ffeb3b,#fdd835);padding:3px 6px;border-radius:5px;cursor:pointer;font-weight:500;box-shadow:0 1px 3px rgba(253,216,53,.3)}.hidden{background:linear-gradient(135deg,#26c6da,#00acc1);color:transparent;user-select:none}button{margin:8px 8px 0 0;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:.3s;text-transform:uppercase;letter-spacing:.5px}.reveal{background:linear-gradient(135deg,#66bb6a,#4caf50);color:#fff;box-shadow:0 2px 6px rgba(76,175,80,.3)}.reveal:hover{background:linear-gradient(135deg,#4caf50,#388e3c);box-shadow:0 4px 12px rgba(76,175,80,.4)}.copy{background:linear-gradient(135deg,#42a5f5,#1e88e5);color:#fff;box-shadow:0 2px 6px rgba(33,150,243,.3)}.copy:hover{background:linear-gradient(135deg,#1e88e5,#1565c0);box-shadow:0 4px 12px rgba(33,150,243,.4)}.meta{font-size:11px;color:#546e7a;margin-top:10px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="filter">
+<select id="moduleFilter" onchange="filter()">
+<option value="">All Units</option>
+<option value="1">Module I: Intro to Arduino</option>
+<option value="2">Module II: Embedded C</option>
+<option value="3">Module III: Arduino Programming</option>
+<option value="4">Module IV: Sensors & Actuators</option>
+</select>
+<select id="unitFilter" onchange="filter()">
+<option value="">All Topics</option>
+</select>
+</div>
+<div id="cards"></div>
+<script>
+const data=[
+{m:1,u:1,t:"AVR Architecture",type:"basic",q:"What architecture does AVR use?",a:"Modified Harvard 8-bit RISC with separate program/data memory"},
+{m:1,u:1,t:"AVR Features",type:"cloze",q:"AVR is {{c1::8-bit}} RISC with {{c2::modified Harvard}} architecture"},
+{m:1,u:1,t:"AVR Designers",type:"basic",q:"Who designed AVR?",a:"Alf-Egil Bogen & Vegard Wollan at Norwegian Institute of Technology"},
+{m:1,u:1,t:"AVR Memory",type:"basic",q:"What memory types in AVR?",a:"Flash (program), SRAM (data), EEPROM (persistent)"},
+{m:1,u:1,t:"AVR Pipeline",type:"cloze",q:"AVR executes instructions with {{c1::single-level pipelining}} enabling {{c2::one instruction per clock}}"},
+{m:1,u:2,t:"Arduino Definition",type:"basic",q:"What is Arduino?",a:"Open-source prototyping platform with hardware board, IDE & ecosystem"},
+{m:1,u:2,t:"Arduino Uno MCU",type:"cloze",q:"Arduino Uno uses {{c1::ATmega328P}} at {{c2::16MHz}}"},
+{m:1,u:2,t:"Uno Specs",type:"basic",q:"Arduino Uno I/O pins?",a:"14 digital (6 PWM), 6 analog, 32KB flash, 2KB SRAM, 1KB EEPROM"},
+{m:1,u:2,t:"Arduino Mega MCU",type:"cloze",q:"Mega uses {{c1::ATmega2560}} with {{c2::54 digital}} pins, {{c3::16 analog}} inputs"},
+{m:1,u:2,t:"Mega Memory",type:"basic",q:"Mega memory specs?",a:"256KB flash, 8KB SRAM, 4KB EEPROM"},
+{m:1,u:2,t:"Arduino Nano",type:"basic",q:"Nano vs Uno?",a:"Same ATmega328P, smaller breadboard-friendly, mini-USB, 8 analog pins"},
+{m:1,u:2,t:"Due MCU",type:"cloze",q:"Due uses {{c1::ARM Cortex-M3}} at {{c2::84MHz}}, operates at {{c3::3.3V}}"},
+{m:1,u:3,t:"Board Components",type:"basic",q:"Key Arduino board components?",a:"MCU, USB, power jack, reset button, crystal oscillator, voltage regulator, I/O headers"},
+{m:1,u:3,t:"Pin Functions",type:"cloze",q:"Pin 0/1: {{c1::RX/TX serial}}, Pin 13: {{c2::built-in LED}}, A4/A5: {{c3::I2C SDA/SCL}}"},
+{m:1,u:3,t:"Power Pins",type:"basic",q:"Arduino power pins?",a:"VIN (7-12V input), 5V (regulated), 3.3V (50mA max), GND, IOREF"},
+{m:1,u:3,t:"AREF Pin",type:"basic",q:"AREF purpose?",a:"Analog reference voltage for ADC (use with analogReference())"},
+{m:1,u:4,t:"Arduino IDE",type:"basic",q:"IDE key features?",a:"Cross-platform, C++ based, built-in libraries, serial monitor, auto-upload via USB"},
+{m:1,u:4,t:"Installation",type:"basic",q:"IDE installation steps?",a:"Download from arduino.cc, install, connect board, select board/port, upload blink sketch"},
+{m:2,u:5,t:"Embedded C",type:"basic",q:"Embedded C vs Standard C?",a:"Optimized for hardware control, direct register access, fixed resources, real-time constraints"},
+{m:2,u:5,t:"Program Structure",type:"cloze",q:"Arduino structure: {{c1::setup()}} runs once, {{c2::loop()}} runs continuously"},
+{m:2,u:6,t:"Data Types",type:"basic",q:"Arduino data types?",a:"byte(8-bit), int(16-bit), long(32-bit), float, double, char, boolean"},
+{m:2,u:6,t:"Type Sizes",type:"cloze",q:"int is {{c1::16-bit}} (-32768 to 32767), long is {{c2::32-bit}}"},
+{m:2,u:7,t:"Variables",type:"basic",q:"Variable scope types?",a:"Global (outside functions), local (inside functions), static (retains value)"},
+{m:2,u:7,t:"Constants",type:"cloze",q:"Define constants: {{c1::const}} keyword or {{c2::#define}} directive"},
+{m:2,u:8,t:"Arithmetic Ops",type:"basic",q:"Arithmetic operators?",a:"+ - * / % (modulo), ++ (increment), -- (decrement)"},
+{m:2,u:8,t:"Comparison",type:"basic",q:"Comparison operators?",a:"== != > < >= <="},
+{m:2,u:8,t:"Boolean Ops",type:"cloze",q:"Logical ops: {{c1::&&}} (AND), {{c2::||}} (OR), {{c3::!}} (NOT)"},
+{m:2,u:8,t:"Bitwise",type:"basic",q:"Bitwise operators?",a:"& (AND), | (OR), ^ (XOR), ~ (NOT), << (left shift), >> (right shift)"},
+{m:2,u:9,t:"If-Else",type:"cloze",q:"if({{c1::condition}}) {code} else {code}"},
+{m:2,u:9,t:"Switch",type:"basic",q:"Switch statement syntax?",a:"switch(var){case 1: code; break; case 2: code; break; default: code;}"},
+{m:2,u:10,t:"While Loop",type:"cloze",q:"while({{c1::condition}}) {code} - checks condition first"},
+{m:2,u:10,t:"Do-While",type:"basic",q:"Do-while difference?",a:"do{code}while(condition); - executes at least once"},
+{m:2,u:10,t:"For Loop",type:"cloze",q:"for({{c1::init}}; {{c2::condition}}; {{c3::increment}}) {code}"},
+{m:2,u:10,t:"Nested Loops",type:"basic",q:"Nested loop use?",a:"Loop inside loop - for 2D arrays, matrices, multiple iterations"},
+{m:2,u:11,t:"Function Syntax",type:"cloze",q:"returnType {{c1::functionName}}({{c2::parameters}}) {code; return value;}"},
+{m:2,u:11,t:"Function Benefits",type:"basic",q:"Why use functions?",a:"Code reuse, modularity, easier debugging, better organization"},
+{m:2,u:12,t:"String Object",type:"basic",q:"String vs char array?",a:"String: object with methods, dynamic. char[]: fixed array, null-terminated"},
+{m:2,u:12,t:"String Methods",type:"cloze",q:"Methods: {{c1::length()}}, {{c2::charAt()}}, {{c3::concat()}}, substring(), indexOf()"},
+{m:3,u:13,t:"Core Functions",type:"basic",q:"Essential Arduino functions?",a:"pinMode(), digitalWrite(), digitalRead(), analogWrite(), analogRead(), delay(), millis()"},
+{m:3,u:13,t:"pinMode",type:"cloze",q:"pinMode({{c1::pin}}, {{c2::INPUT/OUTPUT/INPUT_PULLUP}})"},
+{m:3,u:13,t:"Digital IO",type:"basic",q:"digitalWrite/Read usage?",a:"digitalWrite(pin, HIGH/LOW) - set output. digitalRead(pin) - returns HIGH/LOW"},
+{m:3,u:14,t:"Sketch Structure",type:"cloze",q:"Sketch: {{c1::void setup()}} for init, {{c2::void loop()}} for main logic"},
+{m:3,u:14,t:"Serial Begin",type:"basic",q:"Serial communication setup?",a:"Serial.begin(9600); in setup(), Serial.print/println() to output"},
+{m:3,u:15,t:"Switch Input",type:"cloze",q:"Switch with {{c1::INPUT_PULLUP}} reads {{c2::LOW}} when pressed (inverted logic)"},
+{m:3,u:15,t:"Analog Read",type:"basic",q:"analogRead() range?",a:"0-1023 (10-bit ADC) for 0-5V input"},
+{m:3,u:15,t:"Voltage Calc",type:"cloze",q:"voltage = analogRead(pin) * {{c1::5.0/1023.0}}"},
+{m:3,u:14,t:"LED Control",type:"basic",q:"Blink LED code?",a:"digitalWrite(LED,HIGH); delay(1000); digitalWrite(LED,LOW); delay(1000);"},
+{m:3,u:15,t:"PWM",type:"cloze",q:"analogWrite({{c1::PWM_pin}}, {{c2::0-255}}) - duty cycle control"},
+{m:3,u:15,t:"PWM Pins",type:"basic",q:"Uno PWM pins?",a:"Pins 3,5,6,9,10,11 (marked with ~)"},
+{m:3,u:15,t:"PWM Frequency",type:"basic",q:"Arduino PWM frequency?",a:"~490Hz (pins 3,9,10,11) or ~980Hz (pins 5,6)"},
+{m:4,u:16,t:"Sensor Definition",type:"basic",q:"Sensor vs Transducer?",a:"Sensor: detects physical quantity. Transducer: converts energy forms"},
+{m:4,u:16,t:"Analog vs Digital",type:"cloze",q:"Analog sensor: {{c1::continuous voltage}}. Digital sensor: {{c2::HIGH/LOW}} signals"},
+{m:4,u:17,t:"ADC Function",type:"basic",q:"ADC role?",a:"Converts analog voltage to digital value (10-bit: 0-1023)"},
+{m:4,u:17,t:"Pullup Resistor",type:"cloze",q:"Pullup: connects input to {{c1::VCC}} via resistor, default {{c2::HIGH}} state"},
+{m:4,u:17,t:"Pulldown",type:"basic",q:"Pulldown resistor purpose?",a:"Connects input to GND, provides default LOW state when switch open"},
+{m:4,u:18,t:"LDR",type:"cloze",q:"LDR resistance {{c1::decreases}} with light increase"},
+{m:4,u:18,t:"LDR Circuit",type:"basic",q:"LDR voltage divider?",a:"VCC-LDR-resistor-GND, read voltage at middle junction"},
+{m:4,u:18,t:"DHT11",type:"basic",q:"DHT11 specs?",a:"Temp: 0-50°C ±2°C, Humidity: 20-90% ±5%, single-wire protocol"},
+{m:4,u:18,t:"Ultrasonic HC-SR04",type:"cloze",q:"HC-SR04: {{c1::Trig}} sends pulse, {{c2::Echo}} receives. distance = duration*{{c3::0.034}}/2 cm"},
+{m:4,u:19,t:"Serial Monitor",type:"basic",q:"Serial.read() usage?",a:"Returns one byte from serial buffer, -1 if empty"},
+{m:4,u:19,t:"Serial Methods",type:"cloze",q:"{{c1::Serial.available()}} checks bytes, {{c2::Serial.parseInt()}} reads integer"},
+{m:4,u:20,t:"Actuator",type:"basic",q:"What is actuator?",a:"Device that converts electrical signal to physical action (motion, sound, light)"},
+{m:4,u:21,t:"Actuator Types",type:"cloze",q:"Types: {{c1::DC motor}}, {{c2::servo}}, {{c3::stepper}}, relay, solenoid, buzzer"},
+{m:4,u:22,t:"DC Motor Control",type:"basic",q:"Why H-bridge/L298N?",a:"Arduino can't drive motor directly (low current). H-bridge controls direction & speed"},
+{m:4,u:22,t:"Servo Control",type:"cloze",q:"Servo library: {{c1::attach(pin)}}, {{c2::write(angle)}} 0-180°"},
+{m:4,u:22,t:"Stepper Motor",type:"basic",q:"Stepper vs DC motor?",a:"Stepper: precise angle control, steps. DC: continuous rotation, speed control"}
+];
+
+const units={1:{1:"Microcontroller Intro",2:"Arduino Overview",3:"Board Components",4:"IDE Installation"},2:{5:"Embedded C Basics",6:"Data Types",7:"Variables",8:"Operators",9:"Control Statements",10:"Loops",11:"Functions",12:"Strings"},3:{13:"Arduino Library",14:"Writing Sketches",15:"I/O & PWM"},4:{16:"Sensor Types",17:"ADC & Resistors",18:"Sensors (LDR/DHT/Ultrasonic)",19:"Serial Monitor",20:"Actuator Intro",21:"Actuator Types",22:"Motor Control"}};
+
+function render(){
+const c=document.getElementById('cards');
+c.innerHTML='';
+data.forEach((d,i)=>{
+if(document.getElementById('moduleFilter').value&&d.m!=document.getElementById('moduleFilter').value)return;
+if(document.getElementById('unitFilter').value&&d.u!=document.getElementById('unitFilter').value)return;
+const card=document.createElement('div');
+card.className='card';
+const front=d.type==='cloze'?d.q.replace(/\{\{c\d+::(.*?)\}\}/g,'<span class="cloze hidden">$1</span>'):d.q;
+const back=d.type==='basic'?'<div class="back">'+d.a+'</div>':'';
+const reveal=d.type==='basic'?'toggleBack(this)':'revealCloze(this)';
+card.innerHTML=`<h3>${d.t}</h3><div class="front">${front}</div>${back}<button class="reveal" onclick="${reveal}">Reveal</button><button class="copy" onclick="copy(${i})">Copy</button><div class="meta">Module ${d.m} • Unit ${d.u}: ${units[d.m][d.u]}</div>`;
+c.appendChild(card);
+});
+}
+
+function toggleBack(btn){
+const back=btn.parentElement.querySelector('.back');
+back.style.display=back.style.display==='none'||!back.style.display?'block':'none';
+}
+
+function revealCloze(btn){
+btn.parentElement.querySelectorAll('.cloze').forEach(c=>c.classList.toggle('hidden'));
+}
+
+function copy(i){
+const d=data[i];
+const txt=d.type==='basic'?`${d.q}\t${d.a}`:d.q;
+navigator.clipboard.writeText(txt);
+}
+
+function filter(){
+const m=document.getElementById('moduleFilter').value;
+const uf=document.getElementById('unitFilter');
+uf.innerHTML='<option value="">All Topics</option>';
+if(m){
+for(let u in units[m]){
+uf.innerHTML+=`<option value="${u}">${units[m][u]}</option>`;
+}
+}
+render();
+}
+
+render();
+</script>
+</body>
+</html>
