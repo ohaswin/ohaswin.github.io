@@ -17,7 +17,7 @@
 <option value="3">Module III: Arduino Programming</option>
 <option value="4">Module IV: Sensors & Actuators</option>
 </select>
-<select id="unitFilter" onchange="filter()">
+<select id="unitFilter" onchange="filterUnits()">
 <option value="">All Topics</option>
 </select>
 </div>
@@ -97,9 +97,11 @@ const units={1:{1:"Microcontroller Intro",2:"Arduino Overview",3:"Board Componen
 function render(){
 const c=document.getElementById('cards');
 c.innerHTML='';
+const mFilter=document.getElementById('moduleFilter').value;
+const uFilter=document.getElementById('unitFilter').value;
 data.forEach((d,i)=>{
-if(document.getElementById('moduleFilter').value&&d.m!=document.getElementById('moduleFilter').value)return;
-if(document.getElementById('unitFilter').value&&d.u!=document.getElementById('unitFilter').value)return;
+if(mFilter&&d.m!=parseInt(mFilter))return;
+if(uFilter&&d.u!=parseInt(uFilter))return;
 const card=document.createElement('div');
 card.className='card';
 const front=d.type==='cloze'?d.q.replace(/\{\{c\d+::(.*?)\}\}/g,'<span class="cloze hidden">$1</span>'):d.q;
@@ -129,11 +131,17 @@ function filter(){
 const m=document.getElementById('moduleFilter').value;
 const uf=document.getElementById('unitFilter');
 uf.innerHTML='<option value="">All Topics</option>';
-if(m){
+if(m&&units[m]){
 for(let u in units[m]){
 uf.innerHTML+=`<option value="${u}">${units[m][u]}</option>`;
 }
+}else if(!m){
+uf.innerHTML='<option value="">All Topics</option>';
 }
+render();
+}
+
+function filterUnits(){
 render();
 }
 
@@ -141,4 +149,3 @@ render();
 </script>
 </body>
 </html>
-
