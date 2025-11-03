@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPM Anki Flashcards</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: 0 auto; background: #f5f5f5; }
+        h1 { margin-bottom: 20px; color: #333; }
+        .controls { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        button.secondary { background: #2196F3; }
+        button.secondary:hover { background: #0b7dda; }
+        .card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .card-type { font-size: 12px; background: #e3f2fd; padding: 4px 8px; border-radius: 4px; color: #1976d2; }
+        .field { margin-bottom: 15px; }
+        .field-label { font-weight: bold; color: #666; font-size: 12px; margin-bottom: 5px; }
+        .field-content { padding: 10px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; line-height: 1.6; }
+        .copy-btn { padding: 5px 10px; font-size: 12px; background: #FF9800; }
+        .copy-btn:hover { background: #F57C00; }
+        .success { position: fixed; top: 20px; right: 20px; background: #4CAF50; color: white; padding: 10px 20px; border-radius: 4px; display: none; }
+        .filter { margin-bottom: 10px; }
+        select { padding: 8px; border-radius: 4px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Software Project Management - Anki Flashcards</h1>
+    
+    <div class="controls">
+        <button onclick="copyAll('basic')">Copy All Basic Cards</button>
+        <button onclick="copyAll('cloze')" class="secondary">Copy All Cloze Cards</button>
+        <button onclick="exportCSV()">Export CSV for Anki</button>
+    </div>
+
+    <div class="filter">
+        <label>Filter by unit: </label>
+        <select id="unitFilter" onchange="filterCards()">
+            <option value="all">All Units</option>
+            <option value="13">Unit 13: Introduction</option>
+            <option value="14">Unit 14: Planning & WBS</option>
+            <option value="15">Unit 15: Scheduling</option>
+            <option value="16">Unit 16: CPM & PERT</option>
+            <option value="17">Unit 17: Risk Management</option>
+        </select>
+    </div>
+
+    <div id="cards"></div>
+    <div class="success" id="successMsg">Copied to clipboard!</div>
+
+    <script>
+        const cards = [
+            // Unit 13
+            { unit: 13, type: 'basic', front: 'What are the 3 key goals of software project management?', back: '1. Deliver on time<br>2. Within budget<br>3. Meeting quality requirements' },
+            { unit: 13, type: 'basic', front: 'List 6 primary responsibilities of a project manager', back: '1. Planning/defining scope<br>2. Coordinating teams<br>3. Managing timelines<br>4. Monitoring progress<br>5. Risk management<br>6. Budget management' },
+            { unit: 13, type: 'cloze', text: 'Project management increases {{c1::success rates}}, ensures {{c2::efficient resource use}}, enables {{c3::early risk identification}}, and maintains {{c4::quality standards}}' },
+            { unit: 13, type: 'basic', front: 'What 5 key skills does a project manager need?', back: '1. Leadership<br>2. Technical understanding<br>3. Communication<br>4. Problem-solving<br>5. Time management' },
+            
+            // Unit 14
+            { unit: 14, type: 'basic', front: 'What is WBS (Work Breakdown Structure)?', back: 'Hierarchical decomposition of total project scope into smaller, manageable components/work packages. Provides visual representation of all deliverables.' },
+            { unit: 14, type: 'basic', front: 'What are the 2 types of WBS?', back: '1. Deliverable-Based: organized by outputs/products<br>2. Phase-Based: organized by project phases (initiation, planning, execution, control, closeout)' },
+            { unit: 14, type: 'cloze', text: 'WBS Diagram Resources: {{c1::WorkBreakdownStructure.com}}, {{c2::ProjectManager.com/guides/work-breakdown-structure}}' },
+            { unit: 14, type: 'basic', front: 'List 5 project estimation techniques', back: '1. Expert Judgment<br>2. Analogous (past projects)<br>3. Parametric (statistical)<br>4. Three-Point<br>5. Bottom-Up' },
+            { unit: 14, type: 'cloze', text: 'Three-Point Estimation formula: {{c1::(Optimistic + 4×Most Likely + Pessimistic) ÷ 6}}' },
+            { unit: 14, type: 'basic', front: 'Calculate: Optimistic=5d, Likely=8d, Pessimistic=14d', back: '(5 + 4×8 + 14) ÷ 6 = (5+32+14)/6 = 51/6 = 8.5 days' },
+            
+            // Unit 15
+            { unit: 15, type: 'basic', front: 'What 5 things do Gantt charts show?', back: '1. Task start/end dates<br>2. Task duration<br>3. Task dependencies<br>4. Progress tracking<br>5. Resource assignments' },
+            { unit: 15, type: 'cloze', text: 'Gantt charts: {{c1::horizontal bars}} represent tasks, {{c2::X-axis}} shows time, {{c3::Y-axis}} lists tasks' },
+            { unit: 15, type: 'basic', front: 'What are the 2 types of network diagrams?', back: '1. Activity-on-Node (AON): tasks as boxes/nodes<br>2. Activity-on-Arrow (AOA): tasks as arrows' },
+            { unit: 15, type: 'basic', front: 'What do network diagrams show?', back: 'Task dependencies, relationships, critical path, and parallel vs sequential tasks' },
+            { unit: 15, type: 'cloze', text: 'Gantt Chart Resource: {{c1::TeamGantt.com/blog}} PERT/Gantt comparison: {{c2::Smartsheet.com/content/pert-vs-gantt}}' },
+            
+            // Unit 16
+            { unit: 16, type: 'basic', front: 'What is the Critical Path Method (CPM)?', back: 'The longest sequence of dependent tasks that determines minimum project duration. Has zero slack/float time.' },
+            { unit: 16, type: 'cloze', text: 'CPM key terms: {{c1::Early Start (ES)}}, {{c2::Early Finish (EF)}}, {{c3::Late Start (LS)}}, {{c4::Late Finish (LF)}}, {{c5::Float/Slack}}' },
+            { unit: 16, type: 'basic', front: 'Define Float/Slack in CPM', back: 'Amount of time a task can be delayed without impacting the project completion date' },
+            { unit: 16, type: 'basic', front: 'When should you use CPM?', back: '1. Well-defined task durations<br>2. Need to identify non-delayable tasks<br>3. Want to optimize timeline' },
+            { unit: 16, type: 'basic', front: 'What is PERT?', back: 'Program Evaluation & Review Technique - probabilistic technique for projects with uncertain task durations using 3 time estimates' },
+            { unit: 16, type: 'cloze', text: 'PERT Expected Time formula: {{c1::TE = (O + 4M + P) ÷ 6}} where O={{c2::Optimistic}}, M={{c3::Most Likely}}, P={{c4::Pessimistic}}' },
+            { unit: 16, type: 'basic', front: 'When should you use PERT?', back: '1. High uncertainty in durations<br>2. First-time projects<br>3. R&D projects' },
+            { unit: 16, type: 'basic', front: 'CPM vs PERT: Task Duration', back: 'CPM: Single estimate (deterministic)<br>PERT: Three estimates (probabilistic)' },
+            { unit: 16, type: 'basic', front: 'CPM vs PERT: Best For', back: 'CPM: Known activities<br>PERT: Uncertain activities' },
+            { unit: 16, type: 'basic', front: 'CPM vs PERT: Focus', back: 'CPM: Time-cost tradeoffs<br>PERT: Time only' },
+            { unit: 16, type: 'cloze', text: 'PERT/CPM Resources: {{c1::ProjectManager.com/blog/pert-and-cpm}}, {{c2::Smartsheet.com/content/pert-vs-gantt}}' },
+            
+            // Unit 17
+            { unit: 17, type: 'basic', front: 'Reactive vs Proactive Risk Management', back: 'Reactive: responds after occurrence, "firefighting", costly<br>Proactive: addresses before occurrence, preventive, cost-effective (RECOMMENDED)' },
+            { unit: 17, type: 'basic', front: 'List 5 categories of software project risks', back: '1. Technical (tech failures, integration)<br>2. Schedule (deadlines, dependencies)<br>3. Budget (overruns, unexpected costs)<br>4. Organizational (turnover, skill gaps)<br>5. External (market, vendors, regulations)' },
+            { unit: 17, type: 'basic', front: 'List 5 risk identification methods', back: '1. Brainstorming<br>2. Expert interviews<br>3. Historical data analysis<br>4. SWOT analysis<br>5. Checklists' },
+            { unit: 17, type: 'cloze', text: 'Risk Exposure = {{c1::Probability}} × {{c2::Impact}}' },
+            { unit: 17, type: 'basic', front: 'Risk prioritization matrix', back: 'High Prob + High Impact = CRITICAL<br>High Prob + Low Impact = Moderate<br>Low Prob + High Impact = Moderate<br>Low Prob + Low Impact = Low priority' },
+            { unit: 17, type: 'basic', front: 'What are the 4 risk mitigation strategies in RMMM?', back: '1. Avoidance: eliminate risk by changing plans<br>2. Transference: shift to third party<br>3. Mitigation: reduce probability/impact<br>4. Acceptance: acknowledge & prepare contingency' },
+            { unit: 17, type: 'cloze', text: 'RMMM stands for {{c1::Risk Mitigation}}, {{c2::Monitoring}}, and {{c3::Management}}' },
+            { unit: 17, type: 'basic', front: 'What 6 components are in a Risk Management Plan?', back: '1. Risk identification process<br>2. Risk analysis methodology<br>3. Risk response strategies<br>4. Roles & responsibilities<br>5. Monitoring & reporting procedures<br>6. Budget for risk management' },
+            { unit: 17, type: 'basic', front: 'Give example of each risk strategy', back: 'Avoidance: Use proven tech<br>Transference: Outsource risky component<br>Mitigation: Add buffer time<br>Acceptance: Set aside reserve budget' }
+        ];
+
+        function renderCards() {
+            const container = document.getElementById('cards');
+            const filter = document.getElementById('unitFilter').value;
+            
+            container.innerHTML = '';
+            
+            cards.forEach((card, index) => {
+                if (filter !== 'all' && card.unit != filter) return;
+                
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
+                cardDiv.dataset.index = index;
+                
+                if (card.type === 'basic') {
+                    cardDiv.innerHTML = `
+                        <div class="card-header">
+                            <span class="card-type">Unit ${card.unit} - Basic</span>
+                            <button class="copy-btn" onclick="copyCard(${index}, 'basic')">Copy Card</button>
+                        </div>
+                        <div class="field">
+                            <div class="field-label">FRONT</div>
+                            <div class="field-content">${card.front}</div>
+                        </div>
+                        <div class="field">
+                            <div class="field-label">BACK</div>
+                            <div class="field-content">${card.back}</div>
+                        </div>
+                    `;
+                } else {
+                    cardDiv.innerHTML = `
+                        <div class="card-header">
+                            <span class="card-type">Unit ${card.unit} - Cloze</span>
+                            <button class="copy-btn" onclick="copyCard(${index}, 'cloze')">Copy Card</button>
+                        </div>
+                        <div class="field">
+                            <div class="field-label">CLOZE TEXT</div>
+                            <div class="field-content">${card.text}</div>
+                        </div>
+                    `;
+                }
+                
+                container.appendChild(cardDiv);
+            });
+        }
+
+        function copyCard(index, type) {
+            const card = cards[index];
+            let text = '';
+            
+            if (type === 'basic') {
+                text = `${card.front}\t${card.back}`;
+            } else {
+                text = card.text;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => showSuccess());
+        }
+
+        function copyAll(type) {
+            const filter = document.getElementById('unitFilter').value;
+            const filtered = filter === 'all' ? cards : cards.filter(c => c.unit == filter);
+            
+            const text = filtered
+                .filter(c => c.type === type)
+                .map(c => type === 'basic' ? `${c.front}\t${c.back}` : c.text)
+                .join('\n');
+            
+            navigator.clipboard.writeText(text).then(() => showSuccess());
+        }
+
+        function exportCSV() {
+            const filter = document.getElementById('unitFilter').value;
+            const filtered = filter === 'all' ? cards : cards.filter(c => c.unit == filter);
+            
+            let csv = 'Type,Unit,Front/Cloze,Back\n';
+            
+            filtered.forEach(card => {
+                if (card.type === 'basic') {
+                    const front = card.front.replace(/"/g, '""').replace(/<br>/g, ' | ');
+                    const back = card.back.replace(/"/g, '""').replace(/<br>/g, ' | ');
+                    csv += `Basic,${card.unit},"${front}","${back}"\n`;
+                } else {
+                    const text = card.text.replace(/"/g, '""');
+                    csv += `Cloze,${card.unit},"${text}",""\n`;
+                }
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `spm_flashcards_unit_${filter}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            showSuccess();
+        }
+
+        function showSuccess() {
+            const msg = document.getElementById('successMsg');
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 2000);
+        }
+
+        function filterCards() {
+            renderCards();
+        }
+
+        renderCards();
+    </script>
+</body>
+</html>

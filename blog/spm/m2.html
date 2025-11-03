@@ -1,0 +1,612 @@
+{
+  "_note": "CORRECTED: Module 2 is Requirements & Design Concepts (was incorrectly Project Management)",
+  "_syllabus_structure": {
+    "module_1": "Introduction to Software Engineering and Process Models (10 hrs)",
+    "module_2": "Software Requirements and Design Concepts (16 hrs)", 
+    "module_3": "Software Project Management (11 hrs) - NOT INCLUDED IN THIS FILE"
+  },
+  "module_1_software_engineering": {
+    "title": "Module 1: Introduction to Software Engineering and Process Models",
+    "duration": "10 hours",
+    "topics": {
+      "software_nature": {
+        "title": "Software and Software Engineering - Nature of Software",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is Software?",
+            "answer": "Software is the <strong>intangible set of instructions, programs, and data</strong> that tell a computer how to perform specific tasks. It's the opposite of hardware.",
+            "context": "Basic definition"
+          },
+          {
+            "type": "basic",
+            "question": "List all 7 categories of computer software that challenge software engineers",
+            "answer": "<ol><li><strong>System Software</strong> - Services other programs, manages resources</li><li><strong>Application Software</strong> - Solves specific business needs</li><li><strong>Engineering and Scientific Software</strong> - CAD, simulation, interactive applications</li><li><strong>Embedded Software</strong> - Controls features in products/systems</li><li><strong>Product-line Software</strong> - Specific capability for many customers</li><li><strong>Web Applications</strong> - Client-server programs run in browsers</li><li><strong>Artificial Intelligence Software</strong> - Non-numerical algorithms for complex problems</li></ol>",
+            "context": "Changing nature of software"
+          },
+          {
+            "type": "cloze",
+            "text": "{{c1::System Software}} is a collection of programs written to {{c2::service other programs}}, characterized by heavy interaction with {{c3::computer hardware}}.",
+            "extra": "Requires scheduling, resource sharing, and sophisticated process management"
+          },
+          {
+            "type": "cloze",
+            "text": "{{c1::Embedded Software}} resides within a system or product and is used to {{c2::implement and control features}} for the end-user and system itself.",
+            "extra": "Can perform limited functions or provide significant control capability"
+          },
+          {
+            "type": "basic",
+            "question": "What makes AI Software different from other software types?",
+            "answer": "AI software uses <strong>non-numerical algorithms</strong> to solve complex problems not amenable to computation or straightforward analysis. Includes robotics, expert systems, pattern recognition, neural networks.",
+            "context": "Artificial Intelligence Software characteristics"
+          }
+        ]
+      },
+      "software_engineering_fundamentals": {
+        "title": "Software Engineering Fundamentals",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "Define Software Engineering",
+            "answer": "Software Engineering is the process of <strong>designing, developing, testing, and maintaining software</strong> using a systematic and disciplined approach to create high-quality, reliable, and maintainable software.",
+            "context": "Core definition"
+          },
+          {
+            "type": "basic",
+            "question": "What are the 9 key principles of Software Engineering?",
+            "answer": "<ol><li><strong>Modularity</strong> - Breaking into smaller, reusable components</li><li><strong>Abstraction</strong> - Hiding implementation details</li><li><strong>Encapsulation</strong> - Wrapping data and functions into single unit</li><li><strong>Reusability</strong> - Components usable in multiple projects</li><li><strong>Maintenance</strong> - Regular updates and improvements</li><li><strong>Testing</strong> - Verifying requirements and bug-free operation</li><li><strong>Design Patterns</strong> - Templates for recurring problems</li><li><strong>Agile Methodologies</strong> - Iterative and incremental development</li><li><strong>Continuous Integration & Deployment</strong> - Continuous code integration</li></ol>",
+            "context": "Fundamental principles guiding software engineering"
+          },
+          {
+            "type": "basic",
+            "question": "What are the 4 main attributes of Software Engineering?",
+            "answer": "<ol><li><strong>Efficiency</strong> - Measures resource requirements</li><li><strong>Reliability</strong> - Delivers same results in similar environments</li><li><strong>Reusability</strong> - Modules can be used in multiple applications</li><li><strong>Maintainability</strong> - Easy to modify, repair, or enhance</li></ol>",
+            "context": "Core attributes that define quality software engineering"
+          },
+          {
+            "type": "cloze",
+            "text": "Software Engineering is mainly used for {{c1::large projects}} based on {{c2::software systems}} rather than single programs or applications.",
+            "extra": "Main goal is to develop applications improving quality, budget, and time efficiency"
+          }
+        ]
+      },
+      "sdlc": {
+        "title": "Software Development Life Cycle (SDLC)",
+        "cards": [
+          {
+            "type": "cloze",
+            "text": "SDLC is a {{c1::structured process}} used to {{c2::design, develop, and test}} good-quality software that defines the {{c3::entire procedure}} of software development step-by-step.",
+            "extra": "Goal is to deliver high-quality, maintainable software meeting user requirements"
+          },
+          {
+            "type": "basic",
+            "question": "What are the 6 stages of SDLC in order?",
+            "answer": "<ol><li><strong>Planning and Requirement Analysis</strong> - Customer inputs, market surveys</li><li><strong>Defining Requirements</strong> - SRS document creation</li><li><strong>Designing Architecture</strong> - DDS document, design selection</li><li><strong>Developing Product</strong> - Actual coding using programming languages</li><li><strong>Product Testing and Integration</strong> - Bug tracking and quality assurance</li><li><strong>Deployment and Maintenance</strong> - Release and ongoing support</li></ol>",
+            "context": "Sequential phases of software development"
+          },
+          {
+            "type": "basic",
+            "question": "What is SRS and when is it used?",
+            "answer": "<strong>Software Requirement Specification</strong> - A document that specifies all things that need to be defined and created during the entire project cycle. Used in Stage 2 (Defining Requirements).",
+            "context": "Key SDLC documentation"
+          },
+          {
+            "type": "basic",
+            "question": "What is DDS and its purpose?",
+            "answer": "<strong>Design Document Specification</strong> - Contains multiple designs for product architecture based on SRS. Assessed by market analysts and stakeholders to choose the most practical design.",
+            "context": "Architecture design documentation"
+          },
+          {
+            "type": "cloze",
+            "text": "In SDLC Stage 4, developers use specific {{c1::programming code}} as per the design in the {{c2::DDS}}. Popular languages include {{c3::C/C++, Python, Java}}.",
+            "extra": "Conventional tools like compilers, interpreters, debuggers are used"
+          }
+        ]
+      },
+      "prescriptive_models": {
+        "title": "Prescriptive Process Models",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What are the 5 framework activities in prescriptive process models?",
+            "answer": "<ol><li><strong>Communication</strong> - Requirement gathering</li><li><strong>Planning</strong> - Estimation, scheduling, tracking</li><li><strong>Modeling</strong> - Analysis and design</li><li><strong>Construction</strong> - Coding and testing</li><li><strong>Deployment</strong> - Delivery, support, feedback</li></ol>",
+            "context": "Common activities across all prescriptive models"
+          },
+          {
+            "type": "cloze",
+            "text": "Prescriptive models are called so because they {{c1::prescribe}} a set of {{c2::activities, actions, tasks}}, quality assurance and {{c3::change mechanisms}} for every project.",
+            "extra": "Provides structured approach to software development"
+          }
+        ]
+      },
+      "waterfall_model": {
+        "title": "Waterfall Model",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is the Waterfall Model also called?",
+            "answer": "<strong>Linear Sequential Model</strong> or <strong>Classic Life Cycle Model</strong>",
+            "context": "Alternative names for waterfall approach"
+          },
+          {
+            "type": "basic",
+            "question": "What are the key characteristics of the Waterfall Model?",
+            "answer": "<ul><li>Each phase is <strong>fully completed</strong> before next phase begins</li><li>Used for <strong>small projects</strong></li><li>Feedback taken after each phase</li><li>Testing starts only after development is complete</li><li>No overlapping of phases</li></ul>",
+            "context": "Defining features of waterfall approach"
+          },
+          {
+            "type": "basic",
+            "question": "List 5 advantages of the Waterfall Model",
+            "answer": "<ol><li><strong>Simple and easy</strong> to understand, implement, use</li><li><strong>All requirements known</strong> at beginning - easy to manage</li><li><strong>Avoids overlapping</strong> phases - completed at once</li><li>Works for <strong>small projects</strong> with well-understood requirements</li><li>Preferred when <strong>quality more important than cost</strong></li></ol>",
+            "context": "When waterfall model is beneficial"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main disadvantages of the Waterfall Model?",
+            "answer": "<ol><li>Not good for <strong>complex and object-oriented projects</strong></li><li>Poor model for <strong>long projects</strong></li><li>Problems uncovered only <strong>during testing</strong></li><li><strong>High risk</strong> due to late problem discovery</li></ol>",
+            "context": "Limitations and when not to use waterfall"
+          }
+        ]
+      },
+      "incremental_model": {
+        "title": "Incremental Process Model",
+        "cards": [
+          {
+            "type": "cloze",
+            "text": "The incremental model combines elements of {{c1::waterfall model}} applied in an {{c2::iterative fashion}}. The first increment is generally a {{c3::core product}}.",
+            "extra": "Each increment builds the product and submits to customer for modifications"
+          },
+          {
+            "type": "basic",
+            "question": "How does the Incremental Model process work?",
+            "answer": "<ol><li>First increment = <strong>core product</strong></li><li>Each increment <strong>builds the product</strong></li><li>Submit to customer for <strong>suggested modifications</strong></li><li>Next increment implements <strong>customer suggestions</strong></li><li>Add <strong>additional requirements</strong> to previous increment</li><li>Process repeated until <strong>product is finished</strong></li></ol>",
+            "context": "Step-by-step incremental development process"
+          },
+          {
+            "type": "basic",
+            "question": "What are the advantages of the Incremental Model?",
+            "answer": "<ol><li><strong>Flexible</strong> - low development cost, faster initial delivery</li><li><strong>Easier testing</strong> and debugging during smaller iterations</li><li><strong>Quick software generation</strong> early in lifecycle</li><li><strong>Customer response</strong> to functionalities after every increment</li></ol>",
+            "context": "Benefits of incremental approach"
+          },
+          {
+            "type": "basic",
+            "question": "What are the disadvantages of the Incremental Model?",
+            "answer": "<ol><li>Final product cost may <strong>exceed initial estimates</strong></li><li>Requires <strong>very clear and complete planning</strong></li><li>Customer demands for additional functionalities cause <strong>architecture problems</strong></li></ol>",
+            "context": "Limitations of incremental development"
+          },
+          {
+            "type": "basic",
+            "question": "Give an example of software developed using Incremental Model",
+            "answer": "<strong>Word-processing software</strong> - Features can be developed incrementally (basic text editing → formatting → spell check → advanced features)",
+            "context": "Real-world application example"
+          }
+        ]
+      },
+      "evolutionary_models": {
+        "title": "Evolutionary Process Models",
+        "cards": [
+          {
+            "type": "cloze",
+            "text": "The evolutionary model is based on making an {{c1::initial product}} and then {{c2::evolving}} the software over time with {{c3::iterative and incremental}} approaches with proper {{c4::feedback}}.",
+            "extra": "Product goes through several iterations until final product is built"
+          },
+          {
+            "type": "basic",
+            "question": "What are the 3 types of Evolutionary Process Models?",
+            "answer": "<ol><li><strong>Iterative Model</strong> - Enhance product over multiple iterations</li><li><strong>Incremental Model</strong> - Build with basic features, evolve each iteration</li><li><strong>Spiral Model</strong> - Combines waterfall and iterative with risk focus</li></ol>",
+            "context": "Different evolutionary approaches"
+          },
+          {
+            "type": "basic",
+            "question": "How does the Iterative Model work?",
+            "answer": "Take <strong>initial requirements</strong> → enhance product over <strong>multiple iterations</strong> → make <strong>design modifications</strong> and add <strong>functional requirements</strong> in each iteration → final product with fewer errors and high quality",
+            "context": "Iterative development process"
+          }
+        ]
+      },
+      "spiral_model": {
+        "title": "Spiral Model",
+        "cards": [
+          {
+            "type": "cloze",
+            "text": "The Spiral Model combines {{c1::waterfall}} and {{c2::iterative}} models, focusing on {{c3::risk handling}} along with developing the project using {{c4::incremental and iterative}} approach.",
+            "extra": "Good for big projects, produces output quickly"
+          },
+          {
+            "type": "basic",
+            "question": "What are the 4 phases of the Spiral Model in order?",
+            "answer": "<ol><li><strong>Object determination and identify alternative solutions</strong></li><li><strong>Identify and resolve risk</strong></li><li><strong>Develop next version of the product</strong></li><li><strong>Review and plan for the next phase</strong></li></ol>",
+            "context": "Four quadrants of spiral model"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main advantages of Evolutionary Process Models?",
+            "answer": "<ol><li><strong>Regular customer feedback</strong> - requirements clearly specified</li><li><strong>Risk analysis</strong> after every iteration</li><li>Suitable for <strong>big complex projects</strong></li><li><strong>Quick first build delivery</strong> using iterative approach</li><li><strong>Enhanced flexibility</strong> - continuous changes and refinements</li><li><strong>Risk reduction</strong> - early issue identification</li><li><strong>Customer collaboration</strong> throughout development</li></ol>",
+            "context": "Benefits of evolutionary development"
+          },
+          {
+            "type": "basic",
+            "question": "What are the disadvantages of Evolutionary Process Models?",
+            "answer": "<ol><li>Not suitable for <strong>small projects</strong></li><li><strong>High complexity and cost</strong> compared to sequential models</li><li><strong>Project management complexity</strong> - harder to track</li><li><strong>Resource intensive</strong> - time, personnel, tools</li><li><strong>Documentation challenges</strong> - frequent changes</li><li><strong>Potential scope creep</strong> - uncontrolled expansion</li><li><strong>Initial planning overhead</strong> - well-defined plan required</li></ol>",
+            "context": "Limitations and challenges"
+          }
+        ]
+      },
+      "agile_development": {
+        "title": "Agile Development",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is Agility in software development?",
+            "answer": "Agility is the ability to <strong>rapidly adapt to changing requirements</strong> and deliver working software quickly through iterative development, customer collaboration, and responding to change.",
+            "context": "Core concept of agile methodology"
+          },
+          {
+            "type": "basic",
+            "question": "What defines an Agile Process?",
+            "answer": "<ul><li><strong>Iterative and incremental</strong> development</li><li>Focus on <strong>customer satisfaction</strong></li><li><strong>Rapid delivery</strong> of working software</li><li><strong>Flexibility</strong> to changing requirements</li><li><strong>Collaboration</strong> over documentation</li><li><strong>Individual interactions</strong> over processes</li></ul>",
+            "context": "Key characteristics of agile processes"
+          }
+        ]
+      },
+      "extreme_programming": {
+        "title": "Extreme Programming (XP)",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is Extreme Programming (XP)?",
+            "answer": "XP is an agile methodology emphasizing <strong>frequent releases</strong>, <strong>pair programming</strong>, <strong>test-driven development</strong>, and <strong>continuous customer involvement</strong> to deliver high-quality software quickly.",
+            "context": "Agile methodology focused on engineering practices"
+          },
+          {
+            "type": "basic",
+            "question": "What are the key practices of Extreme Programming?",
+            "answer": "<ul><li><strong>Pair Programming</strong> - Two developers work together</li><li><strong>Test-Driven Development</strong> - Write tests before code</li><li><strong>Frequent Releases</strong> - Small, frequent software releases</li><li><strong>Continuous Integration</strong> - Frequent code integration</li><li><strong>Simple Design</strong> - Keep design simple and clean</li><li><strong>Refactoring</strong> - Continuous code improvement</li></ul>",
+            "context": "Core XP engineering practices"
+          }
+        ]
+      }
+    }
+  },
+  "module_2_requirements_design": {
+    "title": "Module 2: Software Requirements and Design Concepts",
+    "duration": "16 hours",
+    "topics": {
+      "requirements_engineering": {
+        "title": "Understanding Requirements - Requirement Engineering Process",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is Requirements Engineering?",
+            "answer": "Requirements Engineering is the <strong>systematic process</strong> of defining, documenting, and maintaining requirements. It involves <strong>elicitation, analysis, specification, validation</strong>, and <strong>management</strong> of software requirements.",
+            "context": "Foundation of software development process"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main phases of the Requirements Engineering Process?",
+            "answer": "<ol><li><strong>Requirements Elicitation</strong> - Gathering requirements from stakeholders</li><li><strong>Requirements Analysis</strong> - Understanding and modeling requirements</li><li><strong>Requirements Specification</strong> - Documenting requirements clearly</li><li><strong>Requirements Validation</strong> - Ensuring requirements are correct and complete</li><li><strong>Requirements Management</strong> - Handling changes and evolution</li></ol>",
+            "context": "Systematic approach to requirements engineering"
+          },
+          {
+            "type": "cloze",
+            "text": "Requirements Engineering involves {{c1::elicitation}} (gathering), {{c2::analysis}} (understanding), {{c3::specification}} (documenting), {{c4::validation}} (verifying), and {{c5::management}} (controlling changes).",
+            "extra": "Five key phases of requirements engineering process"
+          },
+          {
+            "type": "basic",
+            "question": "What are the different types of requirements?",
+            "answer": "<ol><li><strong>Functional Requirements</strong> - What the system should do (features, capabilities)</li><li><strong>Non-Functional Requirements</strong> - How the system should perform (quality attributes)</li><li><strong>Domain Requirements</strong> - Requirements from the application domain</li><li><strong>User Requirements</strong> - High-level statements in natural language</li><li><strong>System Requirements</strong> - Detailed technical specifications</li></ol>",
+            "context": "Classification of software requirements"
+          },
+          {
+            "type": "basic",
+            "question": "What are examples of Non-Functional Requirements?",
+            "answer": "<ul><li><strong>Performance</strong> - Speed, throughput, response time</li><li><strong>Reliability</strong> - Availability, fault tolerance</li><li><strong>Security</strong> - Authentication, authorization, data protection</li><li><strong>Usability</strong> - User-friendliness, accessibility</li><li><strong>Scalability</strong> - Ability to handle growth</li><li><strong>Maintainability</strong> - Ease of modification and updates</li><li><strong>Portability</strong> - Platform independence</li></ul>",
+            "context": "Quality attributes that constrain system design"
+          },
+          {
+            "type": "basic",
+            "question": "What are common Requirements Elicitation techniques?",
+            "answer": "<ul><li><strong>Interviews</strong> - Structured conversations with stakeholders</li><li><strong>Questionnaires</strong> - Written surveys for large groups</li><li><strong>Observation</strong> - Watching users in their work environment</li><li><strong>Workshops</strong> - Collaborative group sessions</li><li><strong>Prototyping</strong> - Building early versions to explore requirements</li><li><strong>Document Analysis</strong> - Studying existing documentation</li><li><strong>Brainstorming</strong> - Creative idea generation sessions</li></ul>",
+            "context": "Methods for gathering requirements from stakeholders"
+          },
+          {
+            "type": "cloze",
+            "text": "Requirements elicitation techniques include {{c1::interviews}} for direct communication, {{c2::observation}} for understanding actual work, {{c3::prototyping}} for exploring ideas, and {{c4::workshops}} for group collaboration.",
+            "extra": "Different approaches to gathering requirements"
+          },
+          {
+            "type": "basic",
+            "question": "What are the challenges in Requirements Engineering?",
+            "answer": "<ul><li><strong>Stakeholders don't know</strong> what they want</li><li><strong>Requirements change</strong> during development</li><li><strong>Communication gaps</strong> between stakeholders and developers</li><li><strong>Conflicting requirements</strong> from different stakeholders</li><li><strong>Incomplete requirements</strong> - missing important details</li><li><strong>Ambiguous requirements</strong> - unclear or vague statements</li><li><strong>Scope creep</strong> - uncontrolled expansion of requirements</li></ul>",
+            "context": "Common problems faced in requirements engineering"
+          },
+          {
+            "type": "basic",
+            "question": "What makes a good requirement statement?",
+            "answer": "A good requirement should be:<br><ul><li><strong>Clear and Unambiguous</strong> - One interpretation only</li><li><strong>Complete</strong> - All necessary information included</li><li><strong>Consistent</strong> - No contradictions with other requirements</li><li><strong>Verifiable</strong> - Can be tested/measured</li><li><strong>Traceable</strong> - Can be tracked through development</li><li><strong>Feasible</strong> - Technically and economically possible</li></ul>",
+            "context": "Characteristics of well-written requirements"
+          }
+        ]
+      },
+      "feasibility_studies": {
+        "title": "Feasibility Studies",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is a Feasibility Study in software development?",
+            "answer": "A feasibility study is an <strong>assessment</strong> of whether a proposed software project is <strong>practical and achievable</strong> given the available resources, technology, and constraints. It evaluates if the project should proceed.",
+            "context": "Project viability assessment"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main types of feasibility studies?",
+            "answer": "<ol><li><strong>Technical Feasibility</strong> - Can the system be built with available technology?</li><li><strong>Economic Feasibility</strong> - Is the project cost-effective and profitable?</li><li><strong>Legal Feasibility</strong> - Are there any legal constraints or regulations?</li><li><strong>Operational Feasibility</strong> - Will the system work in the target environment?</li><li><strong>Schedule Feasibility</strong> - Can the project be completed on time?</li></ol>",
+            "context": "Different aspects of project feasibility"
+          },
+          {
+            "type": "cloze",
+            "text": "{{c1::Technical feasibility}} assesses if the system can be built with available technology, while {{c2::economic feasibility}} evaluates if the project is {{c3::cost-effective}} and profitable.",
+            "extra": "Two critical aspects of feasibility analysis"
+          },
+          {
+            "type": "basic",
+            "question": "What factors are considered in Economic Feasibility?",
+            "answer": "<ul><li><strong>Development costs</strong> - Personnel, hardware, software</li><li><strong>Operational costs</strong> - Maintenance, support, training</li><li><strong>Benefits</strong> - Cost savings, increased revenue, efficiency gains</li><li><strong>Return on Investment (ROI)</strong> - Financial return analysis</li><li><strong>Payback period</strong> - Time to recover investment</li></ul>",
+            "context": "Financial analysis components"
+          }
+        ]
+      },
+      "design_concepts": {
+        "title": "Design Concepts - Design Process",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is Software Design?",
+            "answer": "Software Design is the <strong>creative process</strong> of transforming requirements into a <strong>detailed blueprint</strong> for implementing the software. It defines the <strong>architecture, components, interfaces</strong>, and <strong>data structures</strong>.",
+            "context": "Bridge between requirements and implementation"
+          },
+          {
+            "type": "basic",
+            "question": "What are the fundamental Design Concepts?",
+            "answer": "<ol><li><strong>Abstraction</strong> - Hiding unnecessary details</li><li><strong>Modularity</strong> - Dividing system into discrete modules</li><li><strong>Encapsulation</strong> - Bundling data and methods together</li><li><strong>Coupling</strong> - Degree of interdependence between modules</li><li><strong>Cohesion</strong> - Degree of relatedness within a module</li><li><strong>Separation of Concerns</strong> - Isolating different aspects</li><li><strong>Information Hiding</strong> - Concealing implementation details</li></ol>",
+            "context": "Core principles guiding software design"
+          },
+          {
+            "type": "cloze",
+            "text": "Good design aims for {{c1::low coupling}} (minimal interdependence) and {{c2::high cohesion}} (strong relatedness within modules) to achieve {{c3::maintainable}} and {{c4::reusable}} software.",
+            "extra": "Key principles for quality software design"
+          },
+          {
+            "type": "basic",
+            "question": "What are the different types of Cohesion from weakest to strongest?",
+            "answer": "<ol><li><strong>Coincidental</strong> - Elements grouped randomly</li><li><strong>Logical</strong> - Elements perform similar tasks</li><li><strong>Temporal</strong> - Elements executed at same time</li><li><strong>Procedural</strong> - Elements follow execution sequence</li><li><strong>Communicational</strong> - Elements operate on same data</li><li><strong>Sequential</strong> - Output of one is input to next</li><li><strong>Functional</strong> - Elements contribute to single task</li></ol>",
+            "context": "Types of cohesion in order of strength"
+          },
+          {
+            "type": "basic",
+            "question": "What are the different types of Coupling from tightest to loosest?",
+            "answer": "<ol><li><strong>Content Coupling</strong> - One module modifies another's data</li><li><strong>Common Coupling</strong> - Modules share global data</li><li><strong>External Coupling</strong> - Modules share external format/protocol</li><li><strong>Control Coupling</strong> - One module controls another's flow</li><li><strong>Stamp Coupling</strong> - Modules share data structures</li><li><strong>Data Coupling</strong> - Modules share data parameters only</li></ol>",
+            "context": "Types of coupling from worst to best"
+          },
+          {
+            "type": "basic",
+            "question": "What are the phases of the Design Process?",
+            "answer": "<ol><li><strong>Architectural Design</strong> - High-level system structure</li><li><strong>Interface Design</strong> - Component interactions</li><li><strong>Component Design</strong> - Detailed module design</li><li><strong>Data Design</strong> - Data structures and databases</li><li><strong>Algorithm Design</strong> - Detailed processing logic</li></ol>",
+            "context": "Systematic approach to software design"
+          },
+          {
+            "type": "cloze",
+            "text": "The design process starts with {{c1::architectural design}} (system structure), then {{c2::interface design}} (interactions), followed by {{c3::component design}} (modules), {{c4::data design}} (structures), and {{c5::algorithm design}} (logic).",
+            "extra": "Sequential phases of the design process"
+          },
+          {
+            "type": "basic",
+            "question": "What is the difference between Design and Analysis?",
+            "answer": "<table><tr><th>Analysis</th><th>Design</th></tr><tr><td>Focuses on <strong>WHAT</strong> system should do</td><td>Focuses on <strong>HOW</strong> system should do it</td></tr><tr><td>Problem domain oriented</td><td>Solution domain oriented</td></tr><tr><td>Understands requirements</td><td>Creates implementation plan</td></tr><tr><td>Models the problem</td><td>Models the solution</td></tr></table>",
+            "context": "Distinguishing analysis from design activities"
+          }
+        ]
+      },
+      "design_model_elements": {
+        "title": "Design Model Elements",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What are Data Design Elements?",
+            "answer": "Data Design Elements define how <strong>data is organized, stored, and accessed</strong> in the system. Includes <strong>data structures, databases, file formats</strong>, and <strong>data relationships</strong> that support system functionality.",
+            "context": "Foundation of system data management"
+          },
+          {
+            "type": "basic",
+            "question": "What are Architectural Design Elements?",
+            "answer": "Architectural Design Elements define the <strong>overall structure</strong> of the software system, including <strong>major components</strong>, their <strong>relationships</strong>, <strong>communication patterns</strong>, and <strong>architectural styles</strong> (like layered, client-server, microservices).",
+            "context": "High-level system organization"
+          },
+          {
+            "type": "basic",
+            "question": "What are Interface Design Elements?",
+            "answer": "Interface Design Elements specify how <strong>components interact</strong> with each other and with <strong>external systems</strong>. Includes <strong>APIs, protocols, data formats</strong>, and <strong>user interfaces</strong> that enable communication.",
+            "context": "Component interaction specifications"
+          },
+          {
+            "type": "basic",
+            "question": "What are Component-Level Design Elements?",
+            "answer": "Component-Level Design Elements provide <strong>detailed specifications</strong> for individual software components, including <strong>internal structure, algorithms, data structures</strong>, and <strong>interfaces</strong> at the implementation level.",
+            "context": "Detailed component specifications"
+          },
+          {
+            "type": "basic",
+            "question": "What are Deployment-Level Design Elements?",
+            "answer": "Deployment-Level Design Elements specify how the software will be <strong>installed, configured, and run</strong> in the target environment. Includes <strong>hardware requirements, network topology</strong>, and <strong>deployment strategies</strong>.",
+            "context": "System deployment considerations"
+          },
+          {
+            "type": "cloze",
+            "text": "Design model elements include {{c1::Data}} (storage organization), {{c2::Architectural}} (system structure), {{c3::Interface}} (component interactions), {{c4::Component-Level}} (detailed specs), and {{c5::Deployment-Level}} (environment setup).",
+            "extra": "Five categories of design elements in software systems"
+          }
+        ]
+      },
+      "architectural_design_dfd": {
+        "title": "Architectural Design using DFD",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is a Data Flow Diagram (DFD)?",
+            "answer": "A DFD is a <strong>graphical representation</strong> that shows how <strong>data flows</strong> through a system. It illustrates <strong>processes, data stores, external entities</strong>, and <strong>data flows</strong> without showing control flow or timing.",
+            "context": "System analysis and design tool"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main components of a DFD?",
+            "answer": "<ol><li><strong>External Entities</strong> - Sources/destinations of data (squares/rectangles)</li><li><strong>Processes</strong> - Transform data (circles/bubbles)</li><li><strong>Data Stores</strong> - Store data (open rectangles/parallel lines)</li><li><strong>Data Flows</strong> - Movement of data (arrows with labels)</li></ol>",
+            "context": "Four basic elements of data flow diagrams"
+          },
+          {
+            "type": "cloze",
+            "text": "In DFD, {{c1::external entities}} (squares) are sources/destinations of data, {{c2::processes}} (circles) transform data, {{c3::data stores}} (open rectangles) hold data, and {{c4::data flows}} (arrows) show data movement.",
+            "extra": "Symbols and their meanings in data flow diagrams"
+          },
+          {
+            "type": "basic",
+            "question": "What are the levels of DFDs?",
+            "answer": "<ol><li><strong>Context Diagram (Level 0)</strong> - Highest level, shows system boundary with external entities</li><li><strong>Level 1 DFD</strong> - Decomposes context diagram into major processes</li><li><strong>Level 2 DFD</strong> - Further decomposes Level 1 processes</li><li><strong>Lower Levels</strong> - Continue decomposition as needed for detail</li></ol>",
+            "context": "Hierarchical decomposition of system functionality"
+          },
+          {
+            "type": "basic",
+            "question": "What are the rules for creating correct DFDs?",
+            "answer": "<ul><li><strong>No process without input/output</strong> - Every process must have data flowing in and out</li><li><strong>No data store without process</strong> - Data stores must be accessed by processes</li><li><strong>Label all data flows</strong> meaningfully - Use descriptive names</li><li><strong>Balance parent and child diagrams</strong> - Inputs/outputs must match</li><li><strong>Avoid crossing data flows</strong> when possible - Keep diagrams clean</li><li><strong>Use consistent naming</strong> conventions throughout</li><li><strong>No direct data flow</strong> between external entities</li></ul>",
+            "context": "Guidelines for correct DFD construction"
+          },
+          {
+            "type": "cloze",
+            "text": "DFD rules include: every {{c1::process}} must have input/output, data stores must be {{c2::accessed by processes}}, and {{c3::parent and child}} diagrams must be balanced.",
+            "extra": "Key validation rules for data flow diagrams"
+          },
+          {
+            "type": "basic",
+            "question": "What is DFD Balancing?",
+            "answer": "DFD Balancing ensures that <strong>inputs and outputs</strong> of a process in a parent diagram <strong>match exactly</strong> with the inputs and outputs in the child diagram that decomposes that process. This maintains <strong>consistency</strong> across decomposition levels.",
+            "context": "Consistency rule for hierarchical DFDs"
+          },
+          {
+            "type": "basic",
+            "question": "What is the difference between Physical and Logical DFDs?",
+            "answer": "<table><tr><th>Logical DFD</th><th>Physical DFD</th></tr><tr><td>Shows <strong>WHAT</strong> the system does</td><td>Shows <strong>HOW</strong> the system does it</td></tr><tr><td>Implementation independent</td><td>Implementation specific</td></tr><tr><td>Focuses on business functions</td><td>Focuses on technical details</td></tr><tr><td>Abstract view</td><td>Concrete view with technology</td></tr></table>",
+            "context": "Two perspectives of data flow modeling"
+          }
+        ]
+      },
+      "component_level_design": {
+        "title": "Component Level Design Guidelines",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is Component-Level Design?",
+            "answer": "Component-Level Design involves creating <strong>detailed specifications</strong> for individual software components, defining their <strong>internal structure, algorithms, data structures</strong>, and <strong>interfaces</strong> for implementation.",
+            "context": "Detailed design phase of software development"
+          },
+          {
+            "type": "basic",
+            "question": "What are the key guidelines for Component-Level Design?",
+            "answer": "<ol><li><strong>Single Responsibility</strong> - Each component should have one clear purpose</li><li><strong>High Cohesion</strong> - Related functionality grouped together</li><li><strong>Low Coupling</strong> - Minimize dependencies between components</li><li><strong>Information Hiding</strong> - Hide internal implementation details</li><li><strong>Clear Interfaces</strong> - Well-defined component boundaries</li><li><strong>Reusability</strong> - Design for potential reuse</li></ol>",
+            "context": "Principles for effective component design"
+          },
+          {
+            "type": "cloze",
+            "text": "Component design should follow {{c1::single responsibility}} principle, achieve {{c2::high cohesion}} within components and {{c3::low coupling}} between components, while practicing {{c4::information hiding}}.",
+            "extra": "Core principles for quality component design"
+          },
+          {
+            "type": "basic",
+            "question": "What should be included in Component Specifications?",
+            "answer": "<ul><li><strong>Component Purpose</strong> - What it does</li><li><strong>Interface Definition</strong> - Input/output parameters</li><li><strong>Pre/Post Conditions</strong> - Assumptions and guarantees</li><li><strong>Internal Data Structures</strong> - Local data organization</li><li><strong>Algorithms</strong> - Processing logic</li><li><strong>Error Handling</strong> - Exception management</li></ul>",
+            "context": "Elements of comprehensive component documentation"
+          }
+        ]
+      },
+      "uml_modeling": {
+        "title": "Modelling with UML",
+        "cards": [
+          {
+            "type": "basic",
+            "question": "What is UML (Unified Modeling Language)?",
+            "answer": "UML is a <strong>standardized modeling language</strong> used to <strong>visualize, specify, construct, and document</strong> software systems. It provides a <strong>common notation</strong> for object-oriented analysis and design.",
+            "context": "Industry standard for software modeling"
+          },
+          {
+            "type": "basic",
+            "question": "What is a Class Diagram in UML?",
+            "answer": "A Class Diagram shows the <strong>static structure</strong> of a system by displaying <strong>classes, attributes, methods</strong>, and <strong>relationships</strong> between classes. It's the most commonly used UML diagram for object-oriented design.",
+            "context": "Structural modeling in UML"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main elements of a Class Diagram?",
+            "answer": "<ol><li><strong>Classes</strong> - Rectangles with class name, attributes, methods</li><li><strong>Associations</strong> - Relationships between classes</li><li><strong>Generalization</strong> - Inheritance relationships (hollow arrow)</li><li><strong>Multiplicity</strong> - Number of instances in relationships (1, *, 0..1)</li><li><strong>Aggregation</strong> - \"Has-a\" relationship (hollow diamond)</li><li><strong>Composition</strong> - \"Part-of\" relationship (filled diamond)</li></ol>",
+            "context": "Components of UML class diagrams"
+          },
+          {
+            "type": "cloze",
+            "text": "In class diagrams, {{c1::generalization}} shows inheritance with hollow arrows, {{c2::aggregation}} shows \"has-a\" with hollow diamonds, and {{c3::composition}} shows \"part-of\" with filled diamonds.",
+            "extra": "Different types of relationships in class diagrams"
+          },
+          {
+            "type": "basic",
+            "question": "What is a Use Case Diagram?",
+            "answer": "A Use Case Diagram shows the <strong>functional requirements</strong> of a system by illustrating <strong>actors</strong> (users/external systems) and their <strong>interactions</strong> with the system through <strong>use cases</strong> (system functions).",
+            "context": "Requirements modeling and system scope definition"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main elements of a Use Case Diagram?",
+            "answer": "<ol><li><strong>Actors</strong> - External entities (users, systems) - stick figures</li><li><strong>Use Cases</strong> - System functions (ovals/ellipses)</li><li><strong>System Boundary</strong> - Rectangle defining system scope</li><li><strong>Associations</strong> - Lines connecting actors to use cases</li><li><strong>Include</strong> - Mandatory sub-functionality (<<include>>)</li><li><strong>Extend</strong> - Optional extensions (<<extend>>)</li></ol>",
+            "context": "Components of UML use case diagrams"
+          },
+          {
+            "type": "cloze",
+            "text": "Use case diagrams show {{c1::actors}} (stick figures) interacting with {{c2::use cases}} (ovals) within a {{c3::system boundary}} (rectangle). {{c4::Include}} relationships are mandatory, {{c5::extend}} relationships are optional.",
+            "extra": "Key elements and relationships in use case diagrams"
+          },
+          {
+            "type": "basic",
+            "question": "What is a State Chart Diagram?",
+            "answer": "A State Chart Diagram (State Machine Diagram) models the <strong>dynamic behavior</strong> of objects by showing <strong>states, transitions, events</strong>, and <strong>actions</strong> that objects undergo during their lifecycle.",
+            "context": "Behavioral modeling for object states"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main elements of State Chart Diagrams?",
+            "answer": "<ol><li><strong>States</strong> - Rounded rectangles showing object conditions</li><li><strong>Initial State</strong> - Filled circle (starting point)</li><li><strong>Final State</strong> - Circle with filled circle inside (end point)</li><li><strong>Transitions</strong> - Arrows between states</li><li><strong>Events</strong> - Triggers that cause transitions</li><li><strong>Guards</strong> - Conditions for transitions [condition]</li><li><strong>Actions</strong> - Activities performed during transitions</li></ol>",
+            "context": "Components of state chart diagrams"
+          },
+          {
+            "type": "basic",
+            "question": "What is an Activity Diagram?",
+            "answer": "An Activity Diagram models the <strong>flow of activities</strong> in a system or process, showing <strong>sequential and parallel activities</strong>, <strong>decision points</strong>, and <strong>synchronization</strong> points in business or system processes.",
+            "context": "Process and workflow modeling"
+          },
+          {
+            "type": "basic",
+            "question": "What are the main elements of Activity Diagrams?",
+            "answer": "<ol><li><strong>Activities</strong> - Rounded rectangles showing actions</li><li><strong>Initial Node</strong> - Filled circle (start)</li><li><strong>Final Node</strong> - Circle with filled circle (end)</li><li><strong>Decision Node</strong> - Diamond shape for branching</li><li><strong>Merge Node</strong> - Diamond for combining flows</li><li><strong>Fork</strong> - Black bar for parallel flow start</li><li><strong>Join</strong> - Black bar for parallel flow end</li><li><strong>Control Flows</strong> - Arrows showing sequence</li></ol>",
+            "context": "Components of UML activity diagrams"
+          },
+          {
+            "type": "cloze",
+            "text": "UML diagrams include {{c1::Class}} diagrams for static structure, {{c2::Use Case}} diagrams for functional requirements, {{c3::State Chart}} diagrams for object behavior, and {{c4::Activity}} diagrams for process flow.",
+            "extra": "Four key UML diagram types covered in the syllabus"
+          },
+          {
+            "type": "basic",
+            "question": "When would you use each type of UML diagram?",
+            "answer": "<ul><li><strong>Class Diagrams</strong> - Designing object-oriented systems, showing relationships</li><li><strong>Use Case Diagrams</strong> - Capturing functional requirements, defining system scope</li><li><strong>State Chart Diagrams</strong> - Modeling object behavior with complex state changes</li><li><strong>Activity Diagrams</strong> - Modeling business processes, workflows, algorithms</li></ul>",
+            "context": "Appropriate usage scenarios for different UML diagrams"
+          }
+        ]
+      }
+    }
+  }
+}
