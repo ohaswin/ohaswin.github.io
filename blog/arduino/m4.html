@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>/ard/ - Arduino & Embedded Systems</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-main: #000000;
+            --bg-secondary: #0a0a0a;
+            --accent-cyan: #00ff41;
+            --accent-lime: #39ff14;
+            --accent-pink: #ff10f0;
+            --text-primary: #00ff41;
+            --text-secondary: #33ff66;
+        }
+
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 65, 0.03) 2px, rgba(0, 255, 65, 0.03) 4px);
+        }
+
+        .header {
+            background: #000;
+            border-bottom: 3px double var(--accent-cyan);
+            border-top: 3px double var(--accent-cyan);
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            text-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            color: var(--accent-cyan);
+            text-align: center;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            animation: glitch 3s infinite;
+            font-family: 'Courier New', monospace;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% {
+                text-shadow: 0 0 10px var(--accent-cyan);
+            }
+            92% {
+                text-shadow: -3px 0 var(--accent-pink), 3px 0 var(--accent-lime);
+                transform: translate(-2px, 0);
+            }
+            94% {
+                text-shadow: 3px 0 var(--accent-pink), -3px 0 var(--accent-lime);
+                transform: translate(2px, 0);
+            }
+        }
+
+        .board-info {
+            text-align: center;
+            color: var(--accent-pink);
+            margin-top: 10px;
+            font-size: 0.85em;
+            letter-spacing: 3px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: #000;
+            border: 2px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 2px;
+        }
+
+        .tab-btn:hover {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+
+        .post {
+            background: #000;
+            border: 2px solid var(--accent-cyan);
+            margin: 20px 0;
+            padding: 15px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .post:hover {
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 20px rgba(255, 16, 240, 0.5);
+            transform: translateX(10px);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .post-id {
+            background: var(--accent-cyan);
+            color: #000;
+            padding: 3px 10px;
+            font-weight: bold;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+
+        .post-category {
+            background: #000;
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+            padding: 3px 10px;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .post-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--accent-lime);
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px var(--accent-lime);
+        }
+
+        .post-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .post-content h3 {
+            color: var(--accent-cyan);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            border-bottom: 1px dashed var(--accent-cyan);
+            padding-bottom: 5px;
+        }
+
+        .post-content h4 {
+            color: var(--accent-lime);
+            margin-top: 15px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .post-content ul {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+
+        .post-content li {
+            margin: 8px 0;
+        }
+
+        .code-block {
+            background: #000;
+            border: 2px dashed var(--accent-pink);
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: '> CODE';
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: #000;
+            padding: 2px 10px;
+            font-size: 0.7em;
+            color: var(--accent-pink);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .code-block pre {
+            margin: 0;
+            color: var(--accent-lime);
+            text-shadow: 0 0 5px var(--accent-lime);
+            font-family: 'Courier New', monospace;
+        }
+
+        .highlight {
+            background: rgba(0, 255, 65, 0.2);
+            padding: 2px 8px;
+            border-left: 3px solid var(--accent-cyan);
+            display: inline-block;
+            text-shadow: 0 0 5px var(--accent-cyan);
+        }
+
+        .info-box {
+            background: rgba(255, 16, 240, 0.1);
+            border: 2px dashed var(--accent-pink);
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .info-box::before {
+            content: '!!! PROTIP !!!';
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: #000;
+            padding: 2px 10px;
+            font-size: 0.7em;
+            color: var(--accent-pink);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .comparison-table th {
+            background: var(--accent-cyan);
+            color: #000;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .comparison-table td {
+            background: #000;
+            border: 1px solid var(--accent-cyan);
+            padding: 10px;
+            color: var(--text-secondary);
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--accent-lime);
+        }
+
+        .sensor-card {
+            background: #000;
+            border: 2px solid var(--accent-lime);
+            padding: 15px;
+            margin: 10px 0;
+            transition: all 0.2s ease;
+        }
+
+        .sensor-card:hover {
+            border-color: var(--accent-pink);
+            box-shadow: 0 0 20px rgba(255, 16, 240, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            border-top: 2px dashed var(--accent-cyan);
+            color: var(--text-secondary);
+            font-size: 0.85em;
+        }
+
+        .footer a {
+            color: var(--accent-pink);
+            text-decoration: none;
+            text-shadow: 0 0 5px var(--accent-pink);
+        }
+
+        .footer a:hover {
+            color: var(--accent-lime);
+            text-shadow: 0 0 10px var(--accent-lime);
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        function showTab(event, tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show the selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+    
+    <div class="header">
+        <h1>[ /ard/ - arduino & embedded systems ]</h1>
+        <div class="board-info">>>> BSc CompSci - U.Calicut <<<</div>
+    </div>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab(event, 'sensors')">Sensors 101</button>
+            <button class="tab-btn" onclick="showTab(event, 'adc')">ADC & Resistors</button>
+            <button class="tab-btn" onclick="showTab(event, 'interfacing')">Sensor Interfacing</button>
+            <button class="tab-btn" onclick="showTab(event, 'serial')">Serial Monitor</button>
+            <button class="tab-btn" onclick="showTab(event, 'actuators')">Actuators</button>
+            <button class="tab-btn" onclick="showTab(event, 'motors')">Motors</button>
+        </div>
+
+        <!-- SENSORS TAB -->
+        <div id="sensors" class="tab-content active">
+            <div class="post">
+                <div class="post-header">
+                    <span class="post-id">Post #16</span>
+                    <span class="post-category">Fundamentals</span>
+                </div>
+                <h2 class="post-title">What Even Is a Sensor? Types & Classification</h2>
+                <div class="post-content">
+                    <h3>Definition</h3>
+                    <p>A <span class="highlight">sensor</span> is a device that detects physical quantities (temperature, light, pressure, distance) and converts them into electrical signals that Arduino can read. Think of it as Arduino's way of "sensing" the real world.</p>
+
+                    <div class="info-box">
+                        Sensors are transducers - they convert energy from one form (physical phenomenon) to another (electrical signal).
+                    </div>
+
+                    <h3>Analog vs Digital Sensors - The Real Difference</h3>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Property</th>
+                            <th>Analog Sensors</th>
+                            <th>Digital Sensors</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Output Signal</strong></td>
+                            <td>Continuous voltage (0-5V range)</td>
+                            <td>Discrete values (HIGH/LOW, 0 or 1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Transmission</strong></td>
+                            <td>Requires ADC conversion</td>
+                            <td>Already digital, no conversion needed</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precision</strong></td>
+                            <td>Can measure ranges (0-1023)</td>
+                            <td>Binary states only (ON/OFF)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Arduino Pins</strong></td>
+                            <td>Analog pins (A0-A5)</td>
+                            <td>Digital pins (D0-D13)</td>
+                        </tr>
+                    </table>
+
+                    <h3>Common Sensor Types</h3>
+                    
+                    <div class="sensor-card">
+                        <h4>Analog Sensors</h4>
+                        <ul>
+                            <li><strong>LDR (Light Sensor)</strong> - Measures light intensity as resistance</li>
+                            <li><strong>Temperature Sensors</strong> - LM35, TMP36 output voltage proportional to temperature</li>
+                            <li><strong>Potentiometer</strong> - Variable resistor for position sensing</li>
+                            <li><strong>Moisture/Humidity Sensors</strong> - Soil moisture, DHT11</li>
+                        </ul>
+                    </div>
+
+                    <div class="sensor-card">
+                        <h4>Digital Sensors</h4>
+                        <ul>
+                            <li><strong>Ultrasonic Sensors</strong> - HC-SR04 for distance measurement</li>
+                            <li><strong>IR Sensors</strong> - Infrared object detection</li>
+                            <li><strong>PIR Motion Sensors</strong> - Detect movement</li>
+                            <li><strong>Push Buttons</strong> - Simple binary input</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        Some sensors can work in BOTH modes! For example, an IR sensor can output analog values (distance/intensity) or digital (object detected: yes/no).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADC TAB -->
+        <div id="adc" class="tab-content">
+            <div class="post">
+                <div class="post-header">
+                    <span class="post-id">Post #17</span>
+                    <span class="post-category">Hardware</span>
+                </div>
+                <h2 class="post-title">ADC Explained & The Pull-Up/Pull-Down Conspiracy</h2>
+                <div class="post-content">
+                    <h3>What's an ADC?</h3>
+                    <p>The <span class="highlight">Analog-to-Digital Converter (ADC)</span> is Arduino's built-in circuit that converts continuous analog voltages (0-5V) into digital values your code can understand.</p>
+
+                    <div class="code-block">
+<pre>Arduino Uno has a 10-bit ADC
+2^10 = 1024 possible values
+Range: 0 to 1023
+
+0V     → 0
+2.5V   → 511
+5V     → 1023
+
+Resolution = 5V / 1024 = 4.9mV per unit</pre>
+                    </div>
+
+                    <h3>Pull-Up Resistors</h3>
+                    <p>A <strong>pull-up resistor</strong> connects a digital input pin to VCC (5V) through a resistor (typically 10kΩ). This ensures the pin reads HIGH by default when nothing is connected.</p>
+
+                    <div class="sensor-card">
+                        <h4>Why Use Pull-Up?</h4>
+                        <p>Without it, floating pins pick up electrical noise and randomly fluctuate between HIGH and LOW. Pull-up resistors prevent this "floating" state.</p>
+                        
+                        <div class="code-block">
+<pre>// External Pull-Up Circuit
+//        5V
+//        |
+//       10kΩ
+//        |
+//    Pin 2 -------- Button -------- GND
+//
+// Button NOT pressed: Pin reads HIGH
+// Button pressed: Pin reads LOW</pre>
+                        </div>
+                    </div>
+
+                    <h3>Pull-Down Resistors</h3>
+                    <p>A <strong>pull-down resistor</strong> connects the pin to GND through a resistor. Pin reads LOW by default.</p>
+
+                    <div class="code-block">
+<pre>// External Pull-Down Circuit
+//        5V -------- Button -------- Pin 2
+//                                      |
+//                                    10kΩ
+//                                      |
+//                                     GND
+//
+// Button NOT pressed: Pin reads LOW
+// Button pressed: Pin reads HIGH</pre>
+                    </div>
+
+                    <div class="info-box">
+                        Arduino has INTERNAL pull-up resistors (~20kΩ)! Enable with pinMode(pin, INPUT_PULLUP). No external resistor needed! But there's NO internal pull-down on most Arduino boards.
+                    </div>
+
+                    <h3>Arduino Code Examples</h3>
+                    <div class="code-block">
+<pre>// Using Internal Pull-Up
+pinMode(7, INPUT_PULLUP);
+int state = digitalRead(7);
+// Pressed = LOW, Not Pressed = HIGH
+
+// Using External Pull-Down
+pinMode(8, INPUT);
+int state = digitalRead(8);
+// Pressed = HIGH, Not Pressed = LOW</pre>
+                    </div>
+
+                    <h3>When to Use Which?</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Use This</th>
+                        </tr>
+                        <tr>
+                            <td>Digital buttons/switches</td>
+                            <td>Pull-up (internal or external)</td>
+                        </tr>
+                        <tr>
+                            <td>I2C Communication</td>
+                            <td>External pull-up (4.7kΩ typical)</td>
+                        </tr>
+                        <tr>
+                            <td>Floating analog pins</td>
+                            <td>Not typically used (use external circuit)</td>
+                        </tr>
+                        <tr>
+                            <td>Save components</td>
+                            <td>Internal pull-up (no external resistor)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- INTERFACING TAB -->
+        <div id="interfacing" class="tab-content">
+            <div class="post">
+                <div class="post-header">
+                    <span class="post-id">Post #18</span>
+                    <span class="post-category">Practical</span>
+                </div>
+                <h2 class="post-title">Interfacing Sensors to Arduino Uno - The Field Guide</h2>
+                <div class="post-content">
+                    <h3>Temperature Sensor (LM35 / TMP36)</h3>
+                    
+                    <div class="sensor-card">
+                        <h4>Wiring</h4>
+                        <div class="code-block">
+<pre>LM35 Pinout (flat side facing you):
+[VCC] [Vout] [GND]
+  |      |      |
+  5V    A0    GND</pre>
+                        </div>
+                        
+                        <h4>Code</h4>
+                        <div class="code-block">
+<pre>int tempPin = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int reading = analogRead(tempPin);
+  float voltage = reading * (5.0 / 1023.0);
+  float tempC = voltage * 100; // LM35: 10mV per °C
+  
+  Serial.print("Temperature: ");
+  Serial.print(tempC);
+  Serial.println(" °C");
+  
+  delay(1000);
+}</pre>
+                        </div>
+                    </div>
+
+                    <h3>Light Sensor (LDR)</h3>
+                    
+                    <div class="sensor-card">
+                        <h4>Wiring (Voltage Divider)</h4>
+                        <div class="code-block">
+<pre>     5V
+      |
+     LDR
+      |
+     A0 ----[10kΩ]---- GND</pre>
+                        </div>
+                        
+                        <h4>Code</h4>
+                        <div class="code-block">
+<pre>int ldrPin = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int lightLevel = analogRead(ldrPin);
+  
+  Serial.print("Light Level: ");
+  Serial.println(lightLevel);
+  
+  if (lightLevel < 300) {
+    Serial.println("Dark");
+  } else if (lightLevel < 700) {
+    Serial.println("Dim");
+  } else {
+    Serial.println("Bright");
+  }
+  
+  delay(500);
+}</pre>
+                        </div>
+                    </div>
+
+                    <h3>Ultrasonic Distance Sensor (HC-SR04)</h3>
+                    
+                    <div class="sensor-card">
+                        <h4>Wiring</h4>
+                        <div class="code-block">
+<pre>HC-SR04 Pins:
+VCC  → 5V
+TRIG → Pin 9
+ECHO → Pin 10
+GND  → GND</pre>
+                        </div>
+                        
+                        <h4>Code</h4>
+                        <div class="code-block">
+<pre>const int trigPin = 9;
+const int echoPin = 10;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() {
+  // Send pulse
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Read echo
+  long duration = pulseIn(echoPin, HIGH);
+  
+  // Calculate distance (cm)
+  float distance = duration * 0.034 / 2;
+  
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  
+  delay(500);
+}</pre>
+                        </div>
+                    </div>
+
+                    <h3>Humidity Sensor (DHT11)</h3>
+                    
+                    <div class="sensor-card">
+                        <h4>Wiring</h4>
+                        <div class="code-block">
+<pre>DHT11 Pins (left to right):
+Pin 1 (VCC)  → 5V
+Pin 2 (Data) → Pin 2 (with 10kΩ pull-up to 5V)
+Pin 3 (NC)   → Not connected
+Pin 4 (GND)  → GND</pre>
+                        </div>
+                        
+                        <h4>Code (requires DHT library)</h4>
+                        <div class="code-block">
+<pre>#include "DHT.h"
+
+#define DHTPIN 2
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+}
+
+void loop() {
+  float humidity = dht.readHumidity();
+  float tempC = dht.readTemperature();
+  
+  if (isnan(humidity) || isnan(tempC)) {
+    Serial.println("Failed to read from DHT");
+    return;
+  }
+  
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.print("%  Temperature: ");
+  Serial.print(tempC);
+  Serial.println("°C");
+  
+  delay(2000);
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        Always check sensor datasheets for voltage requirements! Some sensors are 3.3V, using 5V will fry them. Use level shifters when needed.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SERIAL MONITOR TAB -->
+        <div id="serial" class="tab-content">
+            <div class="post">
+                <div class="post-header">
+                    <span class="post-id">Post #19</span>
+                    <span class="post-category">Debugging</span>
+                </div>
+                <h2 class="post-title">Reading Sensor Data on Serial Monitor - Debug Like a Pro</h2>
+                <div class="post-content">
+                    <h3>What's the Serial Monitor?</h3>
+                    <p>The Serial Monitor is Arduino IDE's built-in terminal that lets you see data sent from your Arduino in real-time. Essential for debugging and monitoring sensor values.</p>
+
+                    <h3>Basic Serial Commands</h3>
+                    <div class="code-block">
+<pre>// Initialize serial communication (in setup)
+Serial.begin(9600); // 9600 baud rate
+
+// Print without newline
+Serial.print("Temperature: ");
+Serial.print(temp);
+
+// Print with newline
+Serial.println(" °C");
+
+// Print in different formats
+Serial.print(value, DEC); // Decimal (default)
+Serial.print(value, HEX); // Hexadecimal
+Serial.print(value, BIN); // Binary
+Serial.print(value, 2);   // 2 decimal places for floats</pre>
+                    </div>
+
+                    <h3>Complete Example - Multi-Sensor Monitoring</h3>
+                    <div class="code-block">
+<pre>int tempPin = A0;
+int lightPin = A1;
+int buttonPin = 2;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(buttonPin, INPUT_PULLUP);
+  Serial.println("=== Arduino Sensor Monitor ===");
+}
+
+void loop() {
+  // Read sensors
+  int tempRaw = analogRead(tempPin);
+  int lightRaw = analogRead(lightPin);
+  int buttonState = digitalRead(buttonPin);
+  
+  // Convert temperature
+  float voltage = tempRaw * (5.0 / 1023.0);
+  float tempC = voltage * 100;
+  
+  // Format output
+  Serial.println("====================");
+  Serial.print("Temp: ");
+  Serial.print(tempC, 1);
+  Serial.print("°C | Light: ");
+  Serial.print(lightRaw);
+  Serial.print(" | Button: ");
+  Serial.println(buttonState == LOW ? "PRESSED" : "RELEASED");
+  
+  delay(1000);
+}</pre>
+                    </div>
+
+                    <h3>Advanced Serial Techniques</h3>
+                    
+                    <div class="sensor-card">
+                        <h4>CSV Format (Easy to import to Excel)</h4>
+                        <div class="code-block">
+<pre>void loop() {
+  Serial.print(millis());
+  Serial.print(",");
+  Serial.print(temp);
+  Serial.print(",");
+  Serial.print(humidity);
+  Serial.print(",");
+  Serial.println(pressure);
+  delay(1000);
+}
+// Output: 1000,25.3,65.2,1013.25</pre>
+                        </div>
+                    </div>
+
+                    <div class="sensor-card">
+                        <h4>Reading Serial Input (Interactive)</h4>
+                        <div class="code-block">
+<pre>void setup() {
+  Serial.begin(9600);
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.println("Type 'ON' or 'OFF':");
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+    
+    if (command == "ON") {
+      digitalWrite(LED_BUILTIN, HIGH);
+      Serial.println("LED turned ON");
+    } else if (command == "OFF") {
+      digitalWrite(LED_BUILTIN, LOW);
+      Serial.println("LED turned OFF");
+    }
+  }
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        Pro Tip: Match baud rates! Arduino's Serial.begin(9600) must match the Serial Monitor's dropdown setting (bottom-right corner of Arduino IDE).
+                    </div>
+
+                    <h3>Common Serial Monitor Shortcuts</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Action</th>
+                            <th>Shortcut</th>
+                        </tr>
+                        <tr>
+                            <td>Open Serial Monitor</td>
+                            <td>Ctrl + Shift + M</td>
+                        </tr>
+                        <tr>
+                            <td>Clear Output</td>
+                            <td>Click "Clear output" button</td>
+                        </tr>
+                        <tr>
+                            <td>Autoscroll</td>
+                            <td>Check "Autoscroll" box</td>
+                        </tr>
+                        <tr>
+                            <td>Send Data</td>
+                            <td>Type in input box + Enter</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTUATORS TAB -->
+        <div id="actuators" class="tab-content">
+            <div class="post">
+                <div class="post-header">
+                    <span class="post-id">Post #20</span>
+                    <span class="post-category">Theory</span>
+                </div>
+                <h2 class="post-title">Introduction to Actuators - Making Things Move</h2>
+                <div class="post-content">
+                    <h3>What's an Actuator?</h3>
+                    <p>If sensors are Arduino's INPUT devices (reading the world), <span class="highlight">actuators are OUTPUT devices</span> that make things happen in the physical world. They convert electrical signals into physical action.</p>
+
+                    <div class="info-box">
+                        Think of it this way: Sensors = Eyes & Ears | Actuators = Hands & Mouth
+                    </div>
+
+                    <h3>Common Types of Actuators</h3>
+
+                    <div class="sensor-card">
+                        <h4>LEDs (Light Emitting Diodes)</h4>
+                        <ul>
