@@ -8,7 +8,8 @@ body {
     margin: 0;
     padding: 1rem;
     box-sizing: border-box;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Prevent horizontal scroll */
 }
 
 .header {
@@ -21,9 +22,12 @@ body {
 }
 
 article {
-    margin: 1rem 0; /* Reduced margin for mobile */
-    padding: 0.75rem; /* Slightly reduced padding */
-    max-width: 100%; /* Ensure it doesn't overflow */
+    margin: 1rem 0;
+    /* Reduced margin for mobile */
+    padding: 0.75rem;
+    /* Slightly reduced padding */
+    max-width: 100%;
+    /* Ensure it doesn't overflow */
     box-sizing: border-box;
 }
 
@@ -35,10 +39,12 @@ time {
 
 h1 {
     font-family: 'DM Serif Text', serif;
-    font-size: 2rem; /* Reduced from 3rem for mobile */
+    font-size: 2rem;
+    /* Reduced from 3rem for mobile */
     margin-bottom: 0.5rem;
     color: #333;
-    line-height: 1.2; /* Better line height for readability */
+    line-height: 1.2;
+    /* Better line height for readability */
 }
 
 hr {
@@ -51,7 +57,8 @@ hr {
 
 h2 {
     font-family: 'Lexend Deca', sans-serif;
-    font-size: 1rem; /* Reduced from 2rem for mobile */
+    font-size: 1rem;
+    /* Reduced from 2rem for mobile */
     margin-bottom: 0.5rem;
     font-weight: 600;
     color: #555;
@@ -68,14 +75,18 @@ iframe {
     max-width: 100%;
     border-radius: 8px;
 }
-    
+
 p {
     font-family: 'Lexend Deca', sans-serif;
-    font-size: 0.9rem; /* Slightly smaller for mobile readability */
+    font-size: 0.9rem;
+    /* Slightly smaller for mobile readability */
     margin-bottom: 1rem;
+    font-weight: 300;
     color: #000000;
-    line-height: 1.5; /* Better line height for readability */
+    line-height: 1.5;
+    /* Better line height for readability */
 }
+
 blockquote {
     font-size: 0.9rem;
     margin: 1rem 0;
@@ -83,7 +94,8 @@ blockquote {
     line-height: 1.5;
     background-color: #f9f9f9;
     border-left: 4px solid #333;
-} 
+}
+
 ol {
     font-family: 'Lexend Deca', sans-serif;
     font-size: 0.9rem;
@@ -92,6 +104,7 @@ ol {
     color: #666;
     line-height: 1.5;
 }
+
 /* Media query for larger screens */
 @media (min-width: 768px) {
     body {
@@ -109,7 +122,7 @@ ol {
         font-size: 2.5rem;
         margin-top: 2rem;
     }
-    
+
     article {
         width: 100%;
         margin: 2rem 0;
@@ -122,17 +135,17 @@ ol {
         font-size: 1.2rem;
         color: #666;
     }
-    
+
     h1 {
         font-size: 3rem;
     }
-    
+
     h2 {
         font-size: 1.5rem;
         margin-top: 2.5rem;
         margin-bottom: 1rem;
     }
-    
+
     blockquote {
         font-size: 1.2rem;
         margin: 1rem 0;
@@ -140,9 +153,11 @@ ol {
         background-color: #f9f9f9;
         border-left: 4px solid #333;
     }
+
     p {
         font-size: 1.5rem;
     }
+
     img {
         max-width: 100%;
         height: auto;
@@ -155,4 +170,88 @@ ol {
         transform: translate(50%, 0%);
     }
 
+}
+
+
+/* Dark mode styles */
+[data-theme="dark"] nav {
+    background-color: #f9f9f9;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .nav-brand {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .nav-links a {
+    color: #e0e0e0;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .nav-links a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .theme-toggle,
+[data-theme="dark"] .hamburger {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .theme-toggle:hover,
+[data-theme="dark"] .hamburger:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .hamburger span {
+    background: #e0e0e0;
+}
+
+[data-theme="dark"] .sidebar {
+    backdrop-filter: brightness(0.8);
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .sidebar-header {
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .sidebar-title,
+[data-theme="dark"] .theme-label {
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .close-sidebar {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .close-sidebar:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .section-title {
+    color: #999;
+}
+
+[data-theme="dark"] .blog-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+}
+
+[data-theme="dark"] .blog-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="dark"] .blog-date,
+[data-theme="dark"] .no-posts {
+    color: #999;
+}
+
+[data-theme="dark"] .sidebar-section {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
 }
