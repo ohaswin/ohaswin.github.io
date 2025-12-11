@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+    <title>Blog Post Title</title>
+    <meta name="title" content="Blog Post Title" />
+    <meta name="description" content="Short description of the blog post." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ohaswin.github.io/blog/post-url" />
+    <meta property="og:title" content="Blog Post Title" />
+    <meta property="og:description" content="Short description of the blog post." />
+    <meta property="og:image" content="https://example.com/default-image.jpg" />
+
+    <!-- X (Twitter) -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://ohaswin.github.io/blog/post-url" />
+    <meta property="twitter:title" content="Blog Post Title" />
+    <meta property="twitter:description" content="Short description of the blog post." />
+    <meta property="twitter:image" content="https://example.com/default-image.jpg" />
+
+    <!-- Font loading optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload"
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/blog/style.css">
+    <script src="/blog/js/navbar.js"></script>
+    <script>
+        function addElapsedDate() {
+            const timeElements = document.querySelectorAll("time");
+            const now = new Date();
+
+            timeElements.forEach(timeElement => {
+                const date = new Date(timeElement.getAttribute("datetime"));
+                let elapsed = Math.floor((now - date) / 1000); // seconds
+
+                let result = "";
+                if (elapsed < 60) {
+                    result = `${elapsed} seconds ago`;
+                } else if (elapsed < 3600) {
+                    const minutes = Math.floor(elapsed / 60);
+                    result = `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 86400) {
+                    const hours = Math.floor(elapsed / 3600);
+                    result = `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 604800) {
+                    const days = Math.floor(elapsed / 86400);
+                    result = `${days} day${days !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 2592000) {
+                    const weeks = Math.floor(elapsed / 604800);
+                    result = `${weeks} week${weeks !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 31536000) {
+                    const months = Math.floor(elapsed / 2592000);
+                    result = `${months} month${months !== 1 ? "s" : ""} ago`;
+                } else {
+                    const years = Math.floor(elapsed / 31536000);
+                    result = `${years} year${years !== 1 ? "s" : ""} ago`;
+                }
+
+                timeElement.textContent += ` (${result})`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <glassmorphic-navbar 
+        site-name="ohaswin"
+        logo="/android-chrome-512x512.png"
+        bg-url="https://example.com/default-image.jpg"
+        blogs-json="/blog.json">
+    </glassmorphic-navbar>
+    <article>
+        <h1>Blog Post Title</h1>
+        <time datetime="2025-12-10T00:00:00+05:30">December 10, 2025</time>
+        <script>addElapsedDate();</script>
+        <hr>
+        <!-- Start writing your blog post content below -->
+        <h2>Section Title</h2>
+        <p>Your content goes here...</p>
+        <!-- Example image -->
+        <img src="https://example.com/default-image.jpg" width="600" alt="Blog image">
+        <!-- Example blockquote -->
+        <blockquote>
+            <small>Author Name</small>: Quote goes here.
+        </blockquote>
+        <p><i>- Source, Year</i></p>
+        <!-- Example embed -->
+        <!-- <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allowfullscreen></iframe> -->
+    </article>
+</body>
+</html>

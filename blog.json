@@ -13,29 +13,11 @@
       "url": "/blog/weheartpy"
     },
     {
-      "id": "internet",
-      "title": "Justifying The Internet",
-      "date": "2025-09-08T20:12:00+05:30",
-      "url": "/blog/internet"
-    },
-    {
-      "id": "weheartpy",
-      "title": "Reverse Engineering the WeHeartIt API",
-      "date": "2022-08-28T20:12:00+05:30",
-      "url": "/blog/weheartpy"
-    },
-    {
-      "id": "internet",
-      "title": "Justifying The Internet",
-      "date": "2025-09-08T20:12:00+05:30",
-      "url": "/blog/internet"
-    },
-    {
-      "id": "weheartpy",
-      "title": "Reverse Engineering the WeHeartIt API",
-      "date": "2022-08-28T20:12:00+05:30",
-      "url": "/blog/weheartpy"
+      "id": "ai",
+      "title": "Aswin's Survival Guide: AI Tools for Students",
+      "date": "2025-12-10T00:00:00+05:30",
+      "url": "/ai"
     }
   ],
-  "totalPosts": 2
+  "totalPosts": 3
 }
