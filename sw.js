@@ -6,6 +6,7 @@ const STATIC_RESOURCES = [
   '/',
   '/index.html',
   '/projects/index.html',
+  '/ai/index.html',
   '/blog/index.html',
   '/about/index.html',
   '/contact/index.html',
