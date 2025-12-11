@@ -178,6 +178,17 @@ class GlassmorphicNavbar extends HTMLElement {
           padding: 0 2rem;
           box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
           transition: background-size 0.5s ease, background-position 0.5s ease;
+          width: 100%;
+          max-width: 100%;
+          margin: 0;
+        }
+
+        @media (min-width: 601px) {
+          nav {
+            max-width: var(--max-width, 1200px);
+            margin-left: auto;
+            margin-right: auto;
+          }
         }
 
         nav:hover {
@@ -206,7 +217,6 @@ class GlassmorphicNavbar extends HTMLElement {
           height: 40px;
           border-radius: 50%;
           object-fit: cover;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .nav-links {
