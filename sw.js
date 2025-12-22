@@ -1,129 +1,70 @@
-const CACHE_NAME = 'ohaswin-cache-v1';
-const DEBUG = true;
-const DEV_MODE = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port !== '';
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js');
 
-const STATIC_RESOURCES = [
-  '/',
-  '/index.html',
-  '/projects/index.html',
-  '/ai/index.html',
-  '/blog/index.html',
-  '/about/index.html',
-  '/contact/index.html',
-  '/assets/me.avif',
-  '/assets/outp.webp',
-  '/assets/cd.avif',
-  '/assets/boy.avif',
-  '/assets/speak.avif',
-  '/preloader.js'
-];
+const CACHE_NAME = 'ohaswin-cache-v3';
+const DEV_MODE = self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1';
 
-function log(msg) {
-  if (DEBUG) console.log('[SW]', DEV_MODE ? '[DEV]' : '[PROD]', msg);
-}
+if (workbox) {
+  workbox.setConfig({ debug: DEV_MODE });
 
-// Install - cache static resources (only if not already cached)
-self.addEventListener('install', event => {
-  log('Installing...');
-  
-  if (DEV_MODE) {
-    log('Dev mode: Skipping cache installation');
-    self.skipWaiting();
-    return;
-  }
+  // Precache static resources
+  workbox.precaching.precacheAndRoute([
+    { url: '/index.html', revision: null },
+    { url: '/blog/index.html', revision: null },
+    { url: '/projects/index.html', revision: null },
+    { url: '/about/index.html', revision: null },
+    { url: '/contact/index.html', revision: null },
+    { url: '/assets/me.avif', revision: null },
+    { url: '/assets/outp.webp', revision: null },
+    { url: '/assets/cd.avif', revision: null },
+    { url: '/assets/boy.avif', revision: null },
+    { url: '/assets/speak.avif', revision: null },
+  ]);
 
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(async cache => {
-        const cachePromises = STATIC_RESOURCES.map(async url => {
-          const cached = await cache.match(url);
-          if (cached) {
-            log(`Already cached: ${url}`);
-            return Promise.resolve();
-          }
-          return cache.add(url).catch(err => 
-            log(`Failed to cache ${url}: ${err.message}`)
-          );
-        });
-        
-        return Promise.allSettled(cachePromises);
-      })
-      .then(() => self.skipWaiting())
-      .catch(err => console.error('Install failed:', err))
-  );
-});
-
-// Activate - clean old caches
-self.addEventListener('activate', event => {
-  log('Activating...');
-  event.waitUntil(
-    caches.keys()
-      .then(names => Promise.all(
-        names.filter(name => name !== CACHE_NAME)
-             .map(name => caches.delete(name))
-      ))
-      .then(() => self.clients.claim())
-  );
-});
-
-// Fetch - serve from cache first for instant loading
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET' || 
-      !event.request.url.startsWith(self.location.origin)) {
-    return;
-  }
-
-  // In dev mode, always fetch from network
-  if (DEV_MODE) {
-    log('Dev mode: Bypassing cache for ' + event.request.url);
-    event.respondWith(fetch(event.request));
-    return;
-  }
-
-  const url = new URL(event.request.url);
-  const isAsset = url.pathname.startsWith('/assets/');
-  const isHTML = event.request.headers.get('Accept').includes('text/html');
-
-  event.respondWith(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.match(event.request).then(cachedResponse => {
-        if (cachedResponse) {
-          log('✓ From cache: ' + event.request.url);
-          
-          const cacheDate = cachedResponse.headers.get('date');
-          const staleTime = isAsset ? 24 * 60 * 60 * 1000 : 3 * 60 * 60 * 1000;
-          const isStale = !cacheDate || 
-            (Date.now() - new Date(cacheDate).getTime()) > staleTime;
-
-          if (isStale && isHTML) {
-            fetch(event.request)
-              .then(networkResponse => {
-                if (networkResponse.ok) {
-                  cache.put(event.request, networkResponse.clone());
-                  log('↻ Updated stale cache: ' + event.request.url);
-                }
-              })
-              .catch(() => {});
-          }
-          
-          return cachedResponse;
-        }
-        
-        log('→ From network: ' + event.request.url);
-        return fetch(event.request).then(networkResponse => {
-          if (networkResponse.ok) {
-            cache.put(event.request, networkResponse.clone());
-            log('✓ Cached: ' + event.request.url);
-          }
-          return networkResponse;
-        });
-      });
-    }).catch(() => {
-      if (isHTML) {
-        return caches.match('/index.html');
-      }
-      return fetch(event.request);
+  // Stale-while-revalidate for all navigation requests (HTML)
+  workbox.routing.registerRoute(
+    ({ request }) => request.mode === 'navigate',
+    new workbox.strategies.StaleWhileRevalidate({
+      cacheName: CACHE_NAME + '-pages',
+      plugins: [
+        new workbox.expiration.ExpirationPlugin({
+          maxEntries: 30,
+          purgeOnQuotaError: true,
+        }),
+      ],
     })
   );
-});
+
+  // Cache-first for static assets (images, styles, scripts)
+  workbox.routing.registerRoute(
+    ({ request }) =>
+      request.destination === 'image' ||
+      request.destination === 'style' ||
+      request.destination === 'script',
+    new workbox.strategies.CacheFirst({
+      cacheName: CACHE_NAME + '-assets',
+      plugins: [
+        new workbox.expiration.ExpirationPlugin({
+          maxEntries: 50,
+          purgeOnQuotaError: true,
+        }),
+      ],
+    })
+  );
+
+  // Fallback to index.html for navigation requests when offline
+  workbox.routing.setCatchHandler(async ({ event }) => {
+    if (event.request.destination === 'document') {
+      return caches.match('/index.html');
+    }
+    return Response.error();
+  });
+
+  // Skip waiting and activate new SW immediately
+  workbox.core.skipWaiting();
+  workbox.core.clientsClaim();
+} else {
+  // Fallback: No Workbox loaded
+  self.addEventListener('install', event => self.skipWaiting());
+  self.addEventListener('activate', event => self.clients.claim());
+}
 
