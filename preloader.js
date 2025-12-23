@@ -13,6 +13,10 @@
 
   // Register service worker
   function initServiceWorker() {
+    if (DEV_MODE) {
+      log('Dev mode: Skipping service worker registration');
+      return;
+    }
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
         .then(() => log('SW registered'))
