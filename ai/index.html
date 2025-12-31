@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,95 +74,115 @@
         }
     </script>
 </head>
+
 <body>
-    <glassmorphic-navbar 
-        site-name="ohaswin"
-        logo="/android-chrome-512x512.png"
-        bg-url="https://i.pinimg.com/736x/d5/08/9e/d5089ed07b5499556e46adba62abf942.jpg"
-        blogs-json="/blog.json">
+    <glassmorphic-navbar site-name="ohaswin" logo="/android-chrome-512x512.png"
+        bg-url="https://i.pinimg.com/736x/d5/08/9e/d5089ed07b5499556e46adba62abf942.jpg" blogs-json="/blog.json">
     </glassmorphic-navbar>
     <article>
         <h1>Aswin's Survival Guide: AI Tools For Students</h1>
         <time datetime="2025-12-10T00:00:00+05:30">December 10, 2025</time>
         <script>addElapsedDate();</script>
 
-<callout-box label="TL;DR" imgcorner="/media/icons/eye.png"
-imgcornerpos="rb" imgcornersize="100px">
-    Transcript of a 30-minute workshop I haphazardly conducted for students at my college on AI tools. Find the (AI generated) slides <a href="https://gamma.app/docs/Aswins-Survival-Guide-AI-Tools-For-Students-4l18wpd9tnn0s68" target="_blank">here</a>.
-</callout-box>
+        <callout-box label="TL;DR" imgcorner="/media/icons/eye.png" imgcornerpos="rb" imgcornersize="100px">
+            Transcript of a 30-minute workshop I haphazardly conducted for students at my college on AI tools.
+             Find the (AI generated) slides <a 
+             href="https://gamma.app/docs/Aswins-Survival-Guide-AI-Tools-For-Students-4l18wpd9tnn0s68"
+            target="_blank">here</a>.
+        </callout-box>
+
+
         <blockquote>
             <small>J. A Anderson</small>: The computer program does not care.
         </blockquote>
         <code><i>- "An Introduction to Neural Networks", Introduction (ix), 1995</i></code>
-        <hr><p>
-        <i>Before starting this workshop, I'd like to solve some ideas people have about AI, or LLMs in general.</i>
+        <hr>
+        <p>
+            <i>Before starting this workshop, I'd like to solve some ideas people have about AI, or LLMs in general.</i>
         <ol>
-            <li>LLMs are <i>nothing more</i> than a word machine.<br>It doesn't think, it just predicts the next word based on the previous words.</li>
+            <li>LLMs are <i>nothing more</i> than a word machine.<br>It doesn't think, it just predicts the next word
+                based on the previous words.</li>
             <li>AI is <i>biased</i>.<br>It reflects the biases present in the data it was trained on.</li>
             <li>AI is fallible.<br>It <i>can</i> make mistakes and should be used with caution.</li>
-            <li>AI is not only for tech-savvy people.<br>With proper guidance, <i>anyone</i> can use AI tools effectively, depending on what they're doing.</li>
-            <li>AI, at the end of the day, is a tool.<br><i>Like any tool, it can be used for good or bad purposes depending on the user.</i></li>
+            <li>AI is not only for tech-savvy people.<br>With proper guidance, <i>anyone</i> can use AI tools
+                effectively, depending on what they're doing.</li>
+            <li>AI, at the end of the day, is a tool.<br><i>Like any tool, it can be used for good or bad purposes
+                    depending on the user.</i></li>
         </ol>
         </p>
         <h2>The 4 Rules to use any AI Tool Effectively</h2>
         <ol>
             <li>Give Context</li>
             <p>The day before your exam, when you open chatgpt or gemini, and say "Explain data types in C"
-            its like walking upto a random person on the street (who just happens to be a CS scholar)
-            and asking them the same question. It leaves them unprepared, lacking context.</p>
+                its like walking upto a random person on the street (who just happens to be a CS scholar)
+                and asking them the same question. It leaves them unprepared, lacking context.</p>
             <li>Give them a Persona</li>
-            <p>When I sing a song to my GF, and ask her how it was, she's gonna say it was lovely or that it was really nice.
-                Let's say I ask my friend Ananthu, a music producer, for feedback. He's going to give me a more technical critique,
+            <p>When I sing a song to my GF, and ask her how it was, she's gonna say it was lovely or that it was really
+                nice.
+                Let's say I ask my friend Ananthu, a music producer, for feedback. He's going to give me a more
+                technical critique,
                 focusing on the key, tempo, and quality etc.<br>
                 You decide whether you want the 'GF' or 'Ananthu' when you ask an LLM about something.<br>
-                For example: "Explain data types in C as if you are a college professor teaching first year students." <br>
+                For example: "Explain data types in C as if you are a college professor teaching first year students."
+                <br>
                 (This rule may or may not be relevant for future models)
             </p>
             <li>Provide Examples</li>
-            <p>Set the output, don't give the AI any room for errors. When you go to a barbershop, tell him you want it short on the sides,
+            <p>Set the output, don't give the AI any room for errors. When you go to a barbershop, tell him you want it
+                short on the sides,
                 with a little bit on top sometimes he gives you motta crap and makes you look like Vijay from friends.
                 Instead, you could have show'ed him a photo, so he looks at it for a second and nods.</p>
             <li>Set Constraints</li>
             <p>AI is a yapper and a people pleaser. Your job is to minimize the yapping.
-            If you're looking for a specific format or length, say so. 
-            For example: "Summarize this article in 3 bullet points." This helps the AI understand your expectations better.</p>
+                If you're looking for a specific format or length, say so.
+                For example: "Summarize this article in 3 bullet points." This helps the AI understand your expectations
+                better.</p>
         </ol>
         <h2>AI Tools for Students</h2>
         <ol>
             <li><a href="https://notebooklm.google" target="_blank">NotebookLM</a>
             </li>
-        <img src="/media/ai/notebooklm.png" width="600" alt="NotebookLM Screenshot">
-            <p>A smart notebook that helps you organize your thoughts and ideas. The overviews are good, especially video and infographics.
-                I like plugging in government datasets and the infographics come out really nice, often revealing insights I hadn't thought of.</p>
+            <img src="/media/ai/notebooklm.png" width="600" alt="NotebookLM Screenshot">
+            <p>A smart notebook that helps you organize your thoughts and ideas. The overviews are good, especially
+                video and infographics.
+                I like plugging in government datasets and the infographics come out really nice, often revealing
+                insights I hadn't thought of.</p>
             </p>
             <li><a href="https://claude.ai" target="_blank">Claude</a></li>
-        <img src="/media/ai/claude.png" width="600" alt="Claude Screenshot">
-            <p>An AI assistant, better than chatgpt right now, for writing and brainstorming ideas. 
-                Gets rate limited more easily, but it gives more "usefulness" per token than whatever OpenAI has been doing for a while.</p>
+            <img src="/media/ai/claude.png" width="600" alt="Claude Screenshot">
+            <p>An AI assistant, better than chatgpt right now, for writing and brainstorming ideas.
+                Gets rate limited more easily, but it gives more "usefulness" per token than whatever OpenAI has been
+                doing for a while.</p>
             <li><a href="https://perplexity.ai" target="_blank">Perplexity</a></li>
-        <img src="/media/ai/perplexity.png" width="600" alt="Perplexity Screenshot">
+            <img src="/media/ai/perplexity.png" width="600" alt="Perplexity Screenshot">
             <p>Search engine + LLMs that helps you explore complex topics and find answers quickly.<br>
-            Ex: "What should i know before the markets open today?"</p>
+                Ex: "What should i know before the markets open today?"</p>
             <li><a href="https://gamma.ai" target="_blank">Gamma</a></li>
-        <img src="/media/ai/gamma.png" width="600" alt="Gamma Screenshot">
-            <p>An AI-powered platform for creating presentations and visual content. I made the presentation for this workshop here from a suggestion by Claude.</p>
+            <img src="/media/ai/gamma.png" width="600" alt="Gamma Screenshot">
+            <p>An AI-powered platform for creating presentations and visual content. I made the presentation for this
+                workshop here from a suggestion by Claude.</p>
         </ol>
         <p>
-        Which should tell you that using these AI tools on their own leaves little to be desired.<br>
-        The key to using them effectively is to combine them with the 4 rules mentioned above. 
-        Say you have to take a seminar on a topic you know nothing about.<br>
-        You could use Perplexity to get a quick overview of the topic, then use Claude to brainstorm ideas and structure your presentation, 
-        and finally use Gamma to create visually appealing slides.<br></p>
+            Which should tell you that using these AI tools on their own leaves little to be desired.<br>
+            The key to using them effectively is to combine them with the 4 rules mentioned above.
+            Say you have to take a seminar on a topic you know nothing about.<br>
+            You could use Perplexity to get a quick overview of the topic, then use Claude to brainstorm ideas and
+            structure your presentation,
+            and finally use Gamma to create visually appealing slides.<br></p>
         <br>
         <p>
-            Split your thinking into steps, use the right tool for each step, and apply the 4 rules to get the best results.<br>
-            Always experiment, reiterate, and refine your prompts to improve what you get. It's a loop of constantly finding out what works 
+            Split your thinking into steps, use the right tool for each step, and apply the 4 rules to get the best
+            results.<br>
+            Always experiment, reiterate, and refine your prompts to improve what you get. It's a loop of constantly
+            finding out what works
             best with these ever-changing models.<br>
         </p>
         <blockquote>
             <small>J. A Anderson</small>: ...because it is sometimes believed that a brainlike computing device,
-            if we could build it, will immediately become a wonder network capable of solving all our problems. We hope to show that 
-            there is no magic in neural networks. Networks do suggest, however, a number of fascinating and useful ideas that in the long run
+            if we could build it, will immediately become a wonder network capable of solving all our problems. We hope
+            to show that
+            there is no magic in neural networks. Networks do suggest, however, a number of fascinating and useful ideas
+            that in the long run
             are of more value than magic.
         </blockquote>
         <code><i>- "An Introduction to Neural Networks", Introduction (ix), 1995</i></code>
@@ -169,4 +190,5 @@ imgcornerpos="rb" imgcornersize="100px">
         <!-- <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allowfullscreen></iframe> -->
     </article>
 </body>
+
 </html>
