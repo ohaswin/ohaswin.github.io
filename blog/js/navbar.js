@@ -8,7 +8,7 @@ class GlassmorphicNavbar extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['bg-url', 'logo', 'site-name', 'blogs-json'];
+        return ['bg-url', 'logo', 'site-name', 'blogs-json', 'bg-pos-x', 'bg-pos-y'];
     }
 
     async connectedCallback() {
@@ -145,6 +145,9 @@ class GlassmorphicNavbar extends HTMLElement {
         const bgUrl = this.getAttribute('bg-url') || 'https://images.unsplash.com/photo-1557683316-973673baf926';
         const logo = this.getAttribute('logo') || '';
         const siteName = this.getAttribute('site-name') || 'My Site';
+        // New: get bg-pos-x and bg-pos-y, default to 50%
+        const bgPosX = this.getAttribute('bg-pos-x') || '50';
+        const bgPosY = this.getAttribute('bg-pos-y') || '50';
 
         this.shadowRoot.innerHTML = `
       <style>
@@ -169,7 +172,7 @@ class GlassmorphicNavbar extends HTMLElement {
           height: 70px;
           background-image: url('${bgUrl}');
           background-size: cover;
-          background-position: center;
+          background-position: ${bgPosX}% ${bgPosY}%;
           backdrop-filter: blur(20px) saturate(180%);
           -webkit-backdrop-filter: blur(20px) saturate(180%);
           border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -367,7 +370,7 @@ class GlassmorphicNavbar extends HTMLElement {
         .sidebar-title a {
           padding: 0.35rem;
           border-radius: 28px;
-          color: #333;
+          color: #b5a2a2;
           text-decoration: none;
           font-weight: 600;
         }
@@ -474,7 +477,7 @@ class GlassmorphicNavbar extends HTMLElement {
         }
 
         .theme-label {
-          color: #333;
+          color: #b5a2a2;
           font-weight: 500;
         }
 
