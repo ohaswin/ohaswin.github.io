@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+    <title>The College Website: Part 1</title>
+    <meta name="title" content="The College Website: Part 1" />
+    <meta name="description" content="Broke college appoints broke student to build their entire college website. Does he survive? Find out more in the first part of The College Website series." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ohaswin.github.io/blog/the-college-website-part-1" />
+    <meta property="og:title" content="The College Website: Part 1" />
+    <meta property="og:description" content="Broke college appoints broke student to build their entire college website. Does he survive? Find out more in the first part of The College Website series." />
+    <meta property="og:image" content="https://example.com/default-image.jpg" />
+
+    <!-- X (Twitter) -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://ohaswin.github.io/blog/the-college-website-part-1" />
+    <meta property="twitter:title" content="The College Website: Part 1" />
+    <meta property="twitter:description" content="Broke college appoints broke student to build their entire college website. Does he survive? Find out more in the first part of The College Website series." />
+    <meta property="twitter:image" content="https://example.com/default-image.jpg" />
+
+    <!-- Font loading optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload"
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/blog/style.css">
+    <script src="/blog/js/navbar.js"></script>
+    <script src="/blog/js/callout-box.js"></script>
+    <script>
+        function addElapsedDate() {
+            const timeElements = document.querySelectorAll("time");
+            const now = new Date();
+
+            timeElements.forEach(timeElement => {
+                const date = new Date(timeElement.getAttribute("datetime"));
+                let elapsed = Math.floor((now - date) / 1000); // seconds
+
+                let result = "";
+                if (elapsed < 60) {
+                    result = `${elapsed} seconds ago`;
+                } else if (elapsed < 3600) {
+                    const minutes = Math.floor(elapsed / 60);
+                    result = `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 86400) {
+                    const hours = Math.floor(elapsed / 3600);
+                    result = `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 604800) {
+                    const days = Math.floor(elapsed / 86400);
+                    result = `${days} day${days !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 2592000) {
+                    const weeks = Math.floor(elapsed / 604800);
+                    result = `${weeks} week${weeks !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 31536000) {
+                    const months = Math.floor(elapsed / 2592000);
+                    result = `${months} month${months !== 1 ? "s" : ""} ago`;
+                } else {
+                    const years = Math.floor(elapsed / 31536000);
+                    result = `${years} year${years !== 1 ? "s" : ""} ago`;
+                }
+
+                timeElement.textContent += ` (${result})`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <glassmorphic-navbar 
+        site-name="ohaswin"
+        logo="/android-chrome-512x512.png"
+        bg-url="https://i.pinimg.com/736x/9a/de/87/9ade879af7117ae6f4ce90ba5584f014.jpg"
+        blogs-json="/blog.json">
+    </glassmorphic-navbar>
+    <article>
+        <h1>The College Website: Part 1</h1>
+        <time datetime="2025-12-31T10:18:00+05:30">December 31, 2025</time>
+        <script>addElapsedDate();</script>
+        <hr>
+        <p>
+            <b>The obviousness of my insignificance was obvious in this insignificant college.</b> 
+        </p>
+        <p>
+            I was a first year CS student, so was Basil. If I had to stand out from other students (from very top institutions), I had to do something unique. <b>It was imperative.</b> 
+        </p>
+        <p>
+            One day, we went to the office to enquire about student emails. (Big companies give huge discounts if you're a student! I wonder how they benefit from it.)<br>Naturally, they denied the existence of such a thing.<br>"Why can't they exist? Just set a mail server up with the college domain!", I thought innocently. I had to check if we had a college domain at all.
+        </p>
+        <p>I regret checking. It was the most disappointing discovery of my college life. Here is an honest-to-god screenshot when i visited the site at a random time:</p>
+        <img src="/media/casvdy-error.jpg" alt="College Website Screenshot" style="max-width: 100%; height: auto;">
+        <p>
+            If i told someone what college I'm from and they googled it, they would think I'm pulling a Saul Goodman. "Is this a real college website? Are you sure you're not making this up?"
+            <img 
+                src="https://media.tenor.com/mukoXHOhzPMAAAAi/saul-goodman-better-call-saul.gif" 
+                alt="Saul Goodman Reaction GIF" 
+                style="max-width: 2em; height: 1.5em; vertical-align: middle; display: inline-block; margin-left: 0.2em;">
+        </p>
+        <p>
+            Shame has been a driving factor for many achievements in modern history. If I had to rebuild an entire college website by myself it would not be out of shame, necessity or even, say <i>love for the college</i>, but out of pure need to put something in my CV.
+        </p>
+        <p>That doesn't mean I was gonna half ass it, do the bare minimum or <i>god forbid</i> make something non functional. I was gonna do it my way. It's my way or highway. Which, literally works, because our college is right beside the highway.</p>
+        <p>
+            If you didn't get the idea from exploring my site (or at least, the innovative navbar), I have a stream-of-consciousness style of building art, or websites. This college website is the perfect place to experiment since:
+            <ol>
+                <li>It has to stay up for centuries, possibly with no changes, requiring design abilities of a sculptor.</li>
+                <li>Literally no one checks the website of this college, allowing me to do whatever I want.</li>
+                <li>My insatiable desire to create art can be satiated publicly, maybe I become the modern Warhol, who knows.</li>
+            </ol>
+        </p>
+        <callout-box label="fun fact" imgcorner="/assets/york.avif" imgcornerpos="rb" imgcornersize="80px">
+            <a href="https://en.wikipedia.org/wiki/Thom_Yorke" target="_blank" rel="noopener noreferrer">Thom Yorke</a> utilizes a stream-of-consciousness approach to songwriting, often treating his vocals as another instrument. He has mentioned that sometimes the words just pour out during the creative process, a method he has expressed admiration for in other artists as well, such as MF DOOM.
+        </callout-box>
+        <p>The site, run on WordPress on IHRD's servers had been abandoned like a dog in Palakkad Kota since some teacher who was maintaining it left. Basil did some sweet talk (he's like Steve Jobs) with the admin staff, lab teachers and principal and we decided to form a committee to maintain this upcoming new site. Digital Infrastructure & Development Committee, or DIDC for short. A lot of people forget the '&' for some reason.</p>
+        <p>If I didn't have Basil to deal with old people, stubborn people, navigate bureaucratic mazes designed by evil people this website would have never taken off, I'd have given up after a week. He's also the lead designer of the website, since I'd be too busy engineering the site having another brain focus on design was excellent.</p>
+        <callout-box label="tips from aswin" imgcorner="/media/icons/basil.png" imgcornerpos="lt" imgcornersize="80px">
+            I feel like in any tech project, having someone focus entirely on tech, someone entirely on dealing with people and someone entirely on design is not a bad idea. Things move pretty fast. Also a guy to manage money, if you need those. Specialization ftw.
+        </callout-box>
+        <p>
+            I made a really nice proposal. Included current problems, proposed solutions, objectives, hierarchy in the committee, cost tables, everything. We got signatures from the HoDs, then the principal read it and on February 18, approved it. It was awesome.<br>
+            <br>It took me weeks to research the mechanics of launching a website, hosting, domains, everything. I didn't even have a toy AWS server at the time to experiment launching a website in production environment. Having those signed papers in my hand felt like I had conquered something and we were onto something big, something revolutionary.
+        </p>
+        <p>We were not.</p>
+        <p>In fact, what I'm about to tell you <b>will cause physical pain</b> to a software engineer, I can only hope that you will read the other parts so your image of who I am doesn't get destroyed.<br>What I'm about to mention are some regrets and lessons I learnt the hard way:</p>
+        <ol>
+            <li>
+                We built <b>everything from scratch</b> using HTML/CSS/JavaScript. No, not even tailwind. Reasons: html, css and js are easy to learn and update for future maintainers, college staff, etc. Surely the updates wouldn't have to be frequent, but when they do happen, it should be easy. Also, no dependencies on third party services, frameworks, etc.<br>I did have ideas to build the student login portal separately using Django + React, but we hadn't gotten that far yet.
+            </li><br>
+            <li>We took <b>too much time</b>. Most of it was data collection. Even though we had 5 content writers in the committee stuff could not be finished faster. There's also another reason why we didn't have enough time, which is our third reason:</li><br>
+            <li><b>The day we submitted the final website to the principal for review was the last day we would see him</b>. No he's not dead, his retirement party was next day and I don't think I've seen the guy since that March. The new interim principal was not very keen with what we've been doing for some reason, so we had some setbacks.</li>
+        </ol>
+        <p>During the next 2 months of vacation, I would go on to learn react, django, setting up AWS servers due to my 
+            open source work and contract jobs I got. it was really eye opening. It's how I realized we should have used react or something similar in the first place.
+            The abstraction is worth it for business logic. 
+        </p>
+        <p>Then came the new principal in November. I hoped he would be somewhat knowledgeable and he was. Guy has a PhD.</p>
+        <p>He took a look at our site once and called it an outdated piece of shit in the most polite way possible. He was not wrong.</p>
+        <p>We started to explore more, look at MIT, Harvard, Cambridge, IIT Madras websites and I was pretty confident I could build any website with Django now. Ideas started flowing unlike anything seen before. Dynamic content, new innovative ways to show what's happening around us, using component libraries like DaisyUI for consistent design, et cetera. I felt like we could actually make an industry standard institutional website.</p>
+        <p><b>It is the last day of the year.</b> I feel pretty good. The first "version" of the site has been sent to IHRD servers for deployment. I'd say only 40% of the site is done for now.</p>
+        <p>If someone told me this whole ordeal would take more than 6 months I would have not started working on it, due to my aversion to long term commitments that lead to nowhere.<br>But this actually feels like it could lead somewhere, lead me to a place where the obviousness of my insignificance is subtle, or even gone.</p>
+    </article>
+</body>
+</html>

@@ -27,7 +27,6 @@ class CalloutBox extends HTMLElement {
     const imgcorner = this.getAttribute('imgcorner') || '';
     const imgcornerpos = this.getAttribute('imgcornerpos') || 'rb'; // rb, rt, lb, lt
     const imgcornersize = this.getAttribute('imgcornersize') || '';
-    const content = this.innerHTML;
 
     // Determine corner position styles
     let imgPosStyle = '';
@@ -178,7 +177,7 @@ class CalloutBox extends HTMLElement {
         }
       </style>
       <aside class="callout" role="note" aria-label="${label}">
-        <div class="callout-content">${content}</div>
+        <div class="callout-content"><slot></slot></div>
         ${imgcorner ? `<img class="${imgClass}" src="${imgcorner}" alt="" loading="lazy" style="${imgPosStyle}${imgSizeStyle}">` : ''}
       </aside>
     `;
