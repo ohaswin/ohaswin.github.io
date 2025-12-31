@@ -25,6 +25,8 @@ class GlassmorphicNavbar extends HTMLElement {
             const data = await response.json();
             // Support both array format and object with "posts" key
             this.blogs = Array.isArray(data) ? data : (data.posts || []);
+            // Sort by date descending (latest first)
+            this.blogs.sort((a, b) => new Date(b.date) - new Date(a.date));
         } catch (error) {
             console.warn('Failed to load blogs:', error);
             this.blogs = [];
@@ -409,6 +411,27 @@ class GlassmorphicNavbar extends HTMLElement {
           margin-bottom: 1rem;
         }
 
+        .blog-list-container {
+          max-height: 320px;
+          overflow-y: auto;
+          background: rgba(255,255,255,0.08);
+          border-radius: 10px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+          padding: 0.5rem 0;
+        }
+
+        /* Optional: scrollbar styling */
+        .blog-list-container::-webkit-scrollbar {
+          width: 8px;
+        }
+        .blog-list-container::-webkit-scrollbar-thumb {
+          background: rgba(0,0,0,0.08);
+          border-radius: 4px;
+        }
+        :host([data-theme="dark"]) .blog-list-container {
+          background: rgba(0,0,0,0.13);
+        }
+
         .blog-list {
           display: flex;
           flex-direction: column;
@@ -624,13 +647,15 @@ class GlassmorphicNavbar extends HTMLElement {
 
         <div class="sidebar-section">
           <div class="section-title">Recent Posts</div>
-          <div class="blog-list">
-            ${this.blogs.length ? this.blogs.map(blog => `
-              <a href="${blog.url}" class="blog-item">
-                <div class="blog-title">${blog.title}</div>
-                <div class="blog-date">${this.formatDate(blog.date)}</div>
-              </a>
-            `).join('') : '<div class="no-posts">No recent posts</div>'}
+          <div class="blog-list-container">
+            <div class="blog-list">
+              ${this.blogs.length ? this.blogs.map(blog => `
+                <a href="${blog.url}" class="blog-item">
+                  <div class="blog-title">${blog.title}</div>
+                  <div class="blog-date">${this.formatDate(blog.date)}</div>
+                </a>
+              `).join('') : '<div class="no-posts">No recent posts</div>'}
+            </div>
           </div>
         </div>
 
