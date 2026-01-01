@@ -13,9 +13,13 @@ class GlassmorphicNavbar extends HTMLElement {
 
     async connectedCallback() {
         await this.loadBlogs();
+        await this.applyPaletteFromImage();
         this.render();
         this.attachEventListeners();
-        this.loadThemePreference();
+        // Set dark mode as default theme
+        document.documentElement.setAttribute('data-theme', 'dark');
+        this.setAttribute('data-theme', 'dark');
+        this.updateThemeToggle('dark');
     }
 
     async loadBlogs() {
@@ -33,13 +37,80 @@ class GlassmorphicNavbar extends HTMLElement {
         }
     }
 
-    loadThemePreference() {
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        this.setAttribute('data-theme', savedTheme);
-        this.updateThemeToggle(savedTheme);
+    async applyPaletteFromImage() {
+        const bgUrl = this.getAttribute('bg-url') || 'https://images.unsplash.com/photo-1557683316-973673baf926';
+        const img = document.createElement('img');
+        img.crossOrigin = 'anonymous';
+        img.src = bgUrl;
 
-        // Watch for theme changes on document
+        try {
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+            });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 50;
+            canvas.height = 50;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const colorCount = {};
+            for (let i = 0; i < data.length; i += 4) {
+                const r = Math.round(data[i] / 32) * 32;
+                const g = Math.round(data[i + 1] / 32) * 32;
+                const b = Math.round(data[i + 2] / 32) * 32;
+                const key = `${r},${g},${b}`;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            }
+            const sortedColors = Object.entries(colorCount)
+                .sort((a, b) => b[1] - a[1])
+                .map(([key]) => key);
+
+            const [main = '32,32,32', accent = '224,224,224', light = '192,192,192'] = sortedColors;
+            const toHex = rgb => '#' + rgb.split(',').map(x => (+x).toString(16).padStart(2, '0')).join('');
+
+            // Helper to lighten/darken a color
+            function adjustColor(hex, amt) {
+                let [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+                r = Math.min(255, Math.max(0, r + amt));
+                g = Math.min(255, Math.max(0, g + amt));
+                b = Math.min(255, Math.max(0, b + amt));
+                return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+            }
+
+            // Set variables for light theme
+            this.style.setProperty('--navbar-accent', toHex(accent));
+            this.style.setProperty('--navbar-accent-dark', toHex(main));
+            this.style.setProperty('--navbar-accent-light', toHex(light));
+
+            // Set variables for dark theme (lighter accent, darker main)
+            this.style.setProperty('--navbar-accent-darkmode', adjustColor(toHex(main), -40));
+            this.style.setProperty('--navbar-accent-lightmode', adjustColor(toHex(accent), 60));
+            this.style.setProperty('--navbar-accent-bg-darkmode', adjustColor(toHex(light), -20));
+
+            const sidebarBg = toHex(light);
+            const sidebarText = this.getContrastYIQ(sidebarBg);
+            this.style.setProperty('--sidebar-text', sidebarText);
+        } catch (e) {
+            // Fallback colors
+            this.style.setProperty('--navbar-accent', '#2196f3');
+            this.style.setProperty('--navbar-accent-dark', '#1565c0');
+            this.style.setProperty('--navbar-accent-light', '#bbdefb');
+            this.style.setProperty('--navbar-accent-darkmode', '#222');
+            this.style.setProperty('--navbar-accent-lightmode', '#eee');
+            this.style.setProperty('--navbar-accent-bg-darkmode', '#111');
+        }
+    }
+
+    loadThemePreference() {
+        // Always use dark mode for sidebar/mobile
+        document.documentElement.setAttribute('data-theme', 'dark');
+        this.setAttribute('data-theme', 'dark');
+        this.updateThemeToggle('dark');
+
+        // Watch for theme changes on document (for desktop header buttons only)
         this.themeObserver = new MutationObserver(() => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             if (currentTheme) {
@@ -141,11 +212,22 @@ class GlassmorphicNavbar extends HTMLElement {
         }
     }
 
+    getContrastYIQ(hexcolor) {
+        // Remove # if present
+        hexcolor = hexcolor.replace('#', '');
+        // Convert to RGB
+        let r = parseInt(hexcolor.substr(0,2),16);
+        let g = parseInt(hexcolor.substr(2,2),16);
+        let b = parseInt(hexcolor.substr(4,2),16);
+        // YIQ formula
+        let yiq = ((r*299)+(g*587)+(b*114))/1000;
+        return (yiq >= 128) ? '#111' : '#fff';
+    }
+
     render() {
         const bgUrl = this.getAttribute('bg-url') || 'https://images.unsplash.com/photo-1557683316-973673baf926';
         const logo = this.getAttribute('logo') || '';
         const siteName = this.getAttribute('site-name') || 'My Site';
-        // New: get bg-pos-x and bg-pos-y, default to 50%
         const bgPosX = this.getAttribute('bg-pos-x') || '50';
         const bgPosY = this.getAttribute('bg-pos-y') || '50';
 
@@ -370,7 +452,7 @@ class GlassmorphicNavbar extends HTMLElement {
         .sidebar-title a {
           padding: 0.35rem;
           border-radius: 28px;
-          color: #b5a2a2;
+          color: #333;
           text-decoration: none;
           font-weight: 600;
         }
@@ -477,7 +559,7 @@ class GlassmorphicNavbar extends HTMLElement {
         }
 
         .theme-label {
-          color: #b5a2a2;
+          color: #333;
           font-weight: 500;
         }
 
@@ -490,86 +572,67 @@ class GlassmorphicNavbar extends HTMLElement {
         }
 
         :host([data-theme="dark"]) nav {
-          border-bottom-color: rgba(255, 255, 255, 0.1);
+          border-bottom-color: var(--navbar-accent-bg-darkmode, transparent);
         }
-
         :host([data-theme="dark"]) .nav-brand {
-          color: #e0e0e0;
+          color: var(--navbar-accent-lightmode, #eee);
         }
-
         :host([data-theme="dark"]) .nav-links a {
-          color: #e0e0e0;
-          background: rgba(255, 255, 255, 0.1);
-          border-color: rgba(255, 255, 255, 0.2);
+          color: var(--navbar-accent-lightmode, #eee);
+          background: var(--navbar-accent-darkmode, #222);
+          border-color: var(--navbar-accent-lightmode, #444);
         }
-
         :host([data-theme="dark"]) .nav-links a:hover {
-          background: rgba(255, 255, 255, 0.2);
+          background: var(--navbar-accent-darkmode, #333);
         }
-
-          
         :host([data-theme="dark"]) .theme-toggle,
         :host([data-theme="dark"]) .hamburger {
-          background: rgba(255, 255, 255, 0.1);
-          border-color: rgba(255, 255, 255, 0.2);
+          background: var(--navbar-accent-darkmode, #222);
+          border-color: var(--navbar-accent-lightmode, #444);
         }
-
         :host([data-theme="dark"]) .theme-toggle:hover,
         :host([data-theme="dark"]) .hamburger:hover {
-          background: rgba(255, 255, 255, 0.2);
+          background: var(--navbar-accent-darkmode, #333);
         }
-
         :host([data-theme="dark"]) .hamburger span {
-          background: #e0e0e0;
+          background: var(--navbar-accent-lightmode, #eee);
         }
-
         :host([data-theme="dark"]) .sidebar {
           backdrop-filter: brightness(0.3);
         }
-
         :host([data-theme="dark"]) .sidebar-header {
           backdrop-filter: brightness(0.3);
-          background: rgba(255, 255, 255, 0.05);
-          border-bottom-color: rgba(255, 255, 255, 0.1);
+          background: var(--navbar-accent-bg-darkmode, #222);
         }
-
         :host([data-theme="dark"]) .sidebar-title,
         :host([data-theme="dark"]) .theme-label {
-          color: #e0e0e0;
+          color: var(--navbar-accent-lightmode, #eee);
         }
-
         :host([data-theme="dark"]) .close-sidebar {
-          background: rgba(255, 255, 255, 0.1);
-          color: #e0e0e0;
+          background: var(--navbar-accent-darkmode, #222);
+          color: var(--navbar-accent-lightmode, #eee);
         }
-
         :host([data-theme="dark"]) .close-sidebar:hover {
-          background: rgba(255, 255, 255, 0.2);
+          background: var(--navbar-accent-darkmode, #333);
         }
-
         :host([data-theme="dark"]) .section-title {
-          color: #999;
+          color: var(--navbar-accent-lightmode, #bbb);
         }
-
         :host([data-theme="dark"]) .blog-item {
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(255, 255, 255, 0.1);
-          color: #e0e0e0;
+          background: var(--navbar-accent-darkmode, #222);
+          border-color: var(--navbar-accent-lightmode, #444);
+          color: var(--navbar-accent-lightmode, #eee);
         }
-
         :host([data-theme="dark"]) .blog-item:hover {
-          background: rgba(255, 255, 255, 0.1);
-          border-color: rgba(255, 255, 255, 0.15);
+          background: var(--navbar-accent-darkmode, #333);
+          border-color: var(--navbar-accent-lightmode, #666);
         }
-
         :host([data-theme="dark"]) .blog-date,
         :host([data-theme="dark"]) .no-posts {
-          color: #999;
+          color: var(--navbar-accent-lightmode, #bbb);
         }
-
         :host([data-theme="dark"]) .sidebar-section {
           backdrop-filter: brightness(0.3);
-          border-bottom-color: rgba(255, 255, 255, 0.05);
         }
 
         /* Mobile responsive */
@@ -660,11 +723,6 @@ class GlassmorphicNavbar extends HTMLElement {
               `).join('') : '<div class="no-posts">No recent posts</div>'}
             </div>
           </div>
-        </div>
-
-        <div class="sidebar-section theme-section">
-          <span class="theme-label">Dark Mode</span>
-          <button class="theme-toggle" aria-label="Toggle theme">🌙</button>
         </div>
       </div>
     `;
