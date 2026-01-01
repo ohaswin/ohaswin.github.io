@@ -124,22 +124,7 @@ class CalloutBox extends HTMLElement {
         .corner-img:hover {
           transform: scale(1.07) rotate(-2deg);
         }
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-          aside.callout {
-            background: #232526;
-            color: #e0e0e0;
-            border: 1px solid #444;
-          }
-          .callout::after {
-            background: #232526;
-            color: #e0e0e0;
-            box-shadow: 0 1px 4px 0 rgba(0,0,0,0.18);
-          }
-          .corner-img {
-            filter: invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.18));
-          }
-        }
+        /* Dark mode support using data-theme */
         :host-context([data-theme="dark"]) aside.callout {
           background: #232526 !important;
           color: #e0e0e0 !important;
