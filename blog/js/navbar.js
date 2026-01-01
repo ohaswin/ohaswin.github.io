@@ -438,8 +438,8 @@ class GlassmorphicNavbar extends HTMLElement {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
           display: flex;
           justify-content: space-around;
-          align-items: center;
-          padding: 1.5rem;
+          align-items: last baseline;
+          padding: 1rem;
           border-bottom: 1px solid rgba(0, 0, 0, 0.1);
           background: rgba(0, 0, 0, 0.02);
         }
@@ -454,6 +454,7 @@ class GlassmorphicNavbar extends HTMLElement {
           border-radius: 28px;
           color: #333;
           text-decoration: none;
+          text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
           font-weight: 600;
         }
 
@@ -499,7 +500,7 @@ class GlassmorphicNavbar extends HTMLElement {
         .blog-list-container {
           max-height: 320px;
           overflow-y: auto;
-          background: rgba(255,255,255,0.08);
+          overflow-x: hidden;
           border-radius: 10px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.03);
           padding: 0.5rem 0;
@@ -512,9 +513,6 @@ class GlassmorphicNavbar extends HTMLElement {
         .blog-list-container::-webkit-scrollbar-thumb {
           background: rgba(0,0,0,0.08);
           border-radius: 4px;
-        }
-        :host([data-theme="dark"]) .blog-list-container {
-          background: rgba(0,0,0,0.13);
         }
 
         .blog-list {
@@ -602,7 +600,7 @@ class GlassmorphicNavbar extends HTMLElement {
         }
         :host([data-theme="dark"]) .sidebar-header {
           backdrop-filter: brightness(0.3);
-          background: var(--navbar-accent-bg-darkmode, #222);
+          background: var(--navbar-accent-bg-darkmode, transparent);
         }
         :host([data-theme="dark"]) .sidebar-title,
         :host([data-theme="dark"]) .theme-label {
