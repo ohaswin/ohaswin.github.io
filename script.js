@@ -147,7 +147,7 @@ function initGameOfLife() {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    const resolution = 40;
+    let resolution = window.innerWidth < 768 ? 20 : 40; // Smaller grid on mobile
     let cols, rows;
     let grid;
     let animationId;
@@ -155,6 +155,15 @@ function initGameOfLife() {
     let startTimer = null;
 
     function resizeCanvas() {
+        const newResolution = window.innerWidth < 768 ? 20 : 40;
+
+        // If resolution changed, we should probably reset or accept the visual shift
+        if (newResolution !== resolution) {
+            resolution = newResolution;
+            // Optional: reset grid if resolution changes to avoid weird scaling artifacts
+            // grid = null; 
+        }
+
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         cols = Math.ceil(canvas.width / resolution);
