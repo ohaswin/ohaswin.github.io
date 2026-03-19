@@ -454,17 +454,68 @@
 
 
 
-      <div class="conclusion">
-        <h3>Conclusion</h3>
-        <ul>
-          <li>Each entity from the ER model was converted into a SQL <code style="font-family:var(--mono);font-size:12px;color:#74c69d;">CREATE TABLE</code> statement</li>
-          <li>Primary keys uniquely identify every row in each table</li>
-          <li>Foreign key constraints in ISSUE enforce referential integrity with STUDENT, BOOK, and LIBRARIAN</li>
-          <li>The M:N relationship between STUDENT and BOOK is resolved via the ISSUE junction table</li>
-          <li>The schema eliminates data redundancy and is ready for direct SQL execution</li>
-        </ul>
+      <div class="section">
+      <div class="section-hd"><span class="tag">Task 04</span><h2>Database Normalization (Up to 3NF)</h2></div>
+      
+      <div class="callout">
+        <strong>Goal:</strong> To eliminate data redundancy (repetition) and prevent update, insertion, and deletion anomalies by ensuring the schema follows the rules of Normal Forms.
       </div>
-    </div>
+
+      <div class="lbl">1. First Normal Form (1NF)</div>
+      <p style="font-size:13.5px;color:var(--ink-mid);margin-bottom:10px;">
+        A table is in 1NF if it contains only atomic (indivisible) values and there are no repeating groups.
+      </p>
+      <ul class="dashes">
+        <li><strong>Verification:</strong> In our <code>STUDENT</code> and <code>BOOK</code> tables, attributes like <code>Phone_No</code> and <code>Author</code> store single values per record.</li>
+        <li><strong>Action:</strong> We ensure that if a book has multiple authors or a student has multiple phones, they are handled via separate rows or related tables rather than comma-separated strings in a single cell.</li>
+      </ul>
+
+      <div class="lbl">2. Second Normal Form (2NF)</div>
+      <p style="font-size:13.5px;color:var(--ink-mid);margin-bottom:10px;">
+        A table is in 2NF if it is in 1NF and all non-key attributes are <strong>fully functionally dependent</strong> on the primary key. This eliminates partial dependencies.
+      </p>
+      <ul class="dashes">
+        <li><strong>Verification:</strong> All our tables (<code>STUDENT</code>, <code>BOOK</code>, <code>LIBRARIAN</code>) use single-column Primary Keys (e.g., <code>Book_ID</code>).</li>
+        <li><strong>Logic:</strong> Partial dependency only occurs when a primary key is composite (made of two or more columns). Since our keys are simple, every non-key attribute (like <code>Title</code> or <code>Email</code>) depends entirely on the whole primary key.</li>
+      </ul>
+
+      <div class="lbl">3. Third Normal Form (3NF)</div>
+      <p style="font-size:13.5px;color:var(--ink-mid);margin-bottom:10px;">
+        A table is in 3NF if it is in 2NF and there are no <strong>transitive dependencies</strong>. Non-key attributes must not depend on other non-key attributes.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Table</th><th>Transitive Dependency Check</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">STUDENT</td>
+              <td><code>Student_ID</code> &rarr; <code>Department</code>. No non-key attribute depends on Department.</td>
+              <td><span class="g">3NF Clear</span></td>
+            </tr>
+            <tr>
+              <td class="mono">BOOK</td>
+              <td><code>Book_ID</code> &rarr; <code>Publisher</code>. If we stored <code>Publisher_Address</code>, it would be a violation. Since we don't, it's clean.</td>
+              <td><span class="g">3NF Clear</span></td>
+            </tr>
+            <tr>
+              <td class="mono">ISSUE</td>
+              <td><code>Issue_ID</code> &rarr; <code>Fine_Amount</code>. Fine is calculated based on the <code>Return_Date</code>, but it is a transaction property.</td>
+              <td><span class="g">3NF Clear</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="conclusion" style="background: var(--green-pale); border: 1px solid var(--green); color: var(--ink);">
+        <h3 style="color: var(--green);">Normalization Result</h3>
+        <p style="color: var(--ink-mid); font-size: 13.5px;">
+          The designed schema is officially in <strong>3NF</strong>. By splitting the Library System into four distinct tables (Student, Book, Librarian, and Issue), we have ensured that each piece of data is stored in exactly one place, reducing storage costs and preventing data inconsistency.
+        </p>
+      </div>
+      </div>
+  
 
   </div>
 
