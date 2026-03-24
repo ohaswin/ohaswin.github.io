@@ -517,23 +517,47 @@ plt.show()`,
             // Render Code with Line Numbers and Highlighting
             const lines = prog.code.split('\n');
             let codeHtml = '';
+            
             lines.forEach((line, i) => {
-                // Escape HTML first to prevent rendering issues
-                let safeLine = line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                // Step 1: Escape HTML entities FIRST
+                let safeLine = line
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+
+                // Step 2: Apply syntax highlighting using regex on the escaped string
+                // We use a placeholder approach to avoid replacing inside our own HTML tags later
+                // But since we are doing this line by line and replacing text content, 
+                // we just need to be careful not to double-escape the HTML we are injecting.
                 
-                // Basic syntax highlighting (applied to escaped string)
-                // Note: Order matters. Strings first, then keywords.
-                let coloredLine = safeLine
-                    .replace(/(".*?")/g, '<span class="text-green-300">$1</span>')
-                    .replace(/\b(def|return|if|else|elif|for|while|import|print|in|or|and|class|try|except)\b/g, '<span class="text-pink-400">$1</span>')
-                    .replace(/\b(input|int|str|float|range|len|max|min|sum|np\.array|np\.dot|plt\.plot|plt\.show|plt\.xlabel|plt\.ylabel|plt\.title)\b/g, '<span class="text-blue-300">$1</span>')
-                    .replace(/(#.*)/g, '<span class="text-slate-500 italic">$1</span>');
+                // However, the cleanest way is to highlight, THEN wrap.
+                // Let's use a different approach: Tokenize or just be very specific with regex order.
+                
+                // Actually, the safest way to syntax highlight manually without a library 
+                // is to replace specific tokens with marked versions.
+                
+                let processedLine = safeLine;
+                
+                // Highlight Comments (must be first to avoid highlighting inside comments)
+                processedLine = processedLine.replace(/(#.*$)/gm, '<span class="text-slate-500 italic">$1</span>');
+                
+                // Highlight Strings (single or double quotes)
+                processedLine = processedLine.replace(/(&quot;.*?&quot;|&#039;.*?&#039;)/g, '<span class="text-green-300">$1</span>');
+                
+                // Highlight Keywords (using word boundaries \b)
+                const keywords = /\b(def|return|if|else|elif|for|while|import|from|as|print|in|or|and|not|class|try|except|finally|with|lambda|True|False|None)\b/g;
+                processedLine = processedLine.replace(keywords, '<span class="text-pink-400">$1</span>');
+                
+                // Highlight Functions/Builtins
+                const builtins = /\b(input|int|str|float|range|len|max|min|sum|list|dict|set|tuple|np\.array|np\.dot|np\.zeros|plt\.plot|plt\.show|plt\.xlabel|plt\.ylabel|plt\.title)\b/g;
+                processedLine = processedLine.replace(builtins, '<span class="text-blue-300">$1</span>');
 
                 codeHtml += `<div class="code-line px-2 py-0.5 flex" onmouseenter="highlightExp(${i})">
                     <span class="text-slate-600 select-none w-8 text-right mr-4 text-xs pt-0.5">${i+1}</span>
-                    <span class="whitespace-pre">${coloredLine}</span>
+                    <span class="whitespace-pre">${processedLine}</span>
                 </div>`;
             });
+            
             codeDisplay.innerHTML = codeHtml;
 
             // Render Explanations
@@ -548,7 +572,7 @@ plt.show()`,
             // Highlight first by default
             highlightExp(0);
         }
-        function highlightExp(lineIndex) {
+	function highlightExp(lineIndex) {
             // Remove active class from all
             document.querySelectorAll('.explanation-card').forEach(el => {
                 el.classList.remove('active');
