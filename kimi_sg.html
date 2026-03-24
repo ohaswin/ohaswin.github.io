@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Lab Exam Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom Scrollbar for code blocks */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        /* Smooth fade in */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Line highlight effect */
+        .code-line:hover {
+            background-color: #e2e8f0;
+            cursor: pointer;
+            border-left: 3px solid #3b82f6;
+        }
+        .explanation-card.active {
+            border-left: 4px solid #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-slate-800 tracking-tight">Python<span class="text-blue-600">Prep</span></span>
+                </div>
+                <div class="flex space-x-4 items-center">
+                    <button onclick="switchTab('viva')" id="btn-viva" class="px-3 py-2 rounded-md text-sm font-medium text-blue-600 bg-blue-50 transition-colors">
+                        Viva Questions
+                    </button>
+                    <button onclick="switchTab('lab')" id="btn-lab" class="px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition-colors">
+                        Lab Programs
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- SECTION 1: VIVA QUESTIONS -->
+        <div id="section-viva" class="fade-in">
+            <div class="mb-8 text-center">
+                <h1 class="text-3xl font-bold text-slate-900">Viva Voce Preparation</h1>
+                <p class="text-slate-500 mt-2">Key theoretical concepts for the oral exam.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Column 1 -->
+                <div class="space-y-4">
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">1. What is Python?</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            Python is a high-level, interpreted, general-purpose programming language created by Guido van Rossum in 1991. It is known for its simple, English-like syntax.
+                        </div>
+                    </details>
+
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">2. Key Features of Python</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Simple and easy to learn</li>
+                                <li>Interpreted (line-by-line execution)</li>
+                                <li>Dynamically Typed (no need to declare types)</li>
+                                <li>Open Source and Platform Independent</li>
+                                <li>Supports OOP, Procedural, and Functional programming</li>
+                            </ul>
+                        </div>
+                    </details>
+
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">3. Interpreted vs Compiled</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <strong>Compiled (C, Java):</strong> Converted to machine code all at once before execution.<br>
+                            <strong>Interpreted (Python):</strong> Executed line-by-line by an interpreter at runtime. No separate compilation step.
+                        </div>
+                    </details>
+
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">4. Dynamic Typing</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            Variables do not need a type declaration. Python figures out the type (int, string, etc.) automatically when you run the code, and the type can change during execution.
+                        </div>
+                    </details>
+                    
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">5. Indentation</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            Python uses indentation (spaces/tabs) to define code blocks instead of braces {}. Standard is 4 spaces per level. Incorrect indentation causes an <code>IndentationError</code>.
+                        </div>
+                    </details>
+                </div>
+
+                <!-- Column 2 -->
+                <div class="space-y-4">
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">6. Difference between List and Tuple</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <strong>List:</strong> Mutable (can be changed), defined with <code>[]</code>.<br>
+                            <strong>Tuple:</strong> Immutable (cannot be changed), defined with <code>()</code>. Tuples are faster and can be used as dictionary keys.
+                        </div>
+                    </details>
+
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">7. What is a Dictionary?</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            An unordered (in older versions) collection of key-value pairs. Keys must be unique and immutable. Defined with <code>{}</code>.
+                        </div>
+                    </details>
+
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">8. Difference between / and //</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <code>/</code> is True Division (returns float: <code>5/2 = 2.5</code>).<br>
+                            <code>//</code> is Floor Division (returns integer quotient rounded down: <code>5//2 = 2</code>).
+                        </div>
+                    </details>
+
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">9. Difference between == and is</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            <code>==</code> checks value equality.<br>
+                            <code>is</code> checks identity (if they are the same object in memory).
+                        </div>
+                    </details>
+                    
+                    <details class="group bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-4 cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
+                            <span class="font-semibold text-slate-800">10. What is NumPy?</span>
+                            <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                        </summary>
+                        <div class="p-4 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                            A library for Numerical Python. It provides fast operations on large multi-dimensional arrays and matrices.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: LAB PROGRAMS -->
+        <div id="section-lab" class="hidden fade-in">
+            <div class="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900">Lab Programs</h1>
+                    <p class="text-slate-500 mt-1">Line-by-line breakdown of practical questions.</p>
+                </div>
+                <select id="program-select" onchange="loadProgram(this.value)" class="block w-full sm:w-64 pl-3 pr-10 py-2 text-base border-slate-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md shadow-sm border bg-white">
+                    <option value="0">1. Sum of 4 Digits</option>
+                    <option value="1">2. Largest of Three (Func)</option>
+                    <option value="2">3. Check Prime (Func)</option>
+                    <option value="3">4. Factorial (Recursive)</option>
+                    <option value="4">5. Palindrome String</option>
+                    <option value="5">6. Count Vowels/Cons/etc</option>
+                    <option value="6">7. Set Operations</option>
+                    <option value="7">8. Telephone Directory</option>
+                    <option value="8">9. Matrix Multiplication</option>
+                    <option value="9">10. Line Plot Matplotlib</option>
+                </select>
+            </div>
+
+            <!-- Split Pane Container -->
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden flex flex-col lg:flex-row min-h-[600px]">
+                
+                <!-- Left: Code View -->
+                <div class="w-full lg:w-1/2 bg-slate-900 text-slate-50 overflow-x-auto border-b lg:border-b-0 lg:border-r border-slate-700">
+                    <div class="p-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center sticky top-0 z-10">
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Source Code</span>
+                        <span class="text-xs text-slate-500">Python 3</span>
+                    </div>
+                    <pre class="p-4 text-sm code-font leading-6" id="code-display"></pre>
+                </div>
+
+                <!-- Right: Explanation View -->
+                <div class="w-full lg:w-1/2 bg-slate-50 overflow-y-auto">
+                    <div class="p-4 bg-white border-b border-slate-200 sticky top-0 z-10">
+                        <h3 class="font-bold text-slate-800" id="exp-title">Explanation</h3>
+                    </div>
+                    <div class="p-6 space-y-4" id="explanation-display">
+                        <!-- Explanations injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm text-slate-400">Python Lab Exam Study Guide • Generated for Exam Prep</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Data: Programs & Explanations ---
+        const programs = [
+            {
+                title: "1. Sum of Digits",
+                code: `num = int(input("Enter 4-digit number: "))
+sum = 0
+while num > 0:
+    digit = num % 10
+    sum = sum + digit
+    num = num // 10
+print("Sum of digits =", sum)`,
+                explanation: [
+                    "Convert the user input to an integer and store it in <code>num</code>.",
+                    "Initialize a variable <code>sum</code> to 0 to hold the running total.",
+                    "Start a <code>while</code> loop that runs as long as <code>num</code> is greater than 0.",
+                    "Use the Modulus operator (<code>% 10</code>) to get the last digit of the number.",
+                    "Add the extracted digit to the <code>sum</code> variable.",
+                    "Use Floor Division (<code>// 10</code>) to remove the last digit from the number.",
+                    "Once the loop finishes (num becomes 0), print the final sum."
+                ]
+            },
+            {
+                title: "2. Largest of Three (Function)",
+                code: `def largest(a, b, c):
+    if a >= b and a >= c:
+        return a
+    elif b >= a and b >= c:
+        return b
+    else:
+        return c
+
+x = int(input("Enter first: "))
+y = int(input("Enter second: "))
+z = int(input("Enter third: "))
+print("Largest =", largest(x, y, z))`,
+                explanation: [
+                    "Define a function <code>largest</code> that accepts three parameters: a, b, and c.",
+                    "Check if <code>a</code> is greater than or equal to both <code>b</code> and <code>c</code>.",
+                    "If true, return <code>a</code> as the largest.",
+                    "Else, check if <code>b</code> is the largest.",
+                    "If neither a nor b is largest, return <code>c</code>.",
+                    "Take three integer inputs from the user and store them in x, y, z.",
+                    "Call the function with x, y, z and print the returned result."
+                ]
+            },
+            {
+                title: "3. Check Prime (Function)",
+                code: `def check_prime(n):
+    if n <= 1:
+        return False
+    for i in range(2, n):
+        if n % i == 0:
+            return False
+    return True
+
+num = int(input("Enter number: "))
+if check_prime(num):
+    print("Prime")
+else:
+    print("Not Prime")`,
+                explanation: [
+                    "Define function <code>check_prime</code> taking number <code>n</code>.",
+                    "Handle edge case: Numbers <= 1 are not prime.",
+                    "Loop from 2 up to (but not including) n.",
+                    "Check if n is divisible by <code>i</code> (using <code>%</code>).",
+                    "If divisible by any number, it is not prime. Return <code>False</code>.",
+                    "If the loop completes without finding a divisor, return <code>True</code>.",
+                    "Get input and print result based on the boolean returned."
+                ]
+            },
+            {
+                title: "4. Factorial (Recursive)",
+                code: `def factorial(n):
+    if n == 0 or n == 1:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+num = int(input("Enter number: "))
+print("Factorial =", factorial(num))`,
+                explanation: [
+                    "Define the recursive function <code>factorial</code>.",
+                    "<strong>Base Case:</strong> If n is 0 or 1, return 1 (Factorial of 0 and 1 is 1).",
+                    "<strong>Recursive Case:</strong> Return n multiplied by <code>factorial(n-1)</code>.",
+                    "This calls the function again with a smaller number until it hits the base case.",
+                    "Take user input for the number.",
+                    "Print the result of the recursive calculation."
+                ]
+            },
+            {
+                title: "5. Palindrome String",
+                code: `text = input("Enter string: ")
+rev = text[::-1]
+if text == rev:
+    print("Palindrome")
+else:
+    print("Not Palindrome")`,
+                explanation: [
+                    "Read the string input from the user.",
+                    "Use Python Slicing <code>[::-1]</code> to reverse the string. <code>-1</code> means step backwards.",
+                    "Store the reversed string in <code>rev</code>.",
+                    "Compare the original <code>text</code> with the reversed <code>rev</code>.",
+                    "If they are identical, print 'Palindrome'.",
+                    "Otherwise, print 'Not Palindrome'."
+                ]
+            },
+            {
+                title: "6. Count Characters",
+                code: `s = input("Enter string: ")
+vowels = 0
+consonants = 0
+digits = 0
+special = 0
+for ch in s:
+    if ch in "aeiouAEIOU":
+        vowels += 1
+    elif ch.isalpha():
+        consonants += 1
+    elif ch.isdigit():
+        digits += 1
+    else:
+        special += 1
+print(f"V:{vowels} C:{consonants} D:{digits} S:{special}")`,
+                explanation: [
+                    "Initialize four counters to zero.",
+                    "Loop through every character <code>ch</code> in the string <code>s</code>.",
+                    "Check if <code>ch</code> exists in the string of vowels (lowercase and uppercase).",
+                    "Else, check if it is an alphabet letter using <code>.isalpha()</code>.",
+                    "Else, check if it is a digit using <code>.isdigit()</code>.",
+                    "If none of the above, it is a special character.",
+                    "Increment the respective counter and print the final counts."
+                ]
+            },
+            {
+                title: "7. Set Operations",
+                code: `A = {1, 2, 3, 4}
+B = {3, 4, 5, 6}
+
+print("Union:", A | B)
+print("Intersection:", A & B)
+print("Difference:", A - B)
+print("Symmetric Diff:", A ^ B)`,
+                explanation: [
+                    "Define two sets, A and B, using curly braces <code>{}</code>.",
+                    "<strong>Union (<code>|</code>):</strong> Combines all unique elements from both sets.",
+                    "<strong>Intersection (<code>&</code>):</strong> Finds common elements in both sets.",
+                    "<strong>Difference (<code>-</code>):</strong> Finds elements in A that are not in B.",
+                    "<strong>Symmetric Diff (<code>^</code>):</strong> Finds elements in either set, but not in both.",
+                    "Print the results of these operations."
+                ]
+            },
+            {
+                title: "8. Telephone Directory",
+                code: `n = int(input("Number of contacts: "))
+phonebook = {}
+for i in range(n):
+    name = input("Enter name: ")
+    number = input("Enter number: ")
+    phonebook[name] = number
+print("\\nDirectory:")
+for name in phonebook:
+    print(name, ":", phonebook[name])`,
+                explanation: [
+                    "Ask how many contacts to add.",
+                    "Create an empty dictionary <code>phonebook</code>.",
+                    "Loop <code>n</code> times to get input.",
+                    "Take name and number as input.",
+                    "Add to dictionary: <code>key = name</code>, <code>value = number</code>.",
+                    "Loop through the dictionary keys.",
+                    "Print the key (name) and value (number) to display the directory."
+                ]
+            },
+            {
+                title: "9. Matrix Multiplication (NumPy)",
+                code: `import numpy as np
+
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+result = np.dot(A, B)
+print(result)`,
+                explanation: [
+                    "Import the NumPy library, usually aliased as <code>np</code>.",
+                    "Create matrix A using <code>np.array()</code> with a list of lists.",
+                    "Create matrix B similarly.",
+                    "Use <code>np.dot()</code> to perform matrix multiplication (dot product).",
+                    "Note: For element-wise multiplication, you would use <code>A * B</code>.",
+                    "Print the resulting matrix."
+                ]
+            },
+            {
+                title: "10. Line Plot (Matplotlib)",
+                code: `import matplotlib.pyplot as plt
+
+height = [145, 155, 165, 175, 185]
+weight = [43, 56, 60, 69, 78]
+
+plt.plot(height, weight)
+plt.xlabel("Height")
+plt.ylabel("Weight")
+plt.title("Height vs Weight")
+plt.show()`,
+                explanation: [
+                    "Import the pyplot module from matplotlib as <code>plt</code>.",
+                    "Define two lists: height and weight data.",
+                    "Call <code>plt.plot()</code> passing x-axis (height) and y-axis (weight).",
+                    "Set the label for the X-axis.",
+                    "Set the label for the Y-axis.",
+                    "Set the title of the graph window.",
+                    "Display the graph window using <code>plt.show()</code>."
+                ]
+            }
+        ];
+
+        // --- Logic: Switching & Rendering ---
+
+        function switchTab(tab) {
+            const vivaSection = document.getElementById('section-viva');
+            const labSection = document.getElementById('section-lab');
+            const btnViva = document.getElementById('btn-viva');
+            const btnLab = document.getElementById('btn-lab');
+
+            if (tab === 'viva') {
+                vivaSection.classList.remove('hidden');
+                labSection.classList.add('hidden');
+                
+                btnViva.classList.add('text-blue-600', 'bg-blue-50');
+                btnViva.classList.remove('text-slate-600');
+                
+                btnLab.classList.remove('text-blue-600', 'bg-blue-50');
+                btnLab.classList.add('text-slate-600');
+            } else {
+                vivaSection.classList.add('hidden');
+                labSection.classList.remove('hidden');
+                
+                btnLab.classList.add('text-blue-600', 'bg-blue-50');
+                btnLab.classList.remove('text-slate-600');
+                
+                btnViva.classList.remove('text-blue-600', 'bg-blue-50');
+                btnViva.classList.add('text-slate-600');
+                
+                // Load first program if not loaded
+                if(document.getElementById('code-display').innerHTML === "") {
+                    loadProgram(0);
+                }
+            }
+        }
+
+        function loadProgram(index) {
+            const prog = programs[index];
+            const codeDisplay = document.getElementById('code-display');
+            const expDisplay = document.getElementById('explanation-display');
+            const expTitle = document.getElementById('exp-title');
+
+            // Update Title
+            expTitle.textContent = prog.title;
+
+            // Render Code with Line Numbers and Highlighting
+            const lines = prog.code.split('\n');
+            let codeHtml = '';
+            lines.forEach((line, i) => {
+                // Escape HTML first to prevent rendering issues
+                let safeLine = line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                
+                // Basic syntax highlighting (applied to escaped string)
+                // Note: Order matters. Strings first, then keywords.
+                let coloredLine = safeLine
+                    .replace(/(".*?")/g, '<span class="text-green-300">$1</span>')
+                    .replace(/\b(def|return|if|else|elif|for|while|import|print|in|or|and|class|try|except)\b/g, '<span class="text-pink-400">$1</span>')
+                    .replace(/\b(input|int|str|float|range|len|max|min|sum|np\.array|np\.dot|plt\.plot|plt\.show|plt\.xlabel|plt\.ylabel|plt\.title)\b/g, '<span class="text-blue-300">$1</span>')
+                    .replace(/(#.*)/g, '<span class="text-slate-500 italic">$1</span>');
+
+                codeHtml += `<div class="code-line px-2 py-0.5 flex" onmouseenter="highlightExp(${i})">
+                    <span class="text-slate-600 select-none w-8 text-right mr-4 text-xs pt-0.5">${i+1}</span>
+                    <span class="whitespace-pre">${coloredLine}</span>
+                </div>`;
+            });
+            codeDisplay.innerHTML = codeHtml;
+
+            // Render Explanations
+            let expHtml = '';
+            prog.explanation.forEach((exp, i) => {
+                expHtml += `<div id="exp-${i}" class="explanation-card p-3 rounded bg-slate-100 text-slate-700 text-sm transition-all duration-200 border border-transparent">
+                    <span class="font-bold text-blue-600 mr-2">Line ${i+1}:</span> ${exp}
+                </div>`;
+            });
+            expDisplay.innerHTML = expHtml;
+            
+            // Highlight first by default
+            highlightExp(0);
+        }
+        function highlightExp(lineIndex) {
+            // Remove active class from all
+            document.querySelectorAll('.explanation-card').forEach(el => {
+                el.classList.remove('active');
+                el.classList.add('opacity-60'); // Dim others
+            });
+
+            // Add active to current
+            const activeEl = document.getElementById(`exp-${lineIndex}`);
+            if (activeEl) {
+                activeEl.classList.add('active');
+                activeEl.classList.remove('opacity-60');
+                activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Initialize
+        // (No init needed, default HTML state is Viva tab)
+    </script>
+</body>
+</html>
