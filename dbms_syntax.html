@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDBMS Syntax Reference</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .header p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        .syntax-card {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background: #34495e;
+            color: white;
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-content {
+            padding: 15px;
+        }
+        
+        .code-block {
+            background: #f4f4f4;
+            border-left: 3px solid #3498db;
+            padding: 12px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .note {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.85rem;
+            color: #856404;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-bottom: 8px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        @media (min-width: 480px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .mini-card {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .mini-card strong {
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+        
+        .mini-card code {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #495057;
+        }
+        
+        .divider {
+            height: 1px;
+            background: #dee2e6;
+            margin: 15px 0;
+        }
+        
+        .quick-list {
+            list-style: none;
+        }
+        
+        .quick-list li {
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+        
+        .quick-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .quick-list code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+        
+        .highlight {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📋 RDBMS Syntax Reference</h1>
+        <p>Quick lookup for lab exam</p>
+    </div>
+    
+    <div class="container">
+        
+        <!-- 1. Constraints -->
+        <div class="syntax-card">
+            <div class="card-header">1. Table Constraints (PK, FK)</div>
+            <div class="card-content">
+                <span class="tag">DDL</span>
+                
+                <div class="code-block">-- Create table with Primary Key
+CREATE TABLE table_name (
+    column1 datatype PRIMARY KEY,
+    column2 datatype,
+    ...
+);
+
+-- Create table with Foreign Key
+CREATE TABLE table_name (
+    column1 datatype PRIMARY KEY,
+    column2 datatype,
+    fk_column datatype,
+    FOREIGN KEY (fk_column) 
+    REFERENCES parent_table(parent_column)
+);</div>
+                
+                <div class="code-block">-- Example
+CREATE TABLE Student (
+    roll_no INT PRIMARY KEY,
+    name VARCHAR(50),
+    class VARCHAR(20)
+);
+
+CREATE TABLE Marks (
+    mark_id INT PRIMARY KEY,
+    roll_no INT,
+    subject VARCHAR(30),
+    marks INT,
+    FOREIGN KEY (roll_no) 
+    REFERENCES Student(roll_no)
+);</div>
+                
+                <div class="note">
+                    <strong>Remember:</strong> PK = Unique + Not Null. FK = Links to another table's PK.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DML Commands -->
+        <div class="syntax-card">
+            <div class="card-header">2. DML Commands (INSERT, UPDATE, DELETE)</div>
+            <div class="card-content">
+                <span class="tag">Data Manipulation</span>
+                
+                <div class="code-block">-- INSERT all columns
+INSERT INTO table_name 
+VALUES (value1, value2, value3);
+
+-- INSERT specific columns
+INSERT INTO table_name (col1, col2) 
+VALUES (value1, value2);
+
+-- UPDATE
+UPDATE table_name 
+SET column1 = value1, column2 = value2 
+WHERE condition;
+
+-- DELETE
+DELETE FROM table_name 
+WHERE condition;</div>
+                
+                <div class="code-block">-- Examples
+INSERT INTO Student VALUES (1, 'Rahul', '10th');
+INSERT INTO Student (roll_no, name) VALUES (2, 'Priya');
+
+UPDATE Student SET class = '11th' WHERE roll_no = 1;
+UPDATE Student SET name = 'Ramesh', class = '12th' WHERE roll_no = 2;
+
+DELETE FROM Student WHERE roll_no = 2;
+DELETE FROM Student;  -- Deletes ALL rows (DANGER!)</div>
+                
+                <div class="note">
+                    <strong>Warning:</strong> Always use WHERE with UPDATE and DELETE!
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ALTER & DROP -->
+        <div class="syntax-card">
+            <div class="card-header">3. ALTER & DROP (DDL)</div>
+            <div class="card-content">
+                <span class="tag">Structure Changes</span>
+                
+                <div class="code-block">-- ALTER: Add column
+ALTER TABLE table_name 
+ADD column_name datatype;
+
+-- ALTER: Drop column
+ALTER TABLE table_name 
+DROP COLUMN column_name;
+
+-- ALTER: Modify column
+ALTER TABLE table_name 
+MODIFY column_name new_datatype;
+
+-- DROP: Delete table
+DROP TABLE table_name;</div>
+                
+                <div class="code-block">-- Examples
+ALTER TABLE Student ADD email VARCHAR(50);
+ALTER TABLE Student DROP COLUMN email;
+ALTER TABLE Student MODIFY name VARCHAR(100);
+DROP TABLE Student;</div>
+                
+                <div class="note">
+                    <strong>Tip:</strong> ALTER changes structure. DROP deletes everything. Use CASCADE to drop dependent objects.
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ANY, ALL, EXISTS -->
+        <div class="syntax-card">
+            <div class="card-header">4. ANY, ALL, EXISTS, NOT EXISTS</div>
+            <div class="card-content">
+                <span class="tag">Subquery Operators</span>
+                
+                <div class="grid-2">
+                    <div class="mini-card">
+                        <strong>ANY</strong>
+                        <code>WHERE x > ANY (subquery)</code>
+                        <small>True if > any value</small>
+                    </div>
+                    <div class="mini-card">
+                        <strong>ALL</strong>
+                        <code>WHERE x > ALL (subquery)</code>
+                        <small>True if > all values</small>
+                    </div>
+                    <div class="mini-card">
+                        <strong>EXISTS</strong>
+                        <code>WHERE EXISTS (subquery)</code>
+                        <small>True if subquery returns rows</small>
+                    </div>
+                    <div class="mini-card">
+                        <strong>NOT EXISTS</strong>
+                        <code>WHERE NOT EXISTS (subquery)</code>
+                        <small>True if subquery empty</small>
+                    </div>
+                </div>
+                
+                <div class="code-block">-- ANY: Find marks > any student in Class B
+SELECT * FROM Student 
+WHERE marks > ANY (
+    SELECT marks FROM Student WHERE class = 'B'
+);
+
+-- ALL: Find marks > all students in Class B
+SELECT * FROM Student 
+WHERE marks > ALL (
+    SELECT marks FROM Student WHERE class = 'B'
+);
+
+-- EXISTS: Find classes that have students
+SELECT class_name FROM Class c
+WHERE EXISTS (
+    SELECT 1 FROM Student s 
+    WHERE s.class = c.class_name
+);
+
+-- NOT EXISTS: Find classes with no students
+SELECT class_name FROM Class c
+WHERE NOT EXISTS (
+    SELECT 1 FROM Student s 
+    WHERE s.class = c.class_name
+);</div>
+            </div>
+        </div>
+
+        <!-- 5. Set Operations -->
+        <div class="syntax-card">
+            <div class="card-header">5. Set Operations (UNION, INTERSECT, EXCEPT)</div>
+            <div class="card-content">
+                <span class="tag">Combining Results</span>
+                
+                <div class="code-block">-- UNION: Combine (no duplicates)
+SELECT column FROM table1
+UNION
+SELECT column FROM table2;
+
+-- UNION ALL: Combine (with duplicates)
+SELECT column FROM table1
+UNION ALL
+SELECT column FROM table2;
+
+-- INTERSECT: Common rows
+SELECT column FROM table1
+INTERSECT
+SELECT column FROM table2;
+
+-- EXCEPT/MINUS: In table1 but not table2
+SELECT column FROM table1
+EXCEPT
+SELECT column FROM table2;</div>
+                
+                <div class="code-block">-- Examples
+-- Students in Class A OR Class B
+SELECT name FROM ClassA
+UNION
+SELECT name FROM ClassB;
+
+-- Students in BOTH Class A AND Class B
+SELECT name FROM ClassA
+INTERSECT
+SELECT name FROM ClassB;
+
+-- Students in Class A but NOT in Class B
+SELECT name FROM ClassA
+EXCEPT
+SELECT name FROM ClassB;</div>
+                
+                <div class="note">
+                    <strong>Rule:</strong> Both queries must have same number of columns and compatible data types.
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. LIKE & BETWEEN -->
+        <div class="syntax-card">
+            <div class="card-header">6. LIKE & BETWEEN</div>
+            <div class="card-content">
+                <span class="tag">Pattern Matching & Range</span>
+                
+                <div class="code-block">-- LIKE Patterns
+SELECT * FROM table WHERE column LIKE 'A%';    -- Starts with A
+SELECT * FROM table WHERE column LIKE '%a';      -- Ends with a
+SELECT * FROM table WHERE column LIKE '%am%';    -- Contains 'am'
+SELECT * FROM table WHERE column LIKE 'R_hul';   -- R + any char + hul
+SELECT * FROM table WHERE column LIKE '_ _ _';   -- Exactly 3 chars
+
+-- BETWEEN (inclusive)
+SELECT * FROM table WHERE marks BETWEEN 60 AND 80;
+SELECT * FROM table WHERE date BETWEEN '2024-01-01' AND '2024-12-31';
+SELECT * FROM table WHERE name BETWEEN 'A' AND 'M';</div>
+                
+                <div class="note">
+                    <strong>Wildcards:</strong> % = any characters (0 or more), _ = exactly one character
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Nested & Correlated Queries -->
+        <div class="syntax-card">
+            <div class="card-header">7. Nested & Correlated Queries</div>
+            <div class="card-content">
+                <span class="tag">Subqueries</span>
+                
+                <div class="code-block">-- NESTED QUERY (Inner runs first, once)
+SELECT * FROM Student 
+WHERE marks > (
+    SELECT AVG(marks) FROM Student
+);
+
+-- NESTED with IN
+SELECT * FROM Student 
+WHERE roll_no IN (
+    SELECT roll_no FROM Marks WHERE marks > 80
+);</div>
+                
+                <div class="code-block">-- CORRELATED QUERY (Inner runs for each outer row)
+-- Find students with marks above their class average
+SELECT name FROM Student s1
+WHERE marks > (
+    SELECT AVG(marks) FROM Student s2 
+    WHERE s2.class = s1.class
+);
+
+-- Correlated with EXISTS
+SELECT name FROM Student s
+WHERE EXISTS (
+    SELECT 1 FROM Marks m 
+    WHERE m.roll_no = s.roll_no AND m.marks > 90
+);</div>
+                
+                <div class="note">
+                    <strong>Difference:</strong> Nested = Independent. Correlated = Uses outer query data (slower, more powerful).
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. JOINS -->
+        <div class="syntax-card">
+            <div class="card-header">8. JOINS</div>
+            <div class="card-content">
+                <span class="tag">Combining Tables</span>
+                
+                <div class="code-block">-- INNER JOIN (Only matching rows)
+SELECT t1.col, t2.col
+FROM table1 t1
+INNER JOIN table2 t2 
+ON t1.common_col = t2.common_col;
+
+-- LEFT JOIN (All from left, matched from right)
+SELECT t1.col, t2.col
+FROM table1 t1
+LEFT JOIN table2 t2 
+ON t1.common_col = t2.common_col;
+
+-- RIGHT JOIN (All from right, matched from left)
+SELECT t1.col, t2.col
+FROM table1 t1
+RIGHT JOIN table2 t2 
+ON t1.common_col = t2.common_col;
+
+-- EQUI JOIN (Using = in WHERE)
+SELECT * FROM table1 t1, table2 t2
+WHERE t1.common_col = t2.common_col;</div>
+                
+                <div class="code-block">-- Examples
+-- Student names with their marks
+SELECT s.name, m.subject, m.marks
+FROM Student s
+INNER JOIN Marks m ON s.roll_no = m.roll_no;
+
+-- All students (even if no marks)
+SELECT s.name, m.marks
+FROM Student s
+LEFT JOIN Marks m ON s.roll_no = m.roll_no;</div>
+                
+                <div class="note">
+                    <strong>Memory:</strong> LEFT = Left table is boss (all rows kept). INNER = Only matching rows.
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. Aggregate Functions -->
+        <div class="syntax-card">
+            <div class="card-header">9. Aggregate Functions</div>
+            <div class="card-content">
+                <span class="tag">Calculations</span>
+                
+                <ul class="quick-list">
+                    <li><code>COUNT(*)</code> - Count all rows</li>
+                    <li><code>COUNT(column)</code> - Count non-null values</li>
+                    <li><code>SUM(column)</code> - Total sum</li>
+                    <li><code>AVG(column)</code> - Average value</li>
+                    <li><code>MAX(column)</code> - Maximum value</li>
+                    <li><code>MIN(column)</code> - Minimum value</li>
+                </ul>
+                
+                <div class="code-block">-- Examples
+SELECT COUNT(*) FROM Student;
+SELECT COUNT(roll_no) FROM Student;
+SELECT SUM(marks) FROM Marks;
+SELECT AVG(marks) FROM Marks;
+SELECT MAX(marks) FROM Marks;
+SELECT MIN(marks) FROM Marks;
+
+-- Multiple aggregates
+SELECT 
+    COUNT(*) as total,
+    AVG(marks) as average,
+    MAX(marks) as highest
+FROM Marks;</div>
+            </div>
+        </div>
+
+        <!-- 10. GROUP BY & HAVING -->
+        <div class="syntax-card">
+            <div class="card-header">10. GROUP BY & HAVING</div>
+            <div class="card-content">
+                <span class="tag">Grouping Data</span>
+                
+                <div class="code-block">-- Basic GROUP BY
+SELECT column, aggregate_function(column)
+FROM table
+GROUP BY column;
+
+-- GROUP BY with HAVING
+SELECT column, aggregate_function(column)
+FROM table
+GROUP BY column
+HAVING condition;
+
+-- Full syntax with WHERE
+SELECT column, aggregate_function(column)
+FROM table
+WHERE condition
+GROUP BY column
+HAVING condition
+ORDER BY column;</div>
+                
+                <div class="code-block">-- Examples
+-- Count students per class
+SELECT class, COUNT(*) as total
+FROM Student
+GROUP BY class;
+
+-- Average marks per class (only if count > 5)
+SELECT class, AVG(marks) as avg_marks
+FROM Student
+GROUP BY class
+HAVING COUNT(*) > 5;
+
+-- Classes with average > 60
+SELECT class, AVG(marks) as avg_marks
+FROM Student
+GROUP BY class
+HAVING AVG(marks) > 60;</div>
+                
+                <div class="note">
+                    <strong>WHERE vs HAVING:</strong> WHERE filters rows BEFORE grouping. HAVING filters groups AFTER aggregation.
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. VIEWS -->
+        <div class="syntax-card">
+            <div class="card-header">11. VIEWS (CREATE, UPDATE, DELETE, DROP)</div>
+            <div class="card-content">
+                <span class="tag">Virtual Tables</span>
+                
+                <div class="code-block">-- CREATE VIEW
+CREATE VIEW view_name AS
+SELECT columns
+FROM tables
+WHERE conditions;
+
+-- CREATE OR REPLACE VIEW
+CREATE OR REPLACE VIEW view_name AS
+SELECT columns
+FROM tables
+WHERE conditions;
+
+-- UPDATE VIEW (modifies base table)
+UPDATE view_name 
+SET column = value 
+WHERE condition;
+
+-- DELETE from VIEW (modifies base table)
+DELETE FROM view_name 
+WHERE condition;
+
+-- DROP VIEW
+DROP VIEW view_name;</div>
+                
+                <div class="code-block">-- Examples
+CREATE VIEW TopStudents AS
+SELECT name, marks 
+FROM Student 
+WHERE marks > 80;
+
+CREATE OR REPLACE VIEW TopStudents AS
+SELECT name, marks, class 
+FROM Student 
+WHERE marks > 75;
+
+SELECT * FROM TopStudents;
+
+UPDATE TopStudents SET marks = 85 WHERE name = 'Rahul';
+
+DROP VIEW TopStudents;</div>
+                
+                <div class="note">
+                    <strong>Remember:</strong> View is just a saved query. Updating view updates the actual table.
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference Table -->
+        <div class="syntax-card">
+            <div class="card-header">⚡ Quick Command Reference</div>
+            <div class="card-content">
+                <ul class="quick-list">
+                    <li><span class="highlight">CREATE TABLE</span> - Make new table</li>
+                    <li><span class="highlight">ALTER TABLE</span> - Change table structure</li>
+                    <li><span class="highlight">DROP TABLE</span> - Delete table</li>
+                    <li><span class="highlight">INSERT INTO</span> - Add data</li>
+                    <li><span class="highlight">UPDATE</span> - Modify data</li>
+                    <li><span class="highlight">DELETE FROM</span> - Remove data</li>
+                    <li><span class="highlight">SELECT</span> - Retrieve data</li>
+                    <li><span class="highlight">WHERE</span> - Filter rows</li>
+                    <li><span class="highlight">GROUP BY</span> - Group rows</li>
+                    <li><span class="highlight">HAVING</span> - Filter groups</li>
+                    <li><span class="highlight">ORDER BY</span> - Sort results</li>
+                    <li><span class="highlight">JOIN</span> - Combine tables</li>
+                    <li><span class="highlight">CREATE VIEW</span> - Save query as virtual table</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>All the best for your lab exam! 🎯</p>
+        </div>
+    </div>
+</body>
+</html>
