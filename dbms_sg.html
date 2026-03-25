@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RDBMS Lab Exam Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .topic-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+        }
+        
+        .topic-header {
+            background: #fafafa;
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .topic-header h2 {
+            font-size: 1.1rem;
+            color: #444;
+            font-weight: 600;
+        }
+        
+        .topic-header::after {
+            content: '▼';
+            font-size: 0.8rem;
+            color: #999;
+            transition: transform 0.3s;
+        }
+        
+        .topic-card.active .topic-header::after {
+            transform: rotate(180deg);
+        }
+        
+        .topic-content {
+            padding: 20px;
+            display: none;
+        }
+        
+        .topic-card.active .topic-content {
+            display: block;
+        }
+        
+        .syntax-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .example-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+        
+        .example-box strong {
+            color: #2e7d32;
+            display: block;
+            margin-bottom: 6px;
+        }
+        
+        .note {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 10px 12px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: #e65100;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        
+        .practice-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .practice-section h2 {
+            color: #667eea;
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .question {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 600;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .answer {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+        }
+        
+        .show-answer {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+        
+        .show-answer:hover {
+            background: #5a67d8;
+        }
+        
+        .highlight {
+            background: yellow;
+            padding: 0 2px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.85rem;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        
+        .quick-tip {
+            background: #e8eaf6;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+        
+        .quick-tip strong {
+            color: #3f51b5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗄️ RDBMS Lab Exam Guide</h1>
+        <p>Quick revision for tomorrow's practical</p>
+    </div>
+    
+    <div class="container">
+        <!-- Section 1: Constraints -->
+        <div class="topic-card active">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>1. Table with Constraints (PK, FK)</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">DDL</span>
+                <p><strong>What:</strong> Rules to keep data clean and connected between tables.</p>
+                
+                <div class="syntax-box">-- Create table with Primary Key
+CREATE TABLE Student (
+    roll_no INT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT
+);
+
+-- Create table with Foreign Key
+CREATE TABLE Marks (
+    mark_id INT PRIMARY KEY,
+    roll_no INT,
+    subject VARCHAR(30),
+    marks INT,
+    FOREIGN KEY (roll_no) REFERENCES Student(roll_no)
+);</div>
+                
+                <div class="example-box">
+                    <strong>Real Life:</strong> Student table = master list of students. Marks table = their scores. FK ensures you can't add marks for a student who doesn't exist.
+                </div>
+                
+                <div class="note">🔑 PK = Unique ID for each row. FK = Links to another table's PK.</div>
+            </div>
+        </div>
+
+        <!-- Section 2: DML Commands -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>2. DML Commands (INSERT, UPDATE, DELETE)</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Data Manipulation</span>
+                <p><strong>What:</strong> Add, change, or remove data.</p>
+                
+                <div class="syntax-box">-- INSERT: Add new data
+INSERT INTO Student VALUES (1, 'Rahul', 20);
+INSERT INTO Student (roll_no, name) VALUES (2, 'Priya');
+
+-- UPDATE: Change existing data
+UPDATE Student SET age = 21 WHERE roll_no = 1;
+
+-- DELETE: Remove data
+DELETE FROM Student WHERE roll_no = 2;</div>
+                
+                <div class="quick-tip">
+                    <strong>Remember:</strong> Always use WHERE with UPDATE and DELETE, or you'll change/delete everything!
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: ALTER and DROP -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>3. ALTER & DROP (DDL)</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Structure Changes</span>
+                
+                <div class="syntax-box">-- ALTER: Modify existing table
+ALTER TABLE Student ADD email VARCHAR(50);
+ALTER TABLE Student DROP COLUMN age;
+ALTER TABLE Student MODIFY name VARCHAR(100);
+
+-- DROP: Delete entire table
+DROP TABLE Student;</div>
+                
+                <div class="note">⚠️ DROP deletes everything forever. ALTER just changes structure, keeps data.</div>
+            </div>
+        </div>
+
+        <!-- Section 4: ANY, ALL, EXISTS -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>4. ANY, ALL, EXISTS, NOT EXISTS</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Subquery Operators</span>
+                
+                <table>
+                    <tr><th>Operator</th><th>Meaning</th></tr>
+                    <tr><td>ANY</td><td>True if matches ANY value in list</td></tr>
+                    <tr><td>ALL</td><td>True if matches ALL values in list</td></tr>
+                    <tr><td>EXISTS</td><td>True if subquery returns ANY row</td></tr>
+                    <tr><td>NOT EXISTS</td><td>True if subquery returns NO rows</td></tr>
+                </table>
+                
+                <div class="syntax-box">-- Find students with marks higher than ANY student in Class B
+SELECT * FROM Student 
+WHERE marks > ANY (SELECT marks FROM Student WHERE class = 'B');
+
+-- Find departments that have at least one employee
+SELECT dept_name FROM Department d
+WHERE EXISTS (SELECT 1 FROM Employee e WHERE e.dept_id = d.dept_id);</div>
+            </div>
+        </div>
+
+        <!-- Section 5: Set Operations -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>5. Set Operations (UNION, INTERSECT, EXCEPT)</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Combining Results</span>
+                
+                <div class="syntax-box">-- UNION: Combine results (removes duplicates)
+SELECT name FROM ClassA
+UNION
+SELECT name FROM ClassB;
+
+-- UNION ALL: Combine (keeps duplicates)
+SELECT name FROM ClassA
+UNION ALL
+SELECT name FROM ClassB;
+
+-- INTERSECT: Common to both
+SELECT name FROM ClassA
+INTERSECT
+SELECT name FROM ClassB;
+
+-- EXCEPT/MINUS: In first but not second
+SELECT name FROM ClassA
+EXCEPT
+SELECT name FROM ClassB;</div>
+                
+                <div class="note">📋 Both queries must have same number of columns and compatible data types.</div>
+            </div>
+        </div>
+
+        <!-- Section 6: LIKE and BETWEEN -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>6. LIKE & BETWEEN</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Pattern Matching</span>
+                
+                <div class="syntax-box">-- LIKE: Pattern matching
+SELECT * FROM Student WHERE name LIKE 'A%';    -- Starts with A
+SELECT * FROM Student WHERE name LIKE '%a';    -- Ends with a
+SELECT * FROM Student WHERE name LIKE '%am%';  -- Contains 'am'
+SELECT * FROM Student WHERE name LIKE 'R_hul'; -- R_hul (Rahul, Rihul)
+
+-- BETWEEN: Range check (inclusive)
+SELECT * FROM Student WHERE marks BETWEEN 60 AND 80;
+SELECT * FROM Orders WHERE date BETWEEN '2024-01-01' AND '2024-03-31';</div>
+                
+                <div class="quick-tip">
+                    <strong>Wildcards:</strong> % = any characters (0 or more), _ = exactly one character
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Nested & Correlated Queries -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>7. Nested & Correlated Queries</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Subqueries</span>
+                
+                <div class="syntax-box">-- NESTED: Inner query runs first, once
+SELECT * FROM Student 
+WHERE marks > (SELECT AVG(marks) FROM Student);
+
+-- CORRELATED: Inner query runs for each outer row
+SELECT name FROM Student s1
+WHERE marks > (SELECT AVG(marks) FROM Student s2 WHERE s2.class = s1.class);</div>
+                
+                <div class="example-box">
+                    <strong>Difference:</strong> Nested = Inner query runs once. Correlated = Inner query runs for every row in outer query (slower but powerful).
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 8: JOINS -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>8. JOINS</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Combining Tables</span>
+                
+                <div class="syntax-box">-- INNER JOIN: Only matching rows
+SELECT s.name, m.subject, m.marks
+FROM Student s
+INNER JOIN Marks m ON s.roll_no = m.roll_no;
+
+-- LEFT JOIN: All from left, matched from right
+SELECT s.name, m.marks
+FROM Student s
+LEFT JOIN Marks m ON s.roll_no = m.roll_no;
+
+-- RIGHT JOIN: All from right, matched from left
+SELECT s.name, m.marks
+FROM Student s
+RIGHT JOIN Marks m ON s.roll_no = m.roll_no;
+
+-- EQUI JOIN: Join using = operator (same as INNER JOIN)
+SELECT * FROM Student s, Marks m 
+WHERE s.roll_no = m.roll_no;</div>
+                
+                <div class="quick-tip">
+                    <strong>Memory Trick:</strong> LEFT = Left table is boss (all rows kept). INNER = Only common friends kept.
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 9: Aggregate Functions -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>9. Aggregate Functions</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Calculations</span>
+                
+                <div class="syntax-box">-- Basic aggregates
+SELECT COUNT(*) FROM Student;           -- Total rows
+SELECT COUNT(roll_no) FROM Student;     -- Non-null roll_no
+SELECT SUM(marks) FROM Marks;           -- Total marks
+SELECT AVG(marks) FROM Marks;           -- Average marks
+SELECT MAX(marks) FROM Marks;           -- Highest marks
+SELECT MIN(marks) FROM Marks;           -- Lowest marks</div>
+                
+                <div class="note">🧮 These functions work on groups of rows, not individual rows.</div>
+            </div>
+        </div>
+
+        <!-- Section 10: GROUP BY & HAVING -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>10. GROUP BY & HAVING</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Grouping Data</span>
+                
+                <div class="syntax-box">-- GROUP BY: Group rows by column
+SELECT class, COUNT(*) as total_students
+FROM Student
+GROUP BY class;
+
+-- HAVING: Filter groups (like WHERE but for groups)
+SELECT class, AVG(marks) as avg_marks
+FROM Student
+GROUP BY class
+HAVING AVG(marks) > 60;
+
+-- Combined with WHERE
+SELECT class, COUNT(*) as passed
+FROM Student
+WHERE marks >= 40
+GROUP BY class
+HAVING COUNT(*) > 5;</div>
+                
+                <div class="quick-tip">
+                    <strong>WHERE vs HAVING:</strong> WHERE filters rows BEFORE grouping. HAVING filters groups AFTER aggregation.
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 11: VIEWS -->
+        <div class="topic-card">
+            <div class="topic-header" onclick="toggleCard(this)">
+                <h2>11. VIEWS</h2>
+            </div>
+            <div class="topic-content">
+                <span class="tag">Virtual Tables</span>
+                
+                <div class="syntax-box">-- CREATE VIEW: Save a query as virtual table
+CREATE VIEW TopStudents AS
+SELECT name, marks FROM Student WHERE marks > 80;
+
+-- Use the view
+SELECT * FROM TopStudents;
+
+-- UPDATE VIEW: Modify view definition
+CREATE OR REPLACE VIEW TopStudents AS
+SELECT name, marks, class FROM Student WHERE marks > 75;
+
+-- DELETE from view (affects base table)
+DELETE FROM TopStudents WHERE marks < 70;
+
+-- DROP VIEW: Remove view
+DROP VIEW TopStudents;</div>
+                
+                <div class="note">👁️ View doesn't store data, just the query. Data comes from original tables.</div>
+            </div>
+        </div>
+
+        <!-- Practice Questions Section -->
+        <div class="practice-section">
+            <h2>📝 Complete Practice Exercise</h2>
+            <p style="margin-bottom: 20px; color: #666; font-size: 0.9rem;">
+                Scenario: A small <strong>Kirana Store</strong> database. Follow these questions step by step.
+            </p>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">1</span>
+                    Create a Customers table with: cust_id (PK), name, phone, city.
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">CREATE TABLE Customers (
+    cust_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    phone VARCHAR(15),
+    city VARCHAR(30)
+);</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">2</span>
+                    Create an Orders table with: order_id (PK), cust_id (FK), amount, order_date.
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    cust_id INT,
+    amount DECIMAL(10,2),
+    order_date DATE,
+    FOREIGN KEY (cust_id) REFERENCES Customers(cust_id)
+);</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">3</span>
+                    Insert 3 customers: (1, 'Ramesh', '9876543210', 'Delhi'), (2, 'Suresh', '9876543211', 'Mumbai'), (3, 'Priya', '9876543212', 'Delhi').
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">INSERT INTO Customers VALUES 
+(1, 'Ramesh', '9876543210', 'Delhi'),
+(2, 'Suresh', '9876543211', 'Mumbai'),
+(3, 'Priya', '9876543212', 'Delhi');</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">4</span>
+                    Insert orders: (101, 1, 500, '2024-03-01'), (102, 1, 1200, '2024-03-15'), (103, 2, 800, '2024-03-10'), (104, 3, 1500, '2024-03-20').
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">INSERT INTO Orders VALUES 
+(101, 1, 500, '2024-03-01'),
+(102, 1, 1200, '2024-03-15'),
+(103, 2, 800, '2024-03-10'),
+(104, 3, 1500, '2024-03-20');</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">5</span>
+                    Update Ramesh's phone to '9999999999'.
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">UPDATE Customers 
+SET phone = '9999999999' 
+WHERE name = 'Ramesh';</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">6</span>
+                    Add a column 'email' to Customers table.
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">ALTER TABLE Customers 
+ADD email VARCHAR(50);</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">7</span>
+                    Show all customers from Delhi using LIKE (match 'Delhi').
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">SELECT * FROM Customers 
+WHERE city LIKE 'Delhi';</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">8</span>
+                    Find orders between March 1 and March 15, 2024.
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">SELECT * FROM Orders 
+WHERE order_date BETWEEN '2024-03-01' AND '2024-03-15';</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">9</span>
+                    Show customer names with their order amounts (JOIN).
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">SELECT c.name, o.amount 
+FROM Customers c
+INNER JOIN Orders o ON c.cust_id = o.cust_id;</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">10</span>
+                    Show ALL customers and their orders (even if they didn't order).
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">SELECT c.name, o.amount 
+FROM Customers c
+LEFT JOIN Orders o ON c.cust_id = o.cust_id;</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">11</span>
+                    Find total amount spent by each customer (GROUP BY).
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">SELECT c.name, SUM(o.amount) as total_spent
+FROM Customers c
+JOIN Orders o ON c.cust_id = o.cust_id
+GROUP BY c.cust_id, c.name;</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">12</span>
+                    Show only customers who spent more than 1000 total (HAVING).
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">SELECT c.name, SUM(o.amount) as total_spent
+FROM Customers c
+JOIN Orders o ON c.cust_id = o.cust_id
+GROUP BY c.cust_id, c.name
+HAVING SUM(o.amount) > 1000;</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">13</span>
+                    Find customers who have placed ANY order (EXISTS).
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">SELECT name FROM Customers c
+WHERE EXISTS (
+    SELECT 1 FROM Orders o 
+    WHERE o.cust_id = c.cust_id
+);</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">14</span>
+                    Find customers who spent more than the average order amount (Nested query).
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">SELECT c.name, o.amount
+FROM Customers c
+JOIN Orders o ON c.cust_id = o.cust_id
+WHERE o.amount > (SELECT AVG(amount) FROM Orders);</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">15</span>
+                    Create a view showing high value orders (amount > 1000).
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">CREATE VIEW HighValueOrders AS
+SELECT c.name, o.amount, o.order_date
+FROM Customers c
+JOIN Orders o ON c.cust_id = o.cust_id
+WHERE o.amount > 1000;</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">16</span>
+                    Show all orders from Delhi customers using set operations (UNION simulation).
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">-- Actually use JOIN, but if they ask for set ops:
+SELECT order_id FROM Orders 
+WHERE cust_id IN (
+    SELECT cust_id FROM Customers WHERE city = 'Delhi'
+);
+
+-- Or if combining two result sets:
+SELECT name FROM Customers WHERE city = 'Delhi'
+UNION
+SELECT name FROM Customers WHERE city = 'Mumbai';</div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">17</span>
+                    Delete the Orders table completely.
+                </div>
+                <button class="show-answer" onclick="toggleAnswer(this)">Show Answer</button>
+                <div class="answer">DROP TABLE Orders;
+
+-- Note: Must drop child table (Orders) before parent (Customers) 
+-- due to foreign key constraint, or use:
+-- DROP TABLE Orders CASCADE;</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; color: #999; font-size: 0.85rem;">
+            <p>Good luck! 🍀 You've got this.</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleCard(header) {
+            const card = header.parentElement;
+            card.classList.toggle('active');
+        }
+        
+        function toggleAnswer(btn) {
+            const answer = btn.nextElementSibling;
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                btn.textContent = 'Show Answer';
+            } else {
+                answer.style.display = 'block';
+                btn.textContent = 'Hide Answer';
+            }
+        }
+        
+        // Open first card by default
+        document.querySelector('.topic-card').classList.add('active');
+    </script>
+</body>
+</html>
