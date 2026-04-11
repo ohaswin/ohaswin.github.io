@@ -48,6 +48,7 @@ body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: small;
     animation: cubic-bezier(0.6, -0.28, 0.735, 0.045) pulseFade 2s infinite;
+    position: relative;
 }
 
 .img img {
@@ -55,6 +56,61 @@ body {
     height: auto;
     border-radius: 8px;
     transition: transform 0.3s ease-in-out;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+.tap-hint {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 6;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: lowercase;
+    color: #083247;
+    padding: 0.22rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(58, 142, 175, 0.7);
+    background: linear-gradient(155deg, rgba(198, 241, 255, 0.95), rgba(125, 207, 240, 0.92) 52%, rgba(173, 229, 250, 0.96));
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 0 0 1px rgba(255, 255, 255, 0.65), 0 6px 18px rgba(45, 99, 126, 0.35);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transform: translateY(5px) scale(0.96);
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.tap-hint::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0));
+    pointer-events: none;
+}
+
+.tap-hint.is-visible {
+    opacity: 0.92;
+    transform: translateY(0) scale(1);
+    animation: hintFloat 2.4s ease-in-out infinite;
+}
+
+.tap-hint.is-dismissed {
+    display: none;
+}
+
+@keyframes hintFloat {
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-3px) scale(1.01);
+    }
 }
 
 .clicked {
@@ -210,6 +266,29 @@ body {
     }
 }
 
+.blog-divider {
+    position: relative;
+    margin: 2rem 0;
+}
+
+.blog-divider hr {
+    margin: 0;
+}
+
+.grab {
+    position: absolute;
+    top: 7px;
+    left: 28%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    height: auto;
+    pointer-events: auto;
+    cursor: ew-resize;
+    touch-action: manipulation;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
 @media screen and (min-width:800px) {
     body {
         display: run-in;
@@ -221,6 +300,13 @@ body {
 
     .menu .item a::before {
         opacity: 0;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .tap-hint {
+        font-size: 0.58rem;
+        padding: 0.18rem 0.42rem;
     }
 }
 

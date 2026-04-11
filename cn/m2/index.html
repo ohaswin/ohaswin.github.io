@@ -24,12 +24,19 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 64px;
+  }
+
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 15px;
-    line-height: 1.75;
+    font-size: 16px;
+    line-height: 1.82;
+    text-rendering: optimizeLegibility;
   }
 
   /* ── HERO ── */
@@ -191,6 +198,14 @@
     color: var(--accent3);
     margin: 16px 0 8px;
   }
+
+  .section-body p,
+  .section-body li,
+  .section-body .callout,
+  .section-body .formula {
+    max-width: 72ch;
+  }
+
   p { margin-bottom: 10px; }
   ul, ol { padding-left: 20px; margin-bottom: 10px; }
   li { margin-bottom: 5px; }
@@ -405,9 +420,215 @@
   .progress-bar-bg { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
   .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width .4s; }
 
+  @media (max-width: 860px) {
+    body {
+      font-size: 17px;
+      line-height: 1.9;
+    }
+
+    .progress-strip {
+      padding: 10px 14px;
+      gap: 8px;
+      font-size: 10px;
+    }
+
+    .hero {
+      padding: 34px 18px 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 11vw, 42px);
+      line-height: 1.08;
+      margin-bottom: 12px;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      max-width: 36ch;
+      line-height: 1.65;
+    }
+
+    .container {
+      padding: 0 12px;
+    }
+
+    .toc-wrap {
+      margin: 20px 0;
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .toc-grid {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    .toc-grid a {
+      font-size: 13px;
+      padding: 8px 0;
+      line-height: 1.5;
+      border-bottom-color: var(--border);
+    }
+
+    .section {
+      margin-bottom: 18px;
+      border-radius: 10px;
+    }
+
+    .section-header {
+      padding: 14px 12px;
+      gap: 10px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .section-tag {
+      font-size: 10px;
+      margin-left: 38px;
+    }
+
+    .section-body {
+      padding: 16px 12px 18px;
+    }
+
+    .sub {
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+    }
+
+    .sub-title {
+      font-size: 16px;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 12px;
+      margin: 14px 0 8px;
+    }
+
+    p, li {
+      font-size: 1rem;
+      line-height: 1.9;
+      margin-bottom: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    ul, ol {
+      padding-left: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    code {
+      font-size: 0.84em;
+      padding: 2px 5px;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .tbl-wrap {
+      margin: 12px 0;
+      border-radius: 8px;
+    }
+
+    table {
+      min-width: 540px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    thead th,
+    tbody td {
+      padding: 10px 12px;
+    }
+
+    .callout,
+    .formula,
+    .compare-col,
+    .arq-card,
+    .flash {
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .callout,
+    .formula {
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .steps {
+      font-size: 0.5rem;
+      line-height: 1.6;
+    }
+
+    .steps li {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    .steps li::before {
+      min-width: 22px;
+      height: 22px;
+      font-size: 9px;
+      margin-top: 1px;
+    }
+
+    .steps li strong,
+    .steps li em,
+    .steps li code {
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    .steps li code {
+      white-space: nowrap;
+      font-size: 0.8em;
+    }
+
+    .arq-grid,
+    .flash-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .hbit {
+      width: 36px;
+      height: 36px;
+      border-radius: 7px;
+    }
+
+    .hbit-pos {
+      font-size: 8px;
+    }
+
+    .hbit-val {
+      font-size: 14px;
+    }
+
+    .diagram-wrap {
+      padding: 12px;
+    }
+
+    footer {
+      padding: 28px 16px;
+      margin-top: 24px;
+      font-size: 10px;
+    }
+  }
+
   /* ── COMPARISON COLS ── */
   .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
-  @media(max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+  @media(max-width: 600px) { .compare { grid-template-columns: 1fr; gap: 10px; } }
   .compare-col { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
   .compare-col h4 {
     font-family: 'Syne', sans-serif;

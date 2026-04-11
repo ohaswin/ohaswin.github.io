@@ -118,8 +118,70 @@ async function getMyLatestCommit() {
 
 let toggle = true;
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
+const TAP_HINT_STORAGE_KEY = 'ohaswinTapHintDismissed';
+
+function positionTapHint() {
+    const hint = document.querySelector('.tap-hint');
+    const img = document.querySelector('.img img');
+    if (!hint || !img || hint.classList.contains('is-dismissed')) return;
+
+    const rect = img.getBoundingClientRect();
+    const hintWidth = hint.offsetWidth || 72;
+    const hintHeight = hint.offsetHeight || 22;
+    const margin = 8;
+    const x = Math.min(window.innerWidth - hintWidth - margin, rect.right - hintWidth * 0.72);
+    const y = Math.min(window.innerHeight - hintHeight - margin, rect.bottom - hintHeight * 0.45);
+
+    hint.style.left = `${Math.max(margin, x)}px`;
+    hint.style.top = `${Math.max(margin, y)}px`;
+}
+
+function dismissTapHint() {
+    const hint = document.querySelector('.tap-hint');
+    if (!hint) return;
+
+    hint.classList.remove('is-visible');
+    hint.classList.add('is-dismissed');
+
+    try {
+        localStorage.setItem(TAP_HINT_STORAGE_KEY, '1');
+    } catch (error) {
+        // Ignore storage failures in private browsing or blocked storage contexts.
+    }
+}
+
+function setupTapHint() {
+    const hint = document.querySelector('.tap-hint');
+    if (!hint) return;
+
+    let isDismissed = false;
+    try {
+        isDismissed = localStorage.getItem(TAP_HINT_STORAGE_KEY) === '1';
+    } catch (error) {
+        isDismissed = false;
+    }
+
+    if (isDismissed) {
+        hint.classList.add('is-dismissed');
+        return;
+    }
+
+    positionTapHint();
+    window.addEventListener('resize', positionTapHint, { passive: true });
+    window.addEventListener('scroll', positionTapHint, { passive: true });
+
+    window.setTimeout(() => {
+        if (!hint.classList.contains('is-dismissed')) {
+            positionTapHint();
+            hint.classList.add('is-visible');
+            requestAnimationFrame(positionTapHint);
+        }
+    }, 2800);
+}
 
 function flip() {
+    dismissTapHint();
+
     const img = document.querySelector('.img img');
     const header = document.querySelector('.header');
     const subheader = document.querySelector('.subheader');
@@ -139,6 +201,7 @@ function flip() {
         `<br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.` :
         `<br>I'm a second year CS undergrad. Former freelancer, now I study distributed systems, cellular networks, systems programming and build software I find interesting or useful.<br><br>Built: <a href="https://github.com/ohaswin/pyscan">pyscan</a> (30k+ downloads)<br>Building: <a href="https://github.com/ohaswin/bookends">bookends</a> (WIP)<br><a href="https://linkedin.com/in/ohaswin">LinkedIn</a> | <a href="https://github.com/ohaswin">GitHub</a> | <a href="/resume.pdf">CV</a>`;
     toggle = !toggle;
+    requestAnimationFrame(positionTapHint);
 }
 
 // Game of Life Logic
@@ -304,9 +367,69 @@ function initGameOfLife() {
     loop();
 }
 
+function randomRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function randomBezier() {
+    const x1 = randomRange(0.15, 0.45).toFixed(2);
+    const y1 = randomRange(0.0, 0.25).toFixed(2);
+    const x2 = randomRange(0.55, 0.9).toFixed(2);
+    const y2 = randomRange(0.75, 1.0).toFixed(2);
+    return `cubic-bezier(${x1}, ${y1}, ${x2}, ${y2})`;
+}
+
+function animateGrabNudge(grab) {
+    if (!grab || typeof grab.animate !== 'function') return;
+
+    grab.getAnimations().forEach(a => a.cancel());
+
+    const rightShift = randomRange(18, 34);
+    const leftShift = randomRange(9, 20);
+    const settleShift = randomRange(2, 8);
+
+    const firstLeg = randomRange(110, 190);
+    const secondLeg = randomRange(150, 240);
+    const thirdLeg = randomRange(120, 220);
+    const total = firstLeg + secondLeg + thirdLeg;
+
+    const o1 = firstLeg / total;
+    const o2 = (firstLeg + secondLeg) / total;
+
+    grab.animate(
+        [
+            { transform: 'translate(calc(-50% + 0px), -50%)', offset: 0, easing: randomBezier() },
+            { transform: `translate(calc(-50% + ${rightShift.toFixed(1)}px), -50%)`, offset: o1, easing: randomBezier() },
+            { transform: `translate(calc(-50% - ${leftShift.toFixed(1)}px), -50%)`, offset: o2, easing: randomBezier() },
+            { transform: `translate(calc(-50% + ${settleShift.toFixed(1)}px), -50%)`, offset: 0.92, easing: randomBezier() },
+            { transform: 'translate(calc(-50% + 0px), -50%)', offset: 1 }
+        ],
+        {
+            duration: total,
+            fill: 'forwards'
+        }
+    );
+}
+
 // Initialization and Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+    setupTapHint();
     fetchBlogPosts();
+
+    document.querySelectorAll('.img img, .grab').forEach((image) => {
+        image.addEventListener('dragstart', (event) => event.preventDefault());
+    });
+
+    const grab = document.querySelector('.grab');
+    if (grab) {
+        grab.addEventListener('click', () => animateGrabNudge(grab));
+        grab.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                animateGrabNudge(grab);
+            }
+        });
+    }
 
     // Background Color Picker
     const bgColorInput = document.getElementById('bgColor');
