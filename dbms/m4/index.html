@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDBMS Module 4 — Transactions & Concurrency</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0a0a0f;--paper:#f5f2eb;--accent:#e63946;--accent2:#457b9d;--accent3:#2d6a4f;--muted:#6b6b6b;--card:#fffef9;--border:#d4c9b0;--heading:'Space Grotesk',sans-serif;}
+  body{font-family:'Syne',sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;}
+  code,pre,.mono{font-family:'JetBrains Mono',monospace;}
+  h1,h2,h3,.heading{font-family:var(--heading);letter-spacing:.01em;}
+  .tag{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .5rem;border-radius:2px;}
+  .tag-red{background:var(--accent);color:#fff;}
+  .tag-blue{background:var(--accent2);color:#fff;}
+  .tag-green{background:var(--accent3);color:#fff;}
+  .tag-gray{background:#555;color:#fff;}
+  .card{background:var(--card);border:1.5px solid var(--border);border-radius:4px;padding:1rem;}
+  .fc{cursor:pointer;user-select:none;}
+  .fc-inner{transition:transform .4s;transform-style:preserve-3d;position:relative;height:100%;}
+  .fc.flipped .fc-inner{transform:rotateY(180deg);}
+  .fc-front,.fc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:1rem;text-align:center;}
+  .fc-back{transform:rotateY(180deg);}
+  .fc-wrap{perspective:800px;}
+  details summary{cursor:pointer;list-style:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .scrollbar-hide::-webkit-scrollbar{display:none;}
+  .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none;}
+  .state-node{border:2px solid var(--ink);border-radius:4px;padding:.4rem .8rem;font-size:.8rem;font-weight:700;text-align:center;background:#fff;}
+  .arrow{color:var(--muted);font-weight:700;}
+  svg text{font-family:'JetBrains Mono',monospace;font-size:12px;}
+  .section-num{font-size:3rem;font-weight:800;color:var(--border);line-height:1;font-family:'JetBrains Mono',monospace;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:var(--ink);color:#fff;padding:.4rem .6rem;text-align:left;font-size:.75rem;letter-spacing:.05em;}
+  td{padding:.4rem .6rem;font-size:.8rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:#f0ebe0;}
+  .nav-pill{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px;border:1.5px solid var(--border);cursor:pointer;transition:all .15s;}
+  .nav-pill:hover,.nav-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .highlight{border-left:3px solid var(--accent);padding-left:.75rem;background:#fff8f8;}
+  .highlight-blue{border-left:3px solid var(--accent2);padding-left:.75rem;background:#f0f7ff;}
+  .highlight-green{border-left:3px solid var(--accent3);padding-left:.75rem;background:#f0fff8;}
+
+  @media (max-width: 640px){
+    body{font-size:15px;}
+    .section-num{font-size:2rem;}
+    .card{padding:.8rem;}
+    .nav-pill{font-size:.62rem;padding:.25rem .55rem;}
+    th{font-size:.68rem;padding:.35rem .45rem;}
+    td{font-size:.76rem;padding:.35rem .45rem;}
+    .fc-wrap{height:180px !important;}
+    .fc-front,.fc-back{align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto;}
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-[var(--ink)] text-white px-2 py-2 sm:px-4 sm:py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+  <div class="leading-tight">
+    <div class="mono text-xs text-gray-400">MODULE 04</div>
+    <div class="heading font-bold text-xs sm:text-sm">TRANSACTIONS & CONCURRENCY</div>
+  </div>
+  <div class="w-full sm:w-auto flex gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
+    <button onclick="scrollTo('s1')" class="nav-pill text-white border-gray-600">Transactions</button>
+    <button onclick="scrollTo('s2')" class="nav-pill text-white border-gray-600">ACID</button>
+    <button onclick="scrollTo('s3')" class="nav-pill text-white border-gray-600">Schedules</button>
+    <button onclick="scrollTo('s4')" class="nav-pill text-white border-gray-600">SQL</button>
+    <button onclick="scrollTo('s5')" class="nav-pill text-white border-gray-600">2PL</button>
+    <button onclick="scrollTo('s6')" class="nav-pill text-white border-gray-600">Deadlock</button>
+    <button onclick="scrollTo('fc')" class="nav-pill bg-[var(--accent)] border-[var(--accent)] text-white">Flashcards</button>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-3 py-4 sm:py-6 space-y-8 sm:space-y-12">
+
+<!-- ─── UNIT 1: TRANSACTIONS ─── -->
+<section id="s1">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">01</div>
+    <div>
+      <div class="tag tag-red mb-1">Unit 18 · 3 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Transaction Processing</h2>
+      <p class="text-sm text-[var(--muted)]">Intro, System Concepts, States, Logging</p>
+    </div>
+  </div>
+
+  <!-- Definition -->
+  <div class="card highlight mb-4">
+    <div class="tag tag-red mb-1">Definition</div>
+    <p class="font-bold">A <strong>transaction</strong> is a logical unit of work — one or more DB operations that must execute <em>atomically</em> and leave the DB in a consistent state.</p>
+    <div class="mt-2 mono text-xs text-[var(--muted)]">read(X) — read data item X into memory &nbsp;|&nbsp; write(X) — write variable back to DB</div>
+  </div>
+
+  <!-- Transaction States Diagram -->
+  <div class="card mb-4">
+    <div class="font-bold mb-3">Transaction State Machine</div>
+    <div class="overflow-x-auto scrollbar-hide">
+      <svg viewBox="0 0 580 260" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-2xl mx-auto" style="min-width:420px;">
+        <!-- nodes -->
+        <rect x="230" y="10" width="90" height="30" rx="3" fill="#0a0a0f" stroke="#0a0a0f"/>
+        <text x="275" y="30" fill="white" text-anchor="middle" font-weight="bold">START</text>
+
+        <rect x="230" y="70" width="90" height="30" rx="3" fill="#457b9d" stroke="#457b9d"/>
+        <text x="275" y="90" fill="white" text-anchor="middle" font-weight="bold">ACTIVE</text>
+
+        <rect x="80" y="140" width="130" height="30" rx="3" fill="#2d6a4f" stroke="#2d6a4f"/>
+        <text x="145" y="160" fill="white" text-anchor="middle" font-weight="bold">PARTIALLY COMMITTED</text>
+
+        <rect x="370" y="140" width="90" height="30" rx="3" fill="#e63946" stroke="#e63946"/>
+        <text x="415" y="160" fill="white" text-anchor="middle" font-weight="bold">FAILED</text>
+
+        <rect x="20" y="215" width="110" height="30" rx="3" fill="#2d6a4f" stroke="#2d6a4f"/>
+        <text x="75" y="235" fill="white" text-anchor="middle" font-weight="bold">COMMITTED</text>
+
+        <rect x="370" y="215" width="90" height="30" rx="3" fill="#e63946" stroke="#e63946"/>
+        <text x="415" y="235" fill="white" text-anchor="middle" font-weight="bold">ABORTED</text>
+
+        <rect x="480" y="215" width="90" height="30" rx="3" fill="#555" stroke="#555"/>
+        <text x="525" y="235" fill="white" text-anchor="middle" font-weight="bold">TERMINATED</text>
+
+        <!-- arrows -->
+        <line x1="275" y1="40" x2="275" y2="68" stroke="#0a0a0f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="230" y1="90" x2="210" y2="120" stroke="#0a0a0f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="210" y1="120" x2="145" y2="140" stroke="#0a0a0f" stroke-width="1.5"/>
+        <line x1="320" y1="90" x2="370" y2="145" stroke="#e63946" stroke-width="1.5" marker-end="url(#arr2)"/>
+        <line x1="145" y1="170" x2="75" y2="215" stroke="#0a0a0f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="145" y1="170" x2="415" y2="215" stroke="#e63946" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr2)"/>
+        <line x1="415" y1="170" x2="415" y2="213" stroke="#0a0a0f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="460" y1="230" x2="480" y2="230" stroke="#0a0a0f" stroke-width="1.5" marker-end="url(#arr)"/>
+        <line x1="75" y1="245" x2="480" y2="230" stroke="#0a0a0f" stroke-width="1" stroke-dasharray="3,3"/>
+
+        <text x="155" y="112" fill="#2d6a4f" font-size="10">all ops done</text>
+        <text x="330" y="112" fill="#e63946" font-size="10">error/conflict</text>
+        <text x="96" y="200" fill="#2d6a4f" font-size="10">commit ok</text>
+        <text x="170" y="207" fill="#e63946" font-size="10">write fails</text>
+        <text x="420" y="200" fill="#e63946" font-size="10">rollback</text>
+
+        <defs>
+          <marker id="arr" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0, 7 3.5, 0 7" fill="#0a0a0f"/>
+          </marker>
+          <marker id="arr2" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <polygon points="0 0, 7 3.5, 0 7" fill="#e63946"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <!-- States table -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">State Descriptions</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>State</th><th>What's Happening</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold text-blue-700">Active</td><td>Operations executing normally</td></tr>
+          <tr><td class="font-bold text-green-700">Partially Committed</td><td>Last op done; data still in memory buffer (not disk yet)</td></tr>
+          <tr><td class="font-bold text-green-800">Committed</td><td>All changes written permanently to disk ✅</td></tr>
+          <tr><td class="font-bold text-red-600">Failed</td><td>Error / constraint violation / deadlock — can't continue</td></tr>
+          <tr><td class="font-bold text-red-700">Aborted</td><td>Rolled back; DB restored to pre-transaction state</td></tr>
+          <tr><td class="font-bold text-gray-600">Terminated</td><td>Transaction lifecycle complete (committed or aborted)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- WAL and Log -->
+  <details class="card mb-2">
+    <summary class="font-bold flex justify-between items-center">
+      System Log (Transaction Log) <span class="tag tag-gray">▼ expand</span>
+    </summary>
+    <div class="mt-3 space-y-2">
+      <div class="highlight-blue p-2 text-sm">
+        <strong>Write-Ahead Logging (WAL):</strong> Log entry MUST be written to disk <em>before</em> actual data is modified. This ensures recovery is always possible.
+      </div>
+      <table>
+        <thead><tr><th>Log Entry</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">[start_transaction, T]</td><td>T has begun</td></tr>
+          <tr><td class="mono">[write_item, T, X, old, new]</td><td>T wrote X; old→new value</td></tr>
+          <tr><td class="mono">[read_item, T, X]</td><td>T read data item X</td></tr>
+          <tr><td class="mono">[commit, T]</td><td>T committed successfully</td></tr>
+          <tr><td class="mono">[abort, T]</td><td>T was aborted / rolled back</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- Exam tip -->
+  <div class="card highlight text-sm">
+    <span class="tag tag-red">Exam Tip</span>
+    <p class="mt-1">WAL = write LOG first, then DB. "Partially Committed" ≠ "Committed" — data still in buffer, not disk.</p>
+  </div>
+</section>
+
+<!-- ─── UNIT 2: ACID ─── -->
+<section id="s2">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">02</div>
+    <div>
+      <div class="tag tag-blue mb-1">Unit 19 · 1 hr</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">ACID Properties</h2>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div class="card" style="border-left:4px solid #e63946;">
+      <div class="font-extrabold text-lg" style="color:#e63946;">A — Atomicity</div>
+      <div class="text-sm mt-1"><strong>All or Nothing.</strong> Either all ops commit or none do.</div>
+      <div class="mono text-xs mt-2 text-[var(--muted)]">Enforced by: Recovery manager (undo log)</div>
+      <div class="mt-2 text-xs bg-red-50 p-2 rounded">Bank transfer: crash after debit → debit is rolled back. No money lost.</div>
+    </div>
+    <div class="card" style="border-left:4px solid #457b9d;">
+      <div class="font-extrabold text-lg" style="color:#457b9d;">C — Consistency</div>
+      <div class="text-sm mt-1"><strong>Valid State → Valid State.</strong> All constraints hold before and after.</div>
+      <div class="mono text-xs mt-2 text-[var(--muted)]">Enforced by: App logic + constraint checking</div>
+      <div class="mt-2 text-xs bg-blue-50 p-2 rounded">Transfer ₹2000: Total money in system stays same (₹15K → ₹15K)</div>
+    </div>
+    <div class="card" style="border-left:4px solid #2d6a4f;">
+      <div class="font-extrabold text-lg" style="color:#2d6a4f;">I — Isolation</div>
+      <div class="text-sm mt-1"><strong>No Interference.</strong> Each T runs as if it's the only one.</div>
+      <div class="mono text-xs mt-2 text-[var(--muted)]">Enforced by: Concurrency control manager (locking)</div>
+      <div class="mt-2 text-xs bg-green-50 p-2 rounded">T2 sees account balance BEFORE or AFTER T1's transfer — never mid-state</div>
+    </div>
+    <div class="card" style="border-left:4px solid #6b6b6b;">
+      <div class="font-extrabold text-lg" style="color:#6b6b6b;">D — Durability</div>
+      <div class="text-sm mt-1"><strong>Committed = Permanent.</strong> Survives crashes.</div>
+      <div class="mono text-xs mt-2 text-[var(--muted)]">Enforced by: WAL + disk storage before ACK</div>
+      <div class="mt-2 text-xs bg-gray-50 p-2 rounded">Ticket booked & server crashes → reservation still exists after recovery</div>
+    </div>
+  </div>
+
+  <div class="card highlight-blue text-sm">
+    <span class="tag tag-blue">Memory Trick</span>
+    <p class="mt-1">
+      <strong>A</strong>ll or nothing &nbsp;·&nbsp; 
+      <strong>C</strong>onstraints hold &nbsp;·&nbsp; 
+      <strong>I</strong>solated from others &nbsp;·&nbsp; 
+      <strong>D</strong>isk survives crash
+    </p>
+  </div>
+</section>
+
+<!-- ─── UNIT 3: SCHEDULES ─── -->
+<section id="s3">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">03</div>
+    <div>
+      <div class="tag tag-green mb-1">Unit 20 · 2 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Schedules, Serializability & Recoverability</h2>
+    </div>
+  </div>
+
+  <!-- Key terms -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Core Definitions</div>
+    <div class="space-y-2 text-sm">
+      <div class="highlight p-2"><strong>Schedule</strong> — an ordering of ops from multiple transactions where each T's ops keep their original order.</div>
+      <div class="highlight-blue p-2"><strong>Serial Schedule</strong> — transactions run one after another (no interleaving). Always correct. Low performance.</div>
+      <div class="highlight-green p-2"><strong>Serializable Schedule</strong> — concurrent but equivalent in effect to some serial schedule. ✅ Correct AND faster.</div>
+    </div>
+  </div>
+
+  <!-- Conflict Serializability -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Conflict Serializability</div>
+    <div class="text-sm mb-3">Two operations <strong>conflict</strong> if ALL three hold:</div>
+    <div class="grid grid-cols-3 gap-2 mb-3">
+      <div class="bg-red-50 border border-red-200 p-2 text-center text-xs font-bold rounded">Different transactions</div>
+      <div class="bg-red-50 border border-red-200 p-2 text-center text-xs font-bold rounded">Same data item</div>
+      <div class="bg-red-50 border border-red-200 p-2 text-center text-xs font-bold rounded">At least one is WRITE</div>
+    </div>
+    <table>
+      <thead><tr><th>Pair</th><th>Conflicts?</th></tr></thead>
+      <tbody>
+        <tr><td>Read – Read</td><td>❌ NO — safe</td></tr>
+        <tr><td>Read – Write</td><td>✅ YES</td></tr>
+        <tr><td>Write – Read</td><td>✅ YES</td></tr>
+        <tr><td>Write – Write</td><td>✅ YES</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Precedence Graph -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Precedence Graph (Serializability Test)</div>
+    <div class="text-sm mb-3">
+      <ol class="list-decimal ml-4 space-y-1">
+        <li>Create a <strong>node</strong> for each transaction</li>
+        <li>Draw edge <strong>T1 → T2</strong> if any op of T1 conflicts with a later op of T2</li>
+        <li>If graph has <strong>NO cycle → Conflict Serializable ✅</strong></li>
+        <li>If graph has a <strong>cycle → NOT serializable ❌</strong></li>
+      </ol>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="text-center">
+        <svg viewBox="0 0 180 100" class="w-full max-w-xs mx-auto">
+          <circle cx="45" cy="50" r="22" fill="#2d6a4f" stroke="#2d6a4f"/>
+          <text x="45" y="55" text-anchor="middle" fill="white" font-weight="bold" font-size="13">T1</text>
+          <circle cx="135" cy="50" r="22" fill="#2d6a4f" stroke="#2d6a4f"/>
+          <text x="135" y="55" text-anchor="middle" fill="white" font-weight="bold" font-size="13">T2</text>
+          <line x1="68" y1="50" x2="110" y2="50" stroke="#2d6a4f" stroke-width="2" marker-end="url(#gArr)"/>
+          <text x="90" y="30" text-anchor="middle" fill="#2d6a4f" font-size="10" font-weight="bold">T1→T2 only</text>
+          <text x="90" y="90" text-anchor="middle" fill="#2d6a4f" font-size="10">✅ No cycle = Serializable</text>
+          <defs><marker id="gArr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0,6 3,0 6" fill="#2d6a4f"/></marker></defs>
+        </svg>
+      </div>
+      <div class="text-center">
+        <svg viewBox="0 0 180 100" class="w-full max-w-xs mx-auto">
+          <circle cx="45" cy="50" r="22" fill="#e63946" stroke="#e63946"/>
+          <text x="45" y="55" text-anchor="middle" fill="white" font-weight="bold" font-size="13">T1</text>
+          <circle cx="135" cy="50" r="22" fill="#e63946" stroke="#e63946"/>
+          <text x="135" y="55" text-anchor="middle" fill="white" font-weight="bold" font-size="13">T2</text>
+          <path d="M68 42 Q90 20 112 42" stroke="#e63946" stroke-width="2" fill="none" marker-end="url(#rArr)"/>
+          <path d="M112 58 Q90 80 68 58" stroke="#e63946" stroke-width="2" fill="none" marker-end="url(#rArr)"/>
+          <text x="90" y="16" text-anchor="middle" fill="#e63946" font-size="9" font-weight="bold">T1→T2 &amp; T2→T1</text>
+          <text x="90" y="94" text-anchor="middle" fill="#e63946" font-size="10">❌ Cycle = NOT Serializable</text>
+          <defs><marker id="rArr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0,6 3,0 6" fill="#e63946"/></marker></defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recoverability hierarchy -->
+  <div class="card mb-4">
+    <div class="font-bold mb-3">Schedule Types Hierarchy <span class="text-xs font-normal text-[var(--muted)]">(most → least restrictive)</span></div>
+    <div class="flex flex-col items-center gap-0 text-sm">
+      <div class="w-full max-w-sm bg-[var(--ink)] text-white text-center py-2 px-4 rounded-t font-bold">SERIAL</div>
+      <div class="w-4 h-4 flex items-center justify-center text-[var(--muted)] font-bold">↓</div>
+      <div class="w-full max-w-sm bg-gray-800 text-white text-center py-2 px-4 font-bold">STRICT</div>
+      <div class="text-xs text-[var(--muted)] mt-1">No read/write until writer commits OR aborts</div>
+      <div class="w-4 h-4 flex items-center justify-center text-[var(--muted)] font-bold">↓</div>
+      <div class="w-full max-w-sm bg-[#2d6a4f] text-white text-center py-2 px-4 font-bold">CASCADELESS</div>
+      <div class="text-xs text-[var(--muted)] mt-1">Read only AFTER writer commits (prevents cascading rollback)</div>
+      <div class="w-4 h-4 flex items-center justify-center text-[var(--muted)] font-bold">↓</div>
+      <div class="w-full max-w-sm bg-[#457b9d] text-white text-center py-2 px-4 font-bold">RECOVERABLE</div>
+      <div class="text-xs text-[var(--muted)] mt-1">T2 commits AFTER T1 (if T2 read T1's data)</div>
+      <div class="w-4 h-4 flex items-center justify-center text-[var(--muted)] font-bold">↓</div>
+      <div class="w-full max-w-sm bg-gray-300 text-gray-800 text-center py-2 px-4 font-bold rounded-b">SERIALIZABLE</div>
+    </div>
+  </div>
+
+  <!-- Table summary -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Schedule Types — Quick Reference</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Type</th><th>Rule</th><th>Avoids</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Serial</td><td>No interleaving</td><td>Everything — always correct</td></tr>
+          <tr><td class="font-bold">Strict</td><td>No R/W until writer commits/aborts</td><td>Dirty R/W, cascading rollback, easiest recovery</td></tr>
+          <tr><td class="font-bold">Cascadeless</td><td>Read only after writer commits</td><td>Dirty reads, cascading rollback</td></tr>
+          <tr><td class="font-bold">Recoverable</td><td>T2 commits after T1 (if T2 read T1's data)</td><td>Committed dirty reads</td></tr>
+          <tr><td class="font-bold">Serializable</td><td>Equivalent to some serial schedule</td><td>Incorrect concurrent results</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card highlight text-sm">
+    <span class="tag tag-red">Exam Tip</span>
+    <p class="mt-1">Every Serial schedule is Strict. Every Strict is Cascadeless. Every Cascadeless is Recoverable. But NOT vice versa!</p>
+    <p class="mt-1">Dirty Read = reading uncommitted data. Cascading Rollback = chain rollback of multiple Ts that read each other's dirty data.</p>
+  </div>
+</section>
+
+<!-- ─── UNIT 4: SQL TRANSACTIONS ─── -->
+<section id="s4">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">04</div>
+    <div>
+      <div class="tag tag-gray mb-1">Unit 21 · 1 hr</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Transaction Support in SQL</h2>
+    </div>
+  </div>
+
+  <!-- Commands -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">SQL Transaction Commands</div>
+    <table>
+      <thead><tr><th>Command</th><th>What It Does</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">BEGIN / START TRANSACTION</td><td>Marks start of transaction</td></tr>
+        <tr><td class="mono">COMMIT</td><td>Save all changes permanently; release locks</td></tr>
+        <tr><td class="mono">ROLLBACK</td><td>Undo ALL changes since BEGIN</td></tr>
+        <tr><td class="mono">SAVEPOINT name</td><td>Set named checkpoint for partial rollback</td></tr>
+        <tr><td class="mono">ROLLBACK TO SAVEPOINT name</td><td>Undo only to savepoint (keep rest)</td></tr>
+        <tr><td class="mono">RELEASE SAVEPOINT name</td><td>Remove a savepoint</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Example -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2 text-sm">Savepoint Example — Bank Transfer</div>
+    <pre class="bg-[var(--ink)] text-green-300 text-xs p-3 rounded overflow-x-auto scrollbar-hide">START TRANSACTION;
+
+UPDATE ACCOUNT SET Balance = Balance - 5000 WHERE Acc_No = 'A101';
+
+SAVEPOINT after_debit;          -- checkpoint here
+
+UPDATE ACCOUNT SET Balance = Balance + 5000 WHERE Acc_No = 'B202';
+
+-- if credit fails:
+ROLLBACK TO SAVEPOINT after_debit;   -- undo credit only
+
+-- if all ok:
+COMMIT;</pre>
+  </div>
+
+  <!-- Isolation Levels -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Isolation Levels & Anomalies</div>
+    <div class="text-xs text-[var(--muted)] mb-3">Higher isolation = more correct, lower concurrency</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Isolation Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Phantom Read</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="font-bold">READ UNCOMMITTED</td><td class="text-red-600 font-bold">✅ Possible</td><td class="text-red-600 font-bold">✅ Possible</td><td class="text-red-600 font-bold">✅ Possible</td></tr>
+          <tr><td class="font-bold">READ COMMITTED</td><td class="text-green-700 font-bold">❌ Prevented</td><td class="text-red-600 font-bold">✅ Possible</td><td class="text-red-600 font-bold">✅ Possible</td></tr>
+          <tr><td class="font-bold">REPEATABLE READ</td><td class="text-green-700 font-bold">❌ Prevented</td><td class="text-green-700 font-bold">❌ Prevented</td><td class="text-red-600 font-bold">✅ Possible</td></tr>
+          <tr><td class="font-bold">SERIALIZABLE</td><td class="text-green-700 font-bold">❌ Prevented</td><td class="text-green-700 font-bold">❌ Prevented</td><td class="text-green-700 font-bold">❌ Prevented</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Anomaly definitions -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+    <div class="card" style="border-left:3px solid #e63946;">
+      <div class="font-bold text-sm" style="color:#e63946;">Dirty Read</div>
+      <div class="text-xs mt-1">Read data written by an <em>uncommitted</em> transaction. Writer rolls back → you read invalid data.</div>
+    </div>
+    <div class="card" style="border-left:3px solid #457b9d;">
+      <div class="font-bold text-sm" style="color:#457b9d;">Non-Repeatable Read</div>
+      <div class="text-xs mt-1">Same row read twice → different values because another T committed between your reads.</div>
+    </div>
+    <div class="card" style="border-left:3px solid #2d6a4f;">
+      <div class="font-bold text-sm" style="color:#2d6a4f;">Phantom Read</div>
+      <div class="text-xs mt-1">Same query run twice → different set of rows (another T inserted/deleted matching rows).</div>
+    </div>
+  </div>
+
+  <div class="card highlight text-sm">
+    <span class="tag tag-red">Exam Tip</span>
+    <p class="mt-1">Dirty Read prevented at READ COMMITTED. Non-Repeatable prevented at REPEATABLE READ. Phantom prevented only at SERIALIZABLE.</p>
+    <div class="mono text-xs mt-2">SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;</div>
+  </div>
+</section>
+
+<!-- ─── UNIT 5: 2PL ─── -->
+<section id="s5">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">05</div>
+    <div>
+      <div class="tag tag-red mb-1">Unit 22 · 3 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Concurrency Control — 2PL</h2>
+    </div>
+  </div>
+
+  <!-- Concurrency Problems -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Concurrency Problems (without control)</div>
+    <div class="space-y-2">
+      <div class="highlight p-2 text-sm"><strong>Lost Update:</strong> T1 and T2 both read X (=1000). T1 writes 1500, T2 writes 1200. T1's update is <em>lost</em>. Should be 1700.</div>
+      <div class="highlight p-2 text-sm"><strong>Dirty Read (Temporary Update):</strong> T1 writes X, then aborts. T2 already read the modified (dirty) value.</div>
+      <div class="highlight p-2 text-sm"><strong>Incorrect Summary:</strong> T1 computes SUM while T2 transfers money mid-way. T1 reads inconsistent state.</div>
+    </div>
+  </div>
+
+  <!-- Locks -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Lock Types</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-blue-50 border border-blue-200 p-3 rounded text-center">
+        <div class="font-extrabold text-blue-700 text-xl">S</div>
+        <div class="font-bold text-sm text-blue-700">Shared Lock</div>
+        <div class="text-xs mt-1">For <strong>READ</strong>. Multiple Ts can hold simultaneously.</div>
+      </div>
+      <div class="bg-red-50 border border-red-200 p-3 rounded text-center">
+        <div class="font-extrabold text-red-700 text-xl">X</div>
+        <div class="font-bold text-sm text-red-700">Exclusive Lock</div>
+        <div class="text-xs mt-1">For <strong>WRITE</strong>. Only ONE T can hold at a time.</div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <div class="font-bold text-sm mb-1">Lock Compatibility Matrix</div>
+      <table>
+        <thead><tr><th>Held ↓ / Requested →</th><th>S (Read)</th><th>X (Write)</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">S (Read)</td><td class="text-green-700 font-bold">✓ Compatible</td><td class="text-red-600 font-bold">✗ Block</td></tr>
+          <tr><td class="font-bold">X (Write)</td><td class="text-red-600 font-bold">✗ Block</td><td class="text-red-600 font-bold">✗ Block</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2PL -->
+  <div class="card mb-4">
+    <div class="font-bold mb-3">Two-Phase Locking (2PL)</div>
+    <div class="highlight-green p-2 text-sm mb-3"><strong>Guarantees conflict serializability.</strong> Transactions acquire and release locks in exactly two phases.</div>
+    
+    <!-- 2PL Visual -->
+    <div class="overflow-x-auto">
+      <svg viewBox="0 0 700 170" class="w-full h-auto" preserveAspectRatio="xMidYMid meet">
+        <!-- Timeline -->
+        <line x1="40" y1="92" x2="660" y2="92" stroke="#d4c9b0" stroke-width="3"/>
+        <!-- Growing phase block -->
+        <rect x="40" y="48" width="280" height="66" rx="6" fill="#2d6a4f" opacity=".92"/>
+        <text x="180" y="74" text-anchor="middle" fill="white" font-weight="bold" font-size="18">GROWING PHASE</text>
+        <text x="180" y="95" text-anchor="middle" fill="#c7f9d4" font-size="13">Acquire locks only</text>
+        <text x="180" y="110" text-anchor="middle" fill="#c7f9d4" font-size="13">Cannot release</text>
+        <!-- Shrinking phase block -->
+        <rect x="380" y="48" width="280" height="66" rx="6" fill="#e63946" opacity=".92"/>
+        <text x="520" y="74" text-anchor="middle" fill="white" font-weight="bold" font-size="18">SHRINKING PHASE</text>
+        <text x="520" y="95" text-anchor="middle" fill="#ffe4e6" font-size="13">Release locks only</text>
+        <text x="520" y="110" text-anchor="middle" fill="#ffe4e6" font-size="13">Cannot acquire</text>
+        <!-- Lock point -->
+        <line x1="350" y1="26" x2="350" y2="148" stroke="#0a0a0f" stroke-width="3" stroke-dasharray="5,4"/>
+        <rect x="306" y="8" width="88" height="20" rx="3" fill="#0a0a0f"/>
+        <text x="350" y="22" text-anchor="middle" fill="white" font-size="11" font-weight="bold">LOCK POINT</text>
+        <text x="350" y="162" text-anchor="middle" fill="#6b6b6b" font-size="12">Last lock acquired here</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 2PL Variants -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">2PL Variants</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Variant</th><th>When Released</th><th>Key Property</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Basic 2PL</td><td>During execution (shrinking phase)</td><td>Serializable; cascading rollbacks possible</td></tr>
+          <tr><td class="font-bold">Conservative 2PL</td><td>All locks acquired BEFORE start</td><td>Deadlock-free; low concurrency</td></tr>
+          <tr><td class="font-bold text-green-700">Strict 2PL ⭐</td><td>X-locks held until commit/abort</td><td><strong>Most widely used</strong>; prevents dirty reads</td></tr>
+          <tr><td class="font-bold">Rigorous 2PL</td><td>ALL locks held until commit/abort</td><td>Strictest; serializes by commit time</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="highlight-green p-2 text-xs mt-2">⭐ Strict 2PL = most used in practice (MySQL InnoDB default)</div>
+  </div>
+</section>
+
+<!-- ─── UNIT 6: DEADLOCK & TIMESTAMP ─── -->
+<section id="s6">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">06</div>
+    <div>
+      <div class="tag tag-red mb-1">Unit 22 cont.</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Deadlock & Timestamp Ordering</h2>
+    </div>
+  </div>
+
+  <!-- Deadlock -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Deadlock — Definition</div>
+    <div class="highlight p-2 text-sm mb-3"><strong>Deadlock</strong> = Two or more Ts each waiting for the other to release a lock. Circular wait — none can proceed.</div>
+    
+    <!-- Deadlock diagram -->
+    <div class="overflow-x-auto">
+      <svg viewBox="0 0 460 190" class="w-full h-auto max-w-md mx-auto" preserveAspectRatio="xMidYMid meet">
+        <rect x="30" y="74" width="86" height="44" rx="5" fill="#457b9d"/>
+        <text x="73" y="101" text-anchor="middle" fill="white" font-weight="bold" font-size="16">T1</text>
+        <rect x="344" y="74" width="86" height="44" rx="5" fill="#457b9d"/>
+        <text x="387" y="101" text-anchor="middle" fill="white" font-weight="bold" font-size="16">T2</text>
+
+        <rect x="160" y="20" width="140" height="34" rx="5" fill="#e63946"/>
+        <text x="230" y="41" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Lock A (held by T1)</text>
+        <rect x="160" y="136" width="140" height="34" rx="5" fill="#e63946"/>
+        <text x="230" y="157" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Lock B (held by T2)</text>
+
+        <path d="M116 84 Q168 50 160 36" stroke="#2d6a4f" stroke-width="2.2" fill="none" stroke-dasharray="5,3" marker-end="url(#ga)"/>
+        <text x="78" y="63" fill="#2d6a4f" font-size="12" font-weight="bold">T2 wants A</text>
+
+        <path d="M344 108 Q292 142 300 154" stroke="#e63946" stroke-width="2.2" fill="none" stroke-dasharray="5,3" marker-end="url(#ra)"/>
+        <text x="296" y="182" fill="#e63946" font-size="12" font-weight="bold">T1 wants B</text>
+        <defs>
+          <marker id="ga" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#2d6a4f"/></marker>
+          <marker id="ra" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#e63946"/></marker>
+        </defs>
+      </svg>
+    </div>
+    
+    <div class="mt-3">
+      <div class="font-bold text-sm mb-1">Detection: Wait-for Graph</div>
+      <div class="text-xs">Nodes = Transactions &nbsp;|&nbsp; Edge T1→T2 = T1 waiting for T2's lock<br>
+      <strong>Cycle in graph = Deadlock!</strong> → Select victim T → abort & rollback to break cycle.</div>
+    </div>
+  </div>
+
+  <!-- Prevention schemes -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Deadlock Prevention Schemes</div>
+    <div class="text-xs text-[var(--muted)] mb-2">Both use timestamps: <strong>older T = lower TS = higher priority</strong></div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="bg-blue-50 border border-blue-200 p-3 rounded">
+        <div class="font-extrabold text-blue-700">Wait-Die</div>
+        <div class="text-xs mt-1 space-y-1">
+          <div>🧓 Older T requests lock held by younger T → <strong>WAIT</strong></div>
+          <div>🧒 Younger T requests lock held by older T → <strong>DIE</strong> (rollback)</div>
+        </div>
+        <div class="mono text-xs mt-2 text-blue-700">Older never rolled back</div>
+      </div>
+      <div class="bg-red-50 border border-red-200 p-3 rounded">
+        <div class="font-extrabold text-red-700">Wound-Wait</div>
+        <div class="text-xs mt-1 space-y-1">
+          <div>🧓 Older T requests lock held by younger T → <strong>WOUND</strong> (abort younger)</div>
+          <div>🧒 Younger T requests lock held by older T → <strong>WAIT</strong></div>
+        </div>
+        <div class="mono text-xs mt-2 text-red-700">Younger rolled back if blocking older</div>
+      </div>
+    </div>
+    <div class="mt-3 overflow-x-auto">
+      <table>
+        <thead><tr><th>Scheme</th><th>Older requests younger's lock</th><th>Younger requests older's lock</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Wait-Die</td><td class="text-blue-700 font-bold">WAIT</td><td class="text-red-600 font-bold">DIE</td></tr>
+          <tr><td class="font-bold">Wound-Wait</td><td class="text-red-600 font-bold">WOUND (abort younger)</td><td class="text-blue-700 font-bold">WAIT</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Timestamp Ordering -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Timestamp-Based Concurrency Control</div>
+    <div class="highlight-blue p-2 text-sm mb-3"><strong>Alternative to locking.</strong> Each T gets unique timestamp TS(T) at start. Conflicts resolved by comparing timestamps — no deadlocks!</div>
+
+    <div class="text-sm mb-2"><strong>Each data item X tracks:</strong></div>
+    <div class="grid grid-cols-2 gap-2 mb-3">
+      <div class="bg-blue-50 p-2 rounded text-center text-sm">
+        <div class="font-bold text-blue-700">RTS(X)</div>
+        <div class="text-xs">Latest TS that READ X</div>
+      </div>
+      <div class="bg-red-50 p-2 rounded text-center text-sm">
+        <div class="font-bold text-red-700">WTS(X)</div>
+        <div class="text-xs">Latest TS that WROTE X</div>
+      </div>
+    </div>
+
+    <div class="highlight-green p-2 text-sm">
+      <strong>Thomas's Write Rule:</strong> If T tries to write X but WTS(X) &gt; TS(T), the write is <em>obsolete</em> — safely IGNORE it instead of rolling back. Improves performance.
+    </div>
+  </div>
+
+  <!-- Comparison -->
+  <div class="card mb-4">
+    <div class="font-bold mb-2">2PL vs Timestamp Ordering</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Aspect</th><th>2PL (Locking)</th><th>Timestamp Ordering</th></tr></thead>
+        <tbody>
+          <tr><td>Mechanism</td><td>Acquire/release locks</td><td>TS comparison on each op</td></tr>
+          <tr><td>Deadlock</td><td class="text-red-600">Possible ❌</td><td class="text-green-700">Impossible ✅</td></tr>
+          <tr><td>Rollbacks</td><td>Less frequent</td><td class="text-red-600">More frequent ❌</td></tr>
+          <tr><td>Serializability</td><td class="text-green-700">Guaranteed ✅</td><td class="text-green-700">Guaranteed ✅</td></tr>
+          <tr><td>Overhead</td><td>Lock management</td><td>Timestamp management</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FLASHCARDS ─── -->
+<section id="fc">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num" style="color:var(--accent);">FC</div>
+    <div>
+      <div class="tag tag-red mb-1">Study Mode</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Flashcards</h2>
+      <p class="text-sm text-[var(--muted)]">Tap to flip • All key exam concepts</p>
+    </div>
+  </div>
+  
+  <div id="fc-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ─── MASTER CHEATSHEET ─── -->
+<section>
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num" style="color:var(--accent2);">∑</div>
+    <div>
+      <div class="tag tag-blue mb-1">Quick Reference</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Master Cheatsheet</h2>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Everything in One Table</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Topic</th><th>Key Formula / Rule</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">ACID-A</td><td>All or Nothing → undo log</td></tr>
+          <tr><td class="font-bold">ACID-C</td><td>Valid state → Valid state → constraints</td></tr>
+          <tr><td class="font-bold">ACID-I</td><td>No interference → locking</td></tr>
+          <tr><td class="font-bold">ACID-D</td><td>Committed = permanent → WAL + disk</td></tr>
+          <tr><td class="font-bold">Conflict</td><td>Diff T + Same item + ≥1 Write = CONFLICT</td></tr>
+          <tr><td class="font-bold">Serializable?</td><td>Precedence graph — NO cycle = YES</td></tr>
+          <tr><td class="font-bold">WAL</td><td>Log BEFORE data write</td></tr>
+          <tr><td class="font-bold">S lock</td><td>Read; many can share</td></tr>
+          <tr><td class="font-bold">X lock</td><td>Write; exclusive — no sharing</td></tr>
+          <tr><td class="font-bold">2PL</td><td>Growing phase (acquire) → Lock Point → Shrinking phase (release)</td></tr>
+          <tr><td class="font-bold">Strict 2PL</td><td>Hold X-locks until commit/abort (most common)</td></tr>
+          <tr><td class="font-bold">Wait-Die</td><td>Older waits; Younger dies</td></tr>
+          <tr><td class="font-bold">Wound-Wait</td><td>Older wounds younger; Younger waits</td></tr>
+          <tr><td class="font-bold">Deadlock detect</td><td>Wait-for graph → cycle → abort victim</td></tr>
+          <tr><td class="font-bold">Thomas Write Rule</td><td>Obsolete write → IGNORE (don't abort)</td></tr>
+          <tr><td class="font-bold">Dirty Read</td><td>Prevented at READ COMMITTED+</td></tr>
+          <tr><td class="font-bold">Non-Repeatable</td><td>Prevented at REPEATABLE READ+</td></tr>
+          <tr><td class="font-bold">Phantom Read</td><td>Prevented at SERIALIZABLE only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-6 text-xs text-[var(--muted)] border-t border-[var(--border)] mt-8">
+  RDBMS Module 4 Study Guide &nbsp;·&nbsp; Transactions & Concurrency Control &nbsp;·&nbsp; 2026
+</footer>
+
+<script>
+function scrollTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+
+const cards=[
+  {q:"What is a Transaction?",a:"A logical unit of work — one or more DB operations that must execute atomically. Starts from a consistent state, leaves DB in a consistent state."},
+  {q:"What are the 4 ACID properties?",a:"Atomicity (all or nothing) · Consistency (valid→valid) · Isolation (no interference) · Durability (committed = permanent)"},
+  {q:"What enforces Atomicity?",a:"Recovery manager using the undo log (Write-Ahead Log)"},
+  {q:"What enforces Isolation?",a:"Concurrency control manager — typically via locking (2PL) or timestamp ordering"},
+  {q:"What is WAL (Write-Ahead Logging)?",a:"Log entry must be written to disk BEFORE actual data modification. Ensures recovery is always possible after crashes."},
+  {q:"Transaction States — name all 6",a:"Active → Partially Committed → Committed (success path)\nActive → Failed → Aborted → Terminated (failure path)"},
+  {q:"What is 'Partially Committed'?",a:"Last operation has executed but data is still in memory buffer — NOT yet written to disk. Different from Committed!"},
+  {q:"When do two operations CONFLICT?",a:"All 3 must hold: (1) Different transactions (2) Same data item (3) At least one is a WRITE"},
+  {q:"Read-Read: conflict?",a:"NO — two reads never conflict. Read-Write, Write-Read, Write-Write all conflict."},
+  {q:"How to test Conflict Serializability?",a:"Build Precedence Graph. Draw edge T1→T2 if T1's op conflicts with T2's later op. NO CYCLE = Conflict Serializable ✅"},
+  {q:"What is a Serial Schedule?",a:"Transactions execute one after another — no interleaving. Always correct but low performance."},
+  {q:"What is a Cascadeless Schedule?",a:"A transaction can only read a data item AFTER the transaction that last wrote it has COMMITTED. Prevents cascading rollbacks."},
+  {q:"What is a Strict Schedule?",a:"No T can read OR write a data item until the last writer has committed or aborted. Easiest to recover from."},
+  {q:"Hierarchy of Schedule Types (most to least restrictive)",a:"Serial > Strict > Cascadeless > Recoverable > Serializable"},
+  {q:"What anomaly does READ COMMITTED prevent?",a:"Dirty Read — you only read committed data. Non-repeatable reads and phantom reads still possible."},
+  {q:"What anomaly does REPEATABLE READ prevent?",a:"Dirty Read AND Non-Repeatable Read. Phantom reads still possible."},
+  {q:"Which isolation level prevents Phantom Reads?",a:"SERIALIZABLE — the strongest isolation level. Prevents all three anomalies."},
+  {q:"What is a Dirty Read?",a:"Reading data written by a transaction that hasn't committed yet. If that T rolls back, you read invalid data."},
+  {q:"What is a Phantom Read?",a:"Re-run a query and get different rows because another T inserted/deleted matching rows in between."},
+  {q:"Difference: S-lock vs X-lock",a:"S (Shared): for READ — multiple Ts can hold simultaneously.\nX (Exclusive): for WRITE — only one T can hold; blocks all others."},
+  {q:"S + S lock: compatible?",a:"YES ✅ — multiple readers allowed"},
+  {q:"X + anything: compatible?",a:"NO ❌ — exclusive lock blocks all others (S or X)"},
+  {q:"What is Two-Phase Locking (2PL)?",a:"Growing Phase: acquire locks only (no releasing).\nLock Point: last lock acquired.\nShrinking Phase: release locks only (no acquiring).\nGuarantees conflict serializability."},
+  {q:"Which 2PL variant is most widely used?",a:"Strict 2PL — holds X-locks until transaction commits or aborts. Prevents dirty reads. Used in MySQL InnoDB."},
+  {q:"Conservative 2PL — what's special?",a:"All locks acquired BEFORE execution begins. Prevents deadlocks but reduces concurrency."},
+  {q:"What is a Deadlock?",a:"Two or more Ts each waiting for the other to release a lock. Circular wait — none can proceed."},
+  {q:"How is Deadlock detected?",a:"Wait-for Graph: nodes=Ts, edge T1→T2 if T1 waits for T2's lock. CYCLE in graph = Deadlock. Resolve by aborting victim T."},
+  {q:"Wait-Die scheme (older vs younger)",a:"Older requests younger's lock → WAIT.\nYounger requests older's lock → DIE (rollback). Older never rolled back."},
+  {q:"Wound-Wait scheme (older vs younger)",a:"Older requests younger's lock → WOUND (abort younger).\nYounger requests older's lock → WAIT. Younger may get rolled back."},
+  {q:"What is Timestamp Ordering?",a:"Each T gets unique TS at start. Ops ordered by TS comparison. No deadlocks possible but more rollbacks than 2PL."},
+  {q:"What is RTS(X) and WTS(X)?",a:"RTS(X) = timestamp of latest T that read X.\nWTS(X) = timestamp of latest T that wrote X."},
+  {q:"Thomas's Write Rule",a:"If T tries to write X but WTS(X) > TS(T), the write is obsolete — IGNORE it (don't rollback). Improves performance."},
+  {q:"2PL vs Timestamp: which avoids deadlocks?",a:"Timestamp Ordering — no locks = no deadlocks. But causes more rollbacks than 2PL."},
+  {q:"SAVEPOINT in SQL — what does it do?",a:"Sets a named checkpoint within a transaction. ROLLBACK TO SAVEPOINT undoes only to that point (partial rollback)."},
+  {q:"COMMIT vs ROLLBACK",a:"COMMIT: make all changes permanent, release locks, visible to others.\nROLLBACK: undo ALL changes since BEGIN, restore pre-transaction state."},
+];
+
+const grid=document.getElementById('fc-grid');
+cards.forEach((c,i)=>{
+  const h=window.matchMedia('(max-width: 640px)').matches?180:(120+Math.random()*30|0);
+  const w=i%3===0?'sm:col-span-2':'';
+  grid.innerHTML+=`
+  <div class="fc-wrap ${w}" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-inner">
+        <div class="fc-front card" style="background:var(--card);border:1.5px solid var(--border);">
+          <div>
+            <div class="tag tag-gray mb-2">${String(i+1).padStart(2,'0')}</div>
+            <div class="font-bold text-sm">${c.q}</div>
+            <div class="text-xs text-[var(--muted)] mt-2">tap to reveal</div>
+          </div>
+        </div>
+        <div class="fc-back" style="background:var(--ink);color:#fff;">
+          <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>
