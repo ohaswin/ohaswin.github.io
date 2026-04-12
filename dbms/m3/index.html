@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDBMS Module 3 — Query Languages</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+  code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+  pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+  .kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+  td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+  tr:nth-child(even) td{background:#f0ede5;}
+  details summary{cursor:pointer;list-style:none;user-select:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+  .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+  .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .fc-wrap{perspective:700px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+  nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #ccc;cursor:pointer;text-decoration:none;color:inherit;display:inline-block;}
+  nav a:hover{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+  h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+  h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;font-variant-numeric:tabular-nums;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- STICKY NAV -->
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 03</div>
+  <div class="font-black text-sm tracking-wide mb-1">QUERY LANGUAGES — SQL & NoSQL</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">SQL Intro</a>
+    <a href="#s2">DDL</a>
+    <a href="#s3">DML & Joins</a>
+    <a href="#s4">Advanced SQL</a>
+    <a href="#s5">NoSQL</a>
+    <a href="#s6">Redis & Mongo</a>
+    <a href="#fc">Flashcards</a>
+    <a href="#cheat">Cheatsheet</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- ═══════════════════════════════════════════ S1: SQL INTRO -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill red mb-1">Unit 1</div><h2>Introduction to SQL</h2><p class="text-sm text-gray-500">What it is, categories, data types</p></div>
+  </div>
+
+  <div class="card tip mb-3">
+    <strong>SQL</strong> = Structured Query Language. <strong>Declarative</strong> — you say WHAT you want, not HOW. The DBMS optimizer decides the execution plan. ANSI/ISO standard since 1987 (originated at IBM as SEQUEL).
+  </div>
+
+  <div class="card mb-3">
+    <h3>Key Characteristics</h3>
+    <ul class="list-disc ml-5 space-y-1 text-sm">
+      <li><strong>Non-procedural</strong> — specify WHAT, not HOW</li>
+      <li><strong>Set-oriented</strong> — operates on entire sets of rows at once</li>
+      <li><strong>Standardized</strong> — portable across MySQL, Oracle, PostgreSQL, SQL Server</li>
+      <li><strong>Comprehensive</strong> — DDL + DML + DCL + TCL in one language</li>
+      <li><strong>Human-readable</strong> — English-like keywords</li>
+    </ul>
+  </div>
+
+  <div class="card mb-3">
+    <h3>SQL Command Categories</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Category</th><th>Commands</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill red">DDL</span></td><td class="mono">CREATE, ALTER, DROP, TRUNCATE</td><td>Define structure</td></tr>
+        <tr><td><span class="pill blue">DML</span></td><td class="mono">SELECT, INSERT, UPDATE, DELETE</td><td>Manipulate data</td></tr>
+        <tr><td><span class="pill gray">DCL</span></td><td class="mono">GRANT, REVOKE</td><td>Access control</td></tr>
+        <tr><td><span class="pill green">TCL</span></td><td class="mono">COMMIT, ROLLBACK, SAVEPOINT</td><td>Transaction control</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <details class="card mb-3">
+    <summary class="font-bold flex justify-between items-center">SQL Data Types <span class="pill gray">▼</span></summary>
+    <div class="mt-3 scroll-x">
+    <table>
+      <thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">INT / INTEGER</td><td>Whole numbers</td><td class="mono">Age INT</td></tr>
+        <tr><td class="mono">DECIMAL(p,s)</td><td>Fixed-point (p=precision, s=scale)</td><td class="mono">Price DECIMAL(8,2)</td></tr>
+        <tr><td class="mono">FLOAT / REAL</td><td>Approximate floating-point</td><td class="mono">Score FLOAT</td></tr>
+        <tr><td class="mono">CHAR(n)</td><td>Fixed-length string</td><td class="mono">Gender CHAR(1)</td></tr>
+        <tr><td class="mono">VARCHAR(n)</td><td>Variable-length string (max n)</td><td class="mono">Name VARCHAR(50)</td></tr>
+        <tr><td class="mono">DATE</td><td>YYYY-MM-DD</td><td class="mono">DOB DATE</td></tr>
+        <tr><td class="mono">TIME</td><td>HH:MM:SS</td><td class="mono">Login TIME</td></tr>
+        <tr><td class="mono">TIMESTAMP</td><td>Date + Time</td><td class="mono">Created TIMESTAMP</td></tr>
+        <tr><td class="mono">BOOLEAN</td><td>TRUE / FALSE</td><td class="mono">Active BOOLEAN</td></tr>
+        <tr><td class="mono">BLOB</td><td>Binary large object</td><td class="mono">Photo BLOB</td></tr>
+        <tr><td class="mono">TEXT</td><td>Large text</td><td class="mono">Bio TEXT</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </details>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> CHAR wastes space but is faster. VARCHAR saves space. DECIMAL is exact; FLOAT is approximate — use DECIMAL for money.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════ S2: DDL -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill red mb-1">DDL</div><h2>Data Definition Language</h2><p class="text-sm text-gray-500">CREATE, ALTER, DROP, TRUNCATE, INDEX</p></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>CREATE TABLE with Constraints</h3>
+<pre><span class="kw">CREATE TABLE</span> STUDENT (
+    Student_ID  <span class="fn">INT</span>          <span class="kw">PRIMARY KEY</span>,
+    Name        <span class="fn">VARCHAR</span>(50) <span class="kw">NOT NULL</span>,
+    Age         <span class="fn">INT</span>          <span class="kw">CHECK</span> (Age <span class="kw">BETWEEN</span> 15 <span class="kw">AND</span> 35),
+    Gender      <span class="fn">CHAR</span>(1)      <span class="kw">CHECK</span> (Gender <span class="kw">IN</span> (<span class="str">'M'</span>,<span class="str">'F'</span>,<span class="str">'O'</span>)),
+    Email       <span class="fn">VARCHAR</span>(100) <span class="kw">UNIQUE</span>,
+    Dept_ID     <span class="fn">INT</span>,
+    <span class="kw">FOREIGN KEY</span> (Dept_ID) <span class="kw">REFERENCES</span> DEPARTMENT(Dept_ID)
+        <span class="kw">ON DELETE SET NULL</span>
+        <span class="kw">ON UPDATE CASCADE</span>
+);</pre>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Constraints Summary</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Constraint</th><th>Rule</th></tr></thead>
+      <tbody>
+        <tr><td class="mono font-bold">PRIMARY KEY</td><td>Unique + NOT NULL. One per table.</td></tr>
+        <tr><td class="mono font-bold">NOT NULL</td><td>Column cannot be empty</td></tr>
+        <tr><td class="mono font-bold">UNIQUE</td><td>All values distinct (NULLs allowed)</td></tr>
+        <tr><td class="mono font-bold">CHECK</td><td>Value must satisfy a condition</td></tr>
+        <tr><td class="mono font-bold">DEFAULT</td><td>Value used when none provided</td></tr>
+        <tr><td class="mono font-bold">FOREIGN KEY</td><td>References PK of another table</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Foreign Key Actions</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Action</th><th>What happens to FK rows</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">RESTRICT</td><td>Block the operation ❌</td></tr>
+        <tr><td class="mono">CASCADE</td><td>Propagate change/delete automatically</td></tr>
+        <tr><td class="mono">SET NULL</td><td>Set FK to NULL</td></tr>
+        <tr><td class="mono">SET DEFAULT</td><td>Set FK to default value</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>ALTER TABLE</h3>
+<pre><span class="kw">ALTER TABLE</span> STUDENT <span class="kw">ADD COLUMN</span> Phone <span class="fn">VARCHAR</span>(15);
+<span class="kw">ALTER TABLE</span> STUDENT <span class="kw">MODIFY COLUMN</span> Name <span class="fn">VARCHAR</span>(100);
+<span class="kw">ALTER TABLE</span> STUDENT <span class="kw">DROP COLUMN</span> Phone;
+<span class="kw">ALTER TABLE</span> STUDENT <span class="kw">ADD CONSTRAINT</span> chk <span class="kw">CHECK</span> (Age &gt;= 15);
+<span class="kw">ALTER TABLE</span> STUDENT <span class="kw">DROP CONSTRAINT</span> chk;</pre>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DROP vs TRUNCATE vs DELETE</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Command</th><th>Removes</th><th>Structure?</th><th>Rollback?</th></tr></thead>
+      <tbody>
+        <tr><td class="mono font-bold">DROP TABLE</td><td>Everything including table</td><td>❌ Gone</td><td>❌</td></tr>
+        <tr><td class="mono font-bold">TRUNCATE</td><td>All rows, keeps structure</td><td>✅ Stays</td><td>❌ (DDL)</td></tr>
+        <tr><td class="mono font-bold">DELETE</td><td>Specific rows (WHERE)</td><td>✅ Stays</td><td>✅ (DML)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>CREATE INDEX</h3>
+<pre><span class="kw">CREATE INDEX</span> idx_name <span class="kw">ON</span> STUDENT (Name);
+<span class="kw">CREATE UNIQUE INDEX</span> idx_email <span class="kw">ON</span> STUDENT (Email);
+<span class="kw">DROP INDEX</span> idx_name <span class="kw">ON</span> STUDENT;</pre>
+    <div class="text-sm mt-2 text-gray-600">Indexes speed up queries but slow down INSERT/UPDATE/DELETE. Trade-off: query speed vs write speed.</div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> TRUNCATE is DDL (can't rollback). DELETE is DML (can rollback). PRIMARY KEY = UNIQUE + NOT NULL combined.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════ S3: DML & JOINS -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill blue mb-1">DML</div><h2>SQL DML — Queries & Joins</h2><p class="text-sm text-gray-500">SELECT, INSERT, UPDATE, DELETE, all JOIN types</p></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>SELECT Statement Structure</h3>
+<pre><span class="kw">SELECT</span> [<span class="kw">DISTINCT</span>] columns
+<span class="kw">FROM</span>   table(s)
+[<span class="kw">WHERE</span>  condition]
+[<span class="kw">GROUP BY</span> column]
+[<span class="kw">HAVING</span> group_condition]
+[<span class="kw">ORDER BY</span> column [<span class="kw">ASC</span>|<span class="kw">DESC</span>]];</pre>
+    <div class="text-xs text-gray-500 mt-1">Execution order: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>WHERE Operators</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Operator</th><th>Usage</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">BETWEEN</td><td>Inclusive range</td><td class="mono">Age BETWEEN 18 AND 25</td></tr>
+        <tr><td class="mono">IN</td><td>Match any in list</td><td class="mono">Dept IN ('CS','IT')</td></tr>
+        <tr><td class="mono">LIKE</td><td>Pattern match</td><td class="mono">Name LIKE 'A%'</td></tr>
+        <tr><td class="mono">IS NULL</td><td>Check for NULL</td><td class="mono">Email IS NULL</td></tr>
+        <tr><td class="mono">NOT IN / NOT LIKE</td><td>Negation</td><td class="mono">Dept NOT IN ('EC')</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="mt-2 info text-sm">
+      <strong>LIKE patterns:</strong> &nbsp;
+      <span class="mono">%</span> = any chars &nbsp;|&nbsp; 
+      <span class="mono">_</span> = one char<br>
+      <span class="mono">'A%'</span> starts with A &nbsp;·&nbsp; 
+      <span class="mono">'%Kumar'</span> ends with Kumar &nbsp;·&nbsp; 
+      <span class="mono">'_r%'</span> 2nd char is r
+    </div>
+  </div>
+
+  <!-- JOIN TYPES with visual -->
+  <div class="card mb-3">
+    <h3>JOIN Types</h3>
+    <!-- Venn diagrams via SVG -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
+
+      <!-- INNER -->
+      <div class="text-center">
+        <svg viewBox="0 0 120 70" class="w-full max-w-[140px] mx-auto">
+          <circle cx="42" cy="35" r="28" fill="#1d4ed8" opacity=".25" stroke="#1d4ed8" stroke-width="1.5"/>
+          <circle cx="78" cy="35" r="28" fill="#1d4ed8" opacity=".25" stroke="#1d4ed8" stroke-width="1.5"/>
+          <ellipse cx="60" cy="35" rx="18" ry="22" fill="#1d4ed8" opacity=".6"/>
+          <text x="60" y="67" text-anchor="middle" font-size="10" font-weight="bold" fill="#1d4ed8">INNER JOIN</text>
+        </svg>
+        <div class="text-xs mt-1">Matching rows only</div>
+      </div>
+
+      <!-- LEFT -->
+      <div class="text-center">
+        <svg viewBox="0 0 120 70" class="w-full max-w-[140px] mx-auto">
+          <circle cx="42" cy="35" r="28" fill="#15803d" opacity=".6" stroke="#15803d" stroke-width="1.5"/>
+          <circle cx="78" cy="35" r="28" fill="#15803d" opacity=".15" stroke="#15803d" stroke-width="1.5"/>
+          <text x="60" y="67" text-anchor="middle" font-size="10" font-weight="bold" fill="#15803d">LEFT JOIN</text>
+        </svg>
+        <div class="text-xs mt-1">All left + matches</div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="text-center">
+        <svg viewBox="0 0 120 70" class="w-full max-w-[140px] mx-auto">
+          <circle cx="42" cy="35" r="28" fill="#b45309" opacity=".15" stroke="#b45309" stroke-width="1.5"/>
+          <circle cx="78" cy="35" r="28" fill="#b45309" opacity=".6" stroke="#b45309" stroke-width="1.5"/>
+          <text x="60" y="67" text-anchor="middle" font-size="10" font-weight="bold" fill="#b45309">RIGHT JOIN</text>
+        </svg>
+        <div class="text-xs mt-1">All right + matches</div>
+      </div>
+
+      <!-- FULL OUTER -->
+      <div class="text-center">
+        <svg viewBox="0 0 120 70" class="w-full max-w-[140px] mx-auto">
+          <circle cx="42" cy="35" r="28" fill="#7c3aed" opacity=".5" stroke="#7c3aed" stroke-width="1.5"/>
+          <circle cx="78" cy="35" r="28" fill="#7c3aed" opacity=".5" stroke="#7c3aed" stroke-width="1.5"/>
+          <text x="60" y="67" text-anchor="middle" font-size="10" font-weight="bold" fill="#7c3aed">FULL OUTER</text>
+        </svg>
+        <div class="text-xs mt-1">All rows, both sides</div>
+      </div>
+
+      <!-- CROSS -->
+      <div class="text-center">
+        <svg viewBox="0 0 120 70" class="w-full max-w-[140px] mx-auto">
+          <rect x="10" y="10" width="45" height="50" rx="3" fill="#dc2626" opacity=".4" stroke="#dc2626" stroke-width="1.5"/>
+          <rect x="65" y="10" width="45" height="50" rx="3" fill="#dc2626" opacity=".4" stroke="#dc2626" stroke-width="1.5"/>
+          <line x1="55" y1="35" x2="65" y2="35" stroke="#dc2626" stroke-width="2"/>
+          <text x="60" y="67" text-anchor="middle" font-size="10" font-weight="bold" fill="#dc2626">CROSS JOIN</text>
+        </svg>
+        <div class="text-xs mt-1">Every combo (m×n rows)</div>
+      </div>
+
+      <!-- SELF -->
+      <div class="text-center">
+        <svg viewBox="0 0 120 70" class="w-full max-w-[140px] mx-auto">
+          <circle cx="60" cy="30" r="22" fill="#374151" opacity=".3" stroke="#374151" stroke-width="1.5"/>
+          <path d="M72 42 Q90 60 60 55 Q30 60 48 42" stroke="#374151" stroke-width="1.5" fill="none" marker-end="url(#sa)"/>
+          <defs><marker id="sa" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><polygon points="0 0,5 2.5,0 5" fill="#374151"/></marker></defs>
+          <text x="60" y="67" text-anchor="middle" font-size="10" font-weight="bold" fill="#374151">SELF JOIN</text>
+        </svg>
+        <div class="text-xs mt-1">Table joins itself</div>
+      </div>
+    </div>
+
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>JOIN</th><th>Returns</th><th>NULL-filled side</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">INNER JOIN</td><td>Only matching rows</td><td>Neither</td></tr>
+        <tr><td class="font-bold">LEFT JOIN</td><td>All left + matching right</td><td>Right (non-matches)</td></tr>
+        <tr><td class="font-bold">RIGHT JOIN</td><td>All right + matching left</td><td>Left (non-matches)</td></tr>
+        <tr><td class="font-bold">FULL OUTER JOIN</td><td>All rows both tables</td><td>Both sides</td></tr>
+        <tr><td class="font-bold">CROSS JOIN</td><td>Cartesian product (m × n)</td><td>—</td></tr>
+        <tr><td class="font-bold">SELF JOIN</td><td>Table joined to itself</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>JOIN Syntax Examples</h3>
+<pre><span class="cm">-- INNER JOIN</span>
+<span class="kw">SELECT</span> s.Name, d.Dept_Name
+<span class="kw">FROM</span> STUDENT s <span class="kw">INNER JOIN</span> DEPARTMENT d <span class="kw">ON</span> s.Dept_ID = d.Dept_ID;
+
+<span class="cm">-- LEFT JOIN (all students, even without dept)</span>
+<span class="kw">SELECT</span> s.Name, d.Dept_Name
+<span class="kw">FROM</span> STUDENT s <span class="kw">LEFT JOIN</span> DEPARTMENT d <span class="kw">ON</span> s.Dept_ID = d.Dept_ID;
+
+<span class="cm">-- SELF JOIN (employee and their manager)</span>
+<span class="kw">SELECT</span> e1.Name <span class="kw">AS</span> Employee, e2.Name <span class="kw">AS</span> Manager
+<span class="kw">FROM</span> EMPLOYEE e1 <span class="kw">JOIN</span> EMPLOYEE e2 <span class="kw">ON</span> e1.Manager_ID = e2.Employee_ID;
+
+<span class="cm">-- CROSS JOIN</span>
+<span class="kw">SELECT</span> s.Name, c.Course_Name <span class="kw">FROM</span> STUDENT s <span class="kw">CROSS JOIN</span> COURSE c;</pre>
+  </div>
+
+  <div class="card mb-3">
+    <h3>INSERT / UPDATE / DELETE</h3>
+<pre><span class="cm">-- INSERT</span>
+<span class="kw">INSERT INTO</span> STUDENT <span class="kw">VALUES</span> (104, <span class="str">'Meena'</span>, 20, <span class="str">'F'</span>, <span class="str">'m@mail.com'</span>, <span class="str">'CS'</span>);
+<span class="kw">INSERT INTO</span> STUDENT (Student_ID, Name) <span class="kw">VALUES</span> (105, <span class="str">'Arjun'</span>);
+<span class="kw">INSERT INTO</span> STUDENT <span class="kw">SELECT</span> * <span class="kw">FROM</span> NEW_ADMISSIONS <span class="kw">WHERE</span> Year = 2024;
+
+<span class="cm">-- UPDATE</span>
+<span class="kw">UPDATE</span> STUDENT <span class="kw">SET</span> Age = 21 <span class="kw">WHERE</span> Student_ID = 101;
+
+<span class="cm">-- DELETE</span>
+<span class="kw">DELETE FROM</span> STUDENT <span class="kw">WHERE</span> Student_ID = 105;</pre>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> No WHERE in UPDATE/DELETE = affects ALL rows! CROSS JOIN with 100 × 10 rows = 1000 rows. INNER JOIN ≠ OUTER JOIN — know which returns NULLs.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════ S4: ADVANCED SQL -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill purple mb-1">Advanced SQL</div><h2>Aggregation, Subqueries, Views, Triggers</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Aggregate Functions</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Function</th><th>Does</th><th>NULL behavior</th></tr></thead>
+      <tbody>
+        <tr><td class="mono font-bold">COUNT(*)</td><td>Count all rows</td><td>Counts NULLs</td></tr>
+        <tr><td class="mono font-bold">COUNT(col)</td><td>Count non-NULL values</td><td>Ignores NULLs</td></tr>
+        <tr><td class="mono font-bold">SUM(col)</td><td>Total sum</td><td>Ignores NULLs</td></tr>
+        <tr><td class="mono font-bold">AVG(col)</td><td>Average value</td><td>Ignores NULLs</td></tr>
+        <tr><td class="mono font-bold">MAX(col)</td><td>Largest value</td><td>Ignores NULLs</td></tr>
+        <tr><td class="mono font-bold">MIN(col)</td><td>Smallest value</td><td>Ignores NULLs</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>GROUP BY + HAVING</h3>
+    <div class="info text-sm mb-2">
+      <strong>WHERE</strong> filters rows BEFORE grouping &nbsp;|&nbsp; <strong>HAVING</strong> filters groups AFTER aggregation
+    </div>
+<pre><span class="cm">-- Count students per dept (only depts with &gt; 50 students)</span>
+<span class="kw">SELECT</span> Dept_ID, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> Total
+<span class="kw">FROM</span> STUDENT
+<span class="kw">WHERE</span> Age &gt; 17              <span class="cm">-- filter rows first</span>
+<span class="kw">GROUP BY</span> Dept_ID
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) &gt; 50       <span class="cm">-- filter groups after</span>
+<span class="kw">ORDER BY</span> Total <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <!-- Subqueries -->
+  <div class="card mb-3">
+    <h3>Nested Queries (Subqueries)</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+      <div class="good p-2">
+        <div class="font-bold text-sm">Non-Correlated Subquery</div>
+        <div class="text-xs mt-1">Inner query is <strong>independent</strong> — executes ONCE, result passed to outer query</div>
+      </div>
+      <div class="info p-2">
+        <div class="font-bold text-sm">Correlated Subquery</div>
+        <div class="text-xs mt-1">Inner query depends on outer row — executes <strong>once per outer row</strong> (slower)</div>
+      </div>
+    </div>
+<pre><span class="cm">-- Non-correlated: find CS students</span>
+<span class="kw">SELECT</span> Name <span class="kw">FROM</span> STUDENT
+<span class="kw">WHERE</span> Dept_ID = (<span class="kw">SELECT</span> Dept_ID <span class="kw">FROM</span> DEPARTMENT <span class="kw">WHERE</span> Dept_Name = <span class="str">'CS'</span>);
+
+<span class="cm">-- Correlated: students above their dept avg</span>
+<span class="kw">SELECT</span> s.Name, m.Marks <span class="kw">FROM</span> STUDENT s <span class="kw">JOIN</span> MARKS m <span class="kw">ON</span> s.Student_ID = m.Student_ID
+<span class="kw">WHERE</span> m.Marks &gt; (
+    <span class="kw">SELECT</span> <span class="fn">AVG</span>(m2.Marks) <span class="kw">FROM</span> MARKS m2 <span class="kw">JOIN</span> STUDENT s2 <span class="kw">ON</span> m2.Student_ID = s2.Student_ID
+    <span class="kw">WHERE</span> s2.Dept_ID = s.Dept_ID  <span class="cm">-- references outer query</span>
+);</pre>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Subquery Operators</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="mono font-bold">IN</td><td>Matches any value in subquery result</td><td class="mono">WHERE Dept_ID IN (SELECT ...)</td></tr>
+        <tr><td class="mono font-bold">NOT IN</td><td>Doesn't match any value</td><td class="mono">WHERE ID NOT IN (SELECT ...)</td></tr>
+        <tr><td class="mono font-bold">EXISTS</td><td>TRUE if subquery returns ≥1 row</td><td class="mono">WHERE EXISTS (SELECT 1 FROM ...)</td></tr>
+        <tr><td class="mono font-bold">NOT EXISTS</td><td>TRUE if subquery returns 0 rows</td><td class="mono">WHERE NOT EXISTS (...)</td></tr>
+        <tr><td class="mono font-bold">ANY / SOME</td><td>True if condition holds for at least one</td><td class="mono">WHERE Marks &gt; ANY (...)</td></tr>
+        <tr><td class="mono font-bold">ALL</td><td>True if condition holds for all</td><td class="mono">WHERE Marks &gt; ALL (...)</td></tr>
+      </tbody>
+    </table>
+    </div>
+<pre class="mt-2"><span class="cm">-- EXISTS: students enrolled in at least one course</span>
+<span class="kw">SELECT</span> Name <span class="kw">FROM</span> STUDENT s
+<span class="kw">WHERE</span> <span class="kw">EXISTS</span> (<span class="kw">SELECT</span> 1 <span class="kw">FROM</span> ENROLLMENT e <span class="kw">WHERE</span> e.Student_ID = s.Student_ID);
+
+<span class="cm">-- ALL: students scoring more than every CS student</span>
+<span class="kw">SELECT</span> Name <span class="kw">FROM</span> MARKS
+<span class="kw">WHERE</span> Marks &gt; <span class="kw">ALL</span> (<span class="kw">SELECT</span> Marks <span class="kw">FROM</span> MARKS <span class="kw">WHERE</span> Dept_ID = <span class="str">'CS'</span>);</pre>
+  </div>
+
+  <!-- VIEWS -->
+  <div class="card mb-3">
+    <h3>Views</h3>
+    <div class="info text-sm mb-2">A <strong>View</strong> is a virtual table — a saved SELECT query. Does NOT store data physically. Computed dynamically when queried.</div>
+<pre><span class="cm">-- Create view</span>
+<span class="kw">CREATE VIEW</span> CS_Students <span class="kw">AS</span>
+<span class="kw">SELECT</span> Student_ID, Name, Age <span class="kw">FROM</span> STUDENT <span class="kw">WHERE</span> Dept_ID = <span class="str">'CS'</span>;
+
+<span class="cm">-- Use like a table</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> CS_Students <span class="kw">WHERE</span> Age &gt; 20;
+
+<span class="cm">-- Drop view</span>
+<span class="kw">DROP VIEW</span> CS_Students;</pre>
+    <div class="mt-2 scroll-x">
+    <table>
+      <thead><tr><th>Benefit</th><th>How</th></tr></thead>
+      <tbody>
+        <tr><td>Security</td><td>Hide sensitive columns — expose only what user needs</td></tr>
+        <tr><td>Simplicity</td><td>Hide complex joins behind a simple virtual table</td></tr>
+        <tr><td>Independence</td><td>Redefine view if base table changes</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- ASSERTIONS -->
+  <div class="card mb-3">
+    <h3>Assertions</h3>
+    <div class="text-sm text-gray-600 mb-2">General integrity constraint not tied to any single table. Defined in SQL standard but <strong>not widely implemented</strong> in practice.</div>
+<pre><span class="cm">-- Max 60 students per course</span>
+<span class="kw">CREATE ASSERTION</span> max_enrollment <span class="kw">CHECK</span> (
+    <span class="kw">NOT EXISTS</span> (
+        <span class="kw">SELECT</span> Course_ID <span class="kw">FROM</span> ENROLLMENT
+        <span class="kw">GROUP BY</span> Course_ID <span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) &gt; 60
+    )
+);</pre>
+  </div>
+
+  <!-- TRIGGERS -->
+  <div class="card mb-3">
+    <h3>Triggers</h3>
+    <div class="info text-sm mb-2">A <strong>Trigger</strong> is a stored procedure that fires automatically on INSERT / UPDATE / DELETE. Used for audit logs, business rules, derived data.</div>
+
+    <div class="scroll-x mb-2">
+    <table>
+      <thead><tr><th>Type</th><th>When it fires</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">BEFORE INSERT</td><td>Before a new row is inserted</td></tr>
+        <tr><td class="mono">AFTER INSERT</td><td>After new row is inserted</td></tr>
+        <tr><td class="mono">BEFORE UPDATE</td><td>Before a row is updated</td></tr>
+        <tr><td class="mono">AFTER UPDATE</td><td>After a row is updated</td></tr>
+        <tr><td class="mono">BEFORE DELETE</td><td>Before a row is deleted</td></tr>
+        <tr><td class="mono">AFTER DELETE</td><td>After a row is deleted</td></tr>
+      </tbody>
+    </table>
+    </div>
+<pre><span class="cm">-- Trigger: auto-deduct stock on order</span>
+<span class="kw">CREATE TRIGGER</span> update_stock
+<span class="kw">AFTER INSERT ON</span> ORDER_ITEM <span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">UPDATE</span> PRODUCT
+    <span class="kw">SET</span> Stock = Stock - <span class="fn">NEW</span>.Quantity
+    <span class="kw">WHERE</span> Product_ID = <span class="fn">NEW</span>.Product_ID;
+<span class="kw">END</span>;
+
+<span class="cm">-- Trigger: audit salary changes</span>
+<span class="kw">CREATE TRIGGER</span> log_salary
+<span class="kw">AFTER UPDATE OF</span> Salary <span class="kw">ON</span> EMPLOYEE <span class="kw">FOR EACH ROW</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">INSERT INTO</span> SALARY_LOG
+    <span class="kw">VALUES</span> (<span class="fn">OLD</span>.Employee_ID, <span class="fn">OLD</span>.Salary, <span class="fn">NEW</span>.Salary, <span class="fn">NOW</span>());
+<span class="kw">END</span>;</pre>
+    <div class="info text-sm mt-2"><strong>NEW</strong> = new row values (INSERT/UPDATE) &nbsp;|&nbsp; <strong>OLD</strong> = old row values (UPDATE/DELETE)</div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> WHERE filters rows, HAVING filters groups. EXISTS is faster than IN for large datasets. Views don't store data — they're stored queries. NEW/OLD keywords are critical in triggers.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════ S5: NoSQL -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill orange mb-1">NoSQL</div><h2>Introduction to NoSQL Databases</h2><p class="text-sm text-gray-500">Why NoSQL, types, ACID vs BASE, CAP theorem</p></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Why NoSQL?</h3>
+    <ul class="list-disc ml-5 space-y-1 text-sm">
+      <li>Data is <strong>unstructured / semi-structured</strong> (JSON, XML, images)</li>
+      <li>Schema changes <strong>frequently</strong> — rigid tables don't work</li>
+      <li><strong>High velocity</strong> — millions of records per second</li>
+      <li>Need to scale <strong>horizontally</strong> (add servers, not bigger servers)</li>
+      <li>RDBMS can't handle this cost-effectively at web scale</li>
+    </ul>
+  </div>
+
+  <div class="card mb-3">
+    <h3>NoSQL Database Types</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Type</th><th>Model</th><th>Examples</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Key-Value</td><td>key → value</td><td>Redis, DynamoDB</td><td>Cache, sessions, preferences</td></tr>
+        <tr><td class="font-bold">Document</td><td>JSON/BSON docs</td><td>MongoDB, CouchDB</td><td>Content mgmt, catalogs</td></tr>
+        <tr><td class="font-bold">Column-Family</td><td>Column groups</td><td>Cassandra, HBase</td><td>Time-series, IoT, analytics</td></tr>
+        <tr><td class="font-bold">Graph</td><td>Nodes & edges</td><td>Neo4j, Neptune</td><td>Social networks, recommendations</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>ACID vs BASE</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>ACID (Relational)</th><th>BASE (NoSQL)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A</strong>tomicity — all or nothing</td><td><strong>B</strong>asically Available — always responds</td></tr>
+        <tr><td><strong>C</strong>onsistency — always valid state</td><td><strong>S</strong>oft state — state may change over time</td></tr>
+        <tr><td><strong>I</strong>solation — no interference</td><td><strong>E</strong>ventual Consistency — becomes consistent eventually</td></tr>
+        <tr><td><strong>D</strong>urability — committed = permanent</td><td>Prioritizes availability over strict consistency</td></tr>
+        <tr><td colspan="1" class="text-green-700 font-bold">Strong consistency</td><td class="text-orange-700 font-bold">Weak consistency, better performance & scale</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>CAP Theorem (Brewer's Theorem)</h3>
+    <div class="info text-sm mb-3">A distributed database can guarantee at most <strong>2 of these 3</strong> properties simultaneously:</div>
+
+    <div class="flex justify-center mb-3">
+      <svg viewBox="0 0 260 220" class="w-full max-w-xs">
+        <polygon points="130,10 10,205 250,205" fill="none" stroke="#333" stroke-width="1.5"/>
+        <!-- C -->
+        <circle cx="130" cy="15" r="28" fill="#1d4ed8" opacity=".85"/>
+        <text x="130" y="11" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Consistency</text>
+        <text x="130" y="23" text-anchor="middle" fill="white" font-size="9">every read = latest</text>
+        <!-- A -->
+        <circle cx="15" cy="205" r="28" fill="#15803d" opacity=".85"/>
+        <text x="15" y="201" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Availability</text>
+        <text x="15" y="213" text-anchor="middle" fill="white" font-size="9">always responds</text>
+        <!-- P -->
+        <circle cx="245" cy="205" r="28" fill="#dc2626" opacity=".85"/>
+        <text x="245" y="201" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Partition</text>
+        <text x="245" y="213" text-anchor="middle" fill="white" font-size="9">Tolerance</text>
+        <!-- labels on edges -->
+        <text x="62" y="95" fill="#333" font-size="9" transform="rotate(-63,62,95)">CA: Traditional RDBMS</text>
+        <text x="185" y="95" fill="#333" font-size="9" transform="rotate(63,185,95)">CP: HBase, MongoDB</text>
+        <text x="130" y="218" text-anchor="middle" fill="#333" font-size="9">AP: Cassandra, CouchDB</text>
+      </svg>
+    </div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Choice</th><th>Gives up</th><th>Example systems</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">CA</td><td>Partition Tolerance</td><td>Traditional RDBMS</td></tr>
+        <tr><td class="font-bold">CP</td><td>Availability</td><td>HBase, Zookeeper, MongoDB</td></tr>
+        <tr><td class="font-bold">AP</td><td>Consistency</td><td>Cassandra, CouchDB, DynamoDB</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> CAP says choose 2 of 3. In practice, Partition Tolerance is mandatory for distributed systems, so the real choice is C vs A. "Eventual consistency" = BASE's answer to giving up C temporarily.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════ S6: Redis & MongoDB -->
+<section id="s6">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">06</div>
+    <div><div class="pill orange mb-1">NoSQL DBs</div><h2>Redis & MongoDB</h2><p class="text-sm text-gray-500">Key-value and Document databases</p></div>
+  </div>
+
+  <!-- Redis -->
+  <div class="card mb-3" style="border-top:3px solid #dc2626;">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="pill red">Redis</span>
+      <span class="text-sm font-bold">Key-Value Store</span>
+      <span class="text-xs text-gray-500">Remote Dictionary Server</span>
+    </div>
+    <ul class="list-disc ml-5 space-y-1 text-sm mb-3">
+      <li><strong>In-memory</strong> — all data in RAM → sub-millisecond latency</li>
+      <li><strong>Persistence</strong> — RDB snapshots + AOF (append-only file) log</li>
+      <li><strong>Atomic operations</strong> — all commands atomic</li>
+      <li><strong>TTL</strong> — keys expire automatically (great for caching/sessions)</li>
+      <li><strong>Pub/Sub</strong> — publish/subscribe messaging</li>
+    </ul>
+
+    <div class="scroll-x mb-3">
+    <table>
+      <thead><tr><th>Data Type</th><th>Commands</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">String</td><td class="mono text-xs">SET, GET, INCR, DECR, EXPIRE</td><td>Counters, tokens, cache</td></tr>
+        <tr><td class="font-bold">List</td><td class="mono text-xs">LPUSH, RPUSH, LPOP, LRANGE</td><td>Queues, timelines</td></tr>
+        <tr><td class="font-bold">Set</td><td class="mono text-xs">SADD, SMEMBERS, SUNION</td><td>Tags, unique visitors</td></tr>
+        <tr><td class="font-bold">Sorted Set</td><td class="mono text-xs">ZADD, ZRANGE, ZRANK</td><td>Leaderboards</td></tr>
+        <tr><td class="font-bold">Hash</td><td class="mono text-xs">HSET, HGET, HGETALL</td><td>Object/user profiles</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+<pre><span class="cm">-- String: store and retrieve</span>
+<span class="fn">SET</span> username:101 <span class="str">'Arun Kumar'</span>
+<span class="fn">GET</span> username:101          <span class="cm">-- Returns: 'Arun Kumar'</span>
+<span class="fn">EXPIRE</span> username:101 3600  <span class="cm">-- Expires in 1 hour</span>
+
+<span class="cm">-- Hash: store object</span>
+<span class="fn">HSET</span> user:101 name <span class="str">'Arun'</span> age 20 dept <span class="str">'CS'</span>
+<span class="fn">HGETALL</span> user:101
+
+<span class="cm">-- Sorted Set: leaderboard</span>
+<span class="fn">ZADD</span> leaderboard 1500 <span class="str">'Arun'</span>
+<span class="fn">ZRANGE</span> leaderboard 0 9 <span class="fn">WITHSCORES</span>  <span class="cm">-- Top 10</span></pre>
+
+    <div class="mt-2">
+      <div class="font-bold text-sm mb-1">Redis Use Cases</div>
+      <div class="flex flex-wrap gap-2">
+        <span class="bg-red-50 border border-red-200 text-red-700 text-xs px-2 py-1 rounded">Session management</span>
+        <span class="bg-red-50 border border-red-200 text-red-700 text-xs px-2 py-1 rounded">Query result caching</span>
+        <span class="bg-red-50 border border-red-200 text-red-700 text-xs px-2 py-1 rounded">Rate limiting</span>
+        <span class="bg-red-50 border border-red-200 text-red-700 text-xs px-2 py-1 rounded">Leaderboards</span>
+        <span class="bg-red-50 border border-red-200 text-red-700 text-xs px-2 py-1 rounded">Job queues</span>
+        <span class="bg-red-50 border border-red-200 text-red-700 text-xs px-2 py-1 rounded">Real-time analytics</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MongoDB -->
+  <div class="card mb-3" style="border-top:3px solid #15803d;">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="pill green">MongoDB</span>
+      <span class="text-sm font-bold">Document Store</span>
+      <span class="text-xs text-gray-500">JSON/BSON documents</span>
+    </div>
+    <ul class="list-disc ml-5 space-y-1 text-sm mb-3">
+      <li><strong>Schema-less</strong> — documents in same collection can have different fields</li>
+      <li><strong>Nested documents</strong> — embed related data (no joins needed)</li>
+      <li><strong>Horizontal scalability</strong> — built-in sharding</li>
+      <li><strong>Replica sets</strong> — automatic failover for high availability</li>
+      <li><strong>Rich query language</strong> — filter, sort, project, aggregate</li>
+    </ul>
+
+    <div class="scroll-x mb-3">
+    <table>
+      <thead><tr><th>SQL Term</th><th>MongoDB Term</th></tr></thead>
+      <tbody>
+        <tr><td>Database</td><td>Database</td></tr>
+        <tr><td>Table</td><td><strong>Collection</strong></td></tr>
+        <tr><td>Row / Record</td><td><strong>Document</strong></td></tr>
+        <tr><td>Column</td><td><strong>Field</strong></td></tr>
+        <tr><td>Primary Key</td><td><strong>_id</strong> (auto-created)</td></tr>
+        <tr><td>JOIN</td><td><strong>$lookup</strong> (aggregation)</td></tr>
+        <tr><td>Schema</td><td>No fixed schema (flexible)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+<pre><span class="cm">// Document example</span>
+{
+    _id: ObjectId(<span class="str">'64a1b2c3...'</span>),
+    student_id: 101,
+    name: <span class="str">'Arun Kumar'</span>,
+    courses: [<span class="str">'DBMS'</span>, <span class="str">'OS'</span>, <span class="str">'CN'</span>],    <span class="cm">// array field</span>
+    address: { city: <span class="str">'Bangalore'</span>, pin: <span class="str">'560001'</span> }  <span class="cm">// nested doc</span>
+}
+
+<span class="cm">// INSERT</span>
+db.students.insertOne({ student_id: 101, name: <span class="str">'Arun'</span>, dept: <span class="str">'CS'</span> });
+
+<span class="cm">// FIND (SELECT)</span>
+db.students.find({ dept: <span class="str">'CS'</span> });
+db.students.find({ age: { <span class="fn">$gt</span>: 20 } }, { name: 1, dept: 1, _id: 0 });
+
+<span class="cm">// UPDATE</span>
+db.students.updateOne({ student_id: 101 }, { <span class="fn">$set</span>: { age: 21 } });
+
+<span class="cm">// DELETE</span>
+db.students.deleteOne({ student_id: 101 });</pre>
+  </div>
+
+  <!-- Comparison -->
+  <div class="card mb-3">
+    <h3>Redis vs MongoDB vs SQL</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>Redis</th><th>MongoDB</th><th>SQL (RDBMS)</th></tr></thead>
+      <tbody>
+        <tr><td>Data Model</td><td>Key-Value</td><td>Documents (JSON)</td><td>Tables (rows/cols)</td></tr>
+        <tr><td>Storage</td><td>In-memory (RAM)</td><td>Disk-based</td><td>Disk-based</td></tr>
+        <tr><td>Speed</td><td>Fastest (&lt;1ms)</td><td>Fast</td><td>Moderate</td></tr>
+        <tr><td>Schema</td><td>None</td><td>Flexible</td><td>Fixed/strict</td></tr>
+        <tr><td>Query</td><td>Key lookup only</td><td>Rich queries</td><td>Full SQL</td></tr>
+        <tr><td>Relations</td><td>No</td><td>$lookup / embed</td><td>JOINs</td></tr>
+        <tr><td>Best for</td><td>Cache, sessions</td><td>Content, catalogs</td><td>Structured data</td></tr>
+        <tr><td>Consistency</td><td>Eventual</td><td>Configurable</td><td>Strong (ACID)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> Redis = RAM = fastest but limited size. MongoDB = disk = rich queries on flexible docs. SQL = rigid schema but strong ACID. Redis TTL makes it ideal for sessions/cache.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════ FLASHCARDS -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#dc2626;">FC</div>
+    <div><div class="pill red mb-1">Study Mode</div><h2>Flashcards</h2><p class="text-sm text-gray-500">Tap card to reveal answer</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════ CHEATSHEET -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Quick Ref</div><h2>Master Cheatsheet</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>SQL Command Quick Reference</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Need to…</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td>Create a table</td><td class="mono">CREATE TABLE t (...)</td></tr>
+        <tr><td>Add a column</td><td class="mono">ALTER TABLE t ADD COLUMN col TYPE</td></tr>
+        <tr><td>Remove table entirely</td><td class="mono">DROP TABLE t</td></tr>
+        <tr><td>Empty table, keep structure</td><td class="mono">TRUNCATE TABLE t</td></tr>
+        <tr><td>Filter rows</td><td class="mono">WHERE condition</td></tr>
+        <tr><td>Remove duplicates</td><td class="mono">SELECT DISTINCT</td></tr>
+        <tr><td>Sort results</td><td class="mono">ORDER BY col ASC/DESC</td></tr>
+        <tr><td>Group + count</td><td class="mono">GROUP BY col</td></tr>
+        <tr><td>Filter groups</td><td class="mono">HAVING aggregate_condition</td></tr>
+        <tr><td>Pattern match</td><td class="mono">LIKE 'A%' or '_r%'</td></tr>
+        <tr><td>Check for empty</td><td class="mono">IS NULL / IS NOT NULL</td></tr>
+        <tr><td>Match list</td><td class="mono">IN ('CS','IT')</td></tr>
+        <tr><td>Range inclusive</td><td class="mono">BETWEEN 10 AND 20</td></tr>
+        <tr><td>Check row exists</td><td class="mono">EXISTS (subquery)</td></tr>
+        <tr><td>Compare to subquery set</td><td class="mono">ANY / ALL</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>All Facts in One Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Topic</th><th>Key Rule</th></tr></thead>
+      <tbody>
+        <tr><td>SQL paradigm</td><td>Declarative — WHAT not HOW</td></tr>
+        <tr><td>CHAR vs VARCHAR</td><td>CHAR fixed (faster), VARCHAR variable (saves space)</td></tr>
+        <tr><td>PK constraint</td><td>UNIQUE + NOT NULL combined</td></tr>
+        <tr><td>TRUNCATE vs DELETE</td><td>TRUNCATE = DDL (no rollback); DELETE = DML (rollback ok)</td></tr>
+        <tr><td>FK ON DELETE CASCADE</td><td>Child rows deleted when parent deleted</td></tr>
+        <tr><td>SQL exec order</td><td>FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY</td></tr>
+        <tr><td>INNER JOIN</td><td>Only rows with matches in BOTH tables</td></tr>
+        <tr><td>LEFT JOIN</td><td>All left + matching right (NULL if no right match)</td></tr>
+        <tr><td>CROSS JOIN rows</td><td>m × n (Cartesian product)</td></tr>
+        <tr><td>WHERE vs HAVING</td><td>WHERE = before grouping; HAVING = after aggregation</td></tr>
+        <tr><td>COUNT(*) vs COUNT(col)</td><td>COUNT(*) includes NULLs; COUNT(col) ignores NULLs</td></tr>
+        <tr><td>Correlated subquery</td><td>Depends on outer row → runs once per outer row</td></tr>
+        <tr><td>EXISTS</td><td>Returns TRUE if subquery has ≥1 row</td></tr>
+        <tr><td>View</td><td>Virtual table — stored query, no physical data</td></tr>
+        <tr><td>Trigger NEW/OLD</td><td>NEW = new values; OLD = old values</td></tr>
+        <tr><td>NoSQL BASE</td><td>Basically Available, Soft state, Eventually consistent</td></tr>
+        <tr><td>CAP theorem</td><td>Choose max 2 of: Consistency, Availability, Partition Tolerance</td></tr>
+        <tr><td>Redis storage</td><td>In-memory (RAM) → sub-millisecond</td></tr>
+        <tr><td>MongoDB collection</td><td>= SQL table. Document = row. Field = column. _id = PK</td></tr>
+        <tr><td>Horizontal scale</td><td>Add more servers (NoSQL); vertical = bigger server (RDBMS)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  RDBMS Module 3 Study Guide &nbsp;·&nbsp; Query Languages (SQL & NoSQL)
+</footer>
+
+<script>
+const cards=[
+  {q:"What does SQL stand for & what type of language is it?",a:"Structured Query Language. It is DECLARATIVE — you specify WHAT you want, not HOW to get it. DBMS optimizer decides execution plan."},
+  {q:"4 categories of SQL commands",a:"DDL (CREATE/ALTER/DROP/TRUNCATE)\nDML (SELECT/INSERT/UPDATE/DELETE)\nDCL (GRANT/REVOKE)\nTCL (COMMIT/ROLLBACK/SAVEPOINT)"},
+  {q:"CHAR vs VARCHAR — key difference?",a:"CHAR(n): fixed-length, pads with spaces, faster.\nVARCHAR(n): variable-length, saves space.\nUse CHAR for fixed codes (gender), VARCHAR for names."},
+  {q:"What does PRIMARY KEY guarantee?",a:"UNIQUE + NOT NULL combined. Exactly one primary key per table. Uniquely identifies each row."},
+  {q:"TRUNCATE vs DELETE vs DROP",a:"TRUNCATE: DDL, removes all rows, keeps structure, no rollback.\nDELETE: DML, can use WHERE, rollback possible.\nDROP: removes entire table including structure."},
+  {q:"Foreign Key ON DELETE CASCADE — what happens?",a:"When a parent row is deleted, all child rows referencing it are automatically deleted too."},
+  {q:"SQL clause execution order",a:"FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY\n(Must know this — determines what's allowed where!)"},
+  {q:"INNER JOIN vs LEFT JOIN",a:"INNER JOIN: only rows with matches in BOTH tables.\nLEFT JOIN: ALL rows from left table + matching rows from right (NULL for non-matches on right)."},
+  {q:"How many rows does a CROSS JOIN produce?",a:"m × n rows (Cartesian product). If Table A has 100 rows and B has 10 rows → 1000 rows!"},
+  {q:"SELF JOIN — when do you use it?",a:"When a table has a recursive relationship with itself.\nExample: EMPLOYEE table where each employee has a Manager_ID that references another Employee_ID."},
+  {q:"WHERE vs HAVING — difference?",a:"WHERE filters individual ROWS before grouping.\nHAVING filters GROUPS after aggregation.\nHAVING is used with GROUP BY."},
+  {q:"COUNT(*) vs COUNT(column)?",a:"COUNT(*): counts ALL rows including NULLs.\nCOUNT(col): counts only NON-NULL values in that column."},
+  {q:"What is a Correlated Subquery?",a:"A subquery that references a column from the outer query. It executes ONCE PER OUTER ROW — slower than non-correlated. Used in EXISTS checks and row-by-row comparisons."},
+  {q:"EXISTS vs IN — what's the difference?",a:"EXISTS: returns TRUE if subquery has ≥1 row. Stops at first match (faster for large sets).\nIN: compares value against all results of subquery."},
+  {q:"ANY vs ALL in subqueries",a:"ANY: condition true if holds for AT LEAST ONE value in subquery.\nALL: condition true if holds for ALL values in subquery.\n'> ALL(...)' means greater than the maximum."},
+  {q:"What is a View? Does it store data?",a:"A View is a virtual table — a saved SELECT query. It does NOT store data physically. Data is computed dynamically when the view is queried. Used for security, simplicity, abstraction."},
+  {q:"What is a Trigger? Name the 6 types.",a:"A stored procedure that fires automatically on DB events.\nBEFORE/AFTER + INSERT, UPDATE, DELETE = 6 types.\nNEW = new row values. OLD = old row values."},
+  {q:"What do NEW and OLD mean in triggers?",a:"NEW: refers to the new row values (available in INSERT and UPDATE triggers).\nOLD: refers to the old row values (available in UPDATE and DELETE triggers)."},
+  {q:"What is an Assertion in SQL?",a:"A general integrity constraint NOT tied to any single table — defined on the whole database. Part of SQL standard but NOT widely implemented in practice (MySQL doesn't support it)."},
+  {q:"ACID vs BASE — briefly",a:"ACID: Atomicity, Consistency, Isolation, Durability — strong consistency (RDBMS).\nBASE: Basically Available, Soft state, Eventually consistent — weaker consistency for better scale (NoSQL)."},
+  {q:"CAP Theorem — what does it say?",a:"A distributed DB can guarantee at most 2 of 3:\nC = Consistency (latest data always)\nA = Availability (always responds)\nP = Partition Tolerance (survives network splits)\nCA=RDBMS, CP=MongoDB, AP=Cassandra"},
+  {q:"What type of database is Redis? Key feature?",a:"Key-Value store. Stores all data IN-MEMORY (RAM) → sub-millisecond latency. Supports TTL (expiry), Strings, Lists, Sets, Sorted Sets, Hashes. Great for caching & sessions."},
+  {q:"Redis EXPIRE command — what does it do?",a:"Sets a TTL (Time To Live) on a key in seconds. After TTL expires, the key is automatically deleted. EXPIRE key 3600 = delete after 1 hour. Perfect for session tokens and cache."},
+  {q:"What type of database is MongoDB? Key feature?",a:"Document store — stores data as JSON/BSON documents. Schema-less (documents in same collection can have different fields). Collection = table, Document = row, Field = column, _id = PK."},
+  {q:"MongoDB equivalent of SQL JOIN?",a:"$lookup operator in the aggregation pipeline. Or embed related data directly inside a document (denormalization). MongoDB prefers embedding over joining for performance."},
+  {q:"Horizontal vs Vertical Scaling",a:"Vertical: make existing server bigger (more RAM/CPU) — RDBMS approach, has limits.\nHorizontal: add more servers (sharding) — NoSQL approach, scales to web scale."},
+  {q:"What is Sharding in NoSQL?",a:"Distributing data across multiple servers (shards). Each shard holds a subset of the data. Enables horizontal scaling — adding more servers handles more data and traffic."},
+  {q:"Redis data type for a leaderboard?",a:"Sorted Set (ZADD, ZRANGE, ZRANK, ZSCORE). Each member has a score. Automatically sorted. ZRANGE leaderboard 0 9 WITHSCORES returns top 10 with scores."},
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.length>120?140:120;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>
