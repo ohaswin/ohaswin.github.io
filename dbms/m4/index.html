@@ -40,6 +40,7 @@
   .highlight{border-left:3px solid var(--accent);padding-left:.75rem;background:#fff8f8;}
   .highlight-blue{border-left:3px solid var(--accent2);padding-left:.75rem;background:#f0f7ff;}
   .highlight-green{border-left:3px solid var(--accent3);padding-left:.75rem;background:#f0fff8;}
+  section[id]{scroll-margin-top:5.5rem;}
 
   @media (max-width: 640px){
     body{font-size:15px;}
@@ -62,13 +63,14 @@
     <div class="heading font-bold text-xs sm:text-sm">TRANSACTIONS & CONCURRENCY</div>
   </div>
   <div class="w-full sm:w-auto flex gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-    <button onclick="scrollTo('s1')" class="nav-pill text-white border-gray-600">Transactions</button>
-    <button onclick="scrollTo('s2')" class="nav-pill text-white border-gray-600">ACID</button>
-    <button onclick="scrollTo('s3')" class="nav-pill text-white border-gray-600">Schedules</button>
-    <button onclick="scrollTo('s4')" class="nav-pill text-white border-gray-600">SQL</button>
-    <button onclick="scrollTo('s5')" class="nav-pill text-white border-gray-600">2PL</button>
-    <button onclick="scrollTo('s6')" class="nav-pill text-white border-gray-600">Deadlock</button>
-    <button onclick="scrollTo('fc')" class="nav-pill bg-[var(--accent)] border-[var(--accent)] text-white">Flashcards</button>
+    <button onclick="scrollToSection('s1')" class="nav-pill text-white border-gray-600">Transactions</button>
+    <button onclick="scrollToSection('s2')" class="nav-pill text-white border-gray-600">ACID</button>
+    <button onclick="scrollToSection('s3')" class="nav-pill text-white border-gray-600">Schedules</button>
+    <button onclick="scrollToSection('s4')" class="nav-pill text-white border-gray-600">SQL</button>
+    <button onclick="scrollToSection('s5')" class="nav-pill text-white border-gray-600">2PL</button>
+    <button onclick="scrollToSection('s6')" class="nav-pill text-white border-gray-600">Deadlock</button>
+    <button onclick="scrollToSection('glossary')" class="nav-pill text-white border-gray-600">Glossary</button>
+    <button onclick="scrollToSection('fc')" class="nav-pill bg-[var(--accent)] border-[var(--accent)] text-white">Flashcards</button>
   </div>
 </header>
 
@@ -561,59 +563,101 @@ COMMIT;</pre>
     <div class="font-bold mb-2">Deadlock — Definition</div>
     <div class="highlight p-2 text-sm mb-3"><strong>Deadlock</strong> = Two or more Ts each waiting for the other to release a lock. Circular wait — none can proceed.</div>
     
-    <!-- Deadlock diagram -->
-    <div class="overflow-x-auto">
-      <svg viewBox="0 0 460 190" class="w-full h-auto max-w-md mx-auto" preserveAspectRatio="xMidYMid meet">
-        <rect x="30" y="74" width="86" height="44" rx="5" fill="#457b9d"/>
-        <text x="73" y="101" text-anchor="middle" fill="white" font-weight="bold" font-size="16">T1</text>
-        <rect x="344" y="74" width="86" height="44" rx="5" fill="#457b9d"/>
-        <text x="387" y="101" text-anchor="middle" fill="white" font-weight="bold" font-size="16">T2</text>
+    <!-- Deadlock visuals -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div class="border border-[var(--border)] rounded p-2 bg-white">
+        <div class="text-xs font-bold mb-2">1) Why They Wait (Lock-Level View)</div>
+        <svg viewBox="0 0 560 240" class="w-full h-auto" preserveAspectRatio="xMidYMid meet">
+          <circle cx="90" cy="120" r="34" fill="#457b9d"/>
+          <text x="90" y="126" text-anchor="middle" fill="white" font-size="16" font-weight="bold">T1</text>
 
-        <rect x="160" y="20" width="140" height="34" rx="5" fill="#e63946"/>
-        <text x="230" y="41" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Lock A (held by T1)</text>
-        <rect x="160" y="136" width="140" height="34" rx="5" fill="#e63946"/>
-        <text x="230" y="157" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Lock B (held by T2)</text>
+          <circle cx="470" cy="120" r="34" fill="#457b9d"/>
+          <text x="470" y="126" text-anchor="middle" fill="white" font-size="16" font-weight="bold">T2</text>
 
-        <path d="M116 84 Q168 50 160 36" stroke="#2d6a4f" stroke-width="2.2" fill="none" stroke-dasharray="5,3" marker-end="url(#ga)"/>
-        <text x="78" y="63" fill="#2d6a4f" font-size="12" font-weight="bold">T2 wants A</text>
+          <rect x="215" y="40" width="130" height="40" rx="6" fill="#fff1f2" stroke="#e63946" stroke-width="2"/>
+          <text x="280" y="65" text-anchor="middle" fill="#b91c1c" font-size="13" font-weight="bold">Lock A on X</text>
 
-        <path d="M344 108 Q292 142 300 154" stroke="#e63946" stroke-width="2.2" fill="none" stroke-dasharray="5,3" marker-end="url(#ra)"/>
-        <text x="296" y="182" fill="#e63946" font-size="12" font-weight="bold">T1 wants B</text>
-        <defs>
-          <marker id="ga" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#2d6a4f"/></marker>
-          <marker id="ra" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#e63946"/></marker>
-        </defs>
-      </svg>
+          <rect x="215" y="160" width="130" height="40" rx="6" fill="#fff1f2" stroke="#e63946" stroke-width="2"/>
+          <text x="280" y="185" text-anchor="middle" fill="#b91c1c" font-size="13" font-weight="bold">Lock B on Y</text>
+
+          <line x1="215" y1="64" x2="124" y2="108" stroke="#2d6a4f" stroke-width="3" marker-end="url(#holdA)"/>
+          <text x="165" y="78" fill="#2d6a4f" font-size="11" font-weight="bold">held by T1</text>
+
+          <line x1="345" y1="176" x2="436" y2="132" stroke="#2d6a4f" stroke-width="3" marker-end="url(#holdA)"/>
+          <text x="368" y="154" fill="#2d6a4f" font-size="11" font-weight="bold">held by T2</text>
+
+          <path d="M124 132 Q170 186 215 180" stroke="#e63946" stroke-width="3" stroke-dasharray="6,4" fill="none" marker-end="url(#waitA)"/>
+          <text x="78" y="182" fill="#e63946" font-size="11" font-weight="bold">T1 requests B (wait)</text>
+
+          <path d="M436 108 Q390 54 345 60" stroke="#e63946" stroke-width="3" stroke-dasharray="6,4" fill="none" marker-end="url(#waitA)"/>
+          <text x="356" y="32" fill="#e63946" font-size="11" font-weight="bold">T2 requests A (wait)</text>
+
+          <defs>
+            <marker id="waitA" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#e63946"/></marker>
+            <marker id="holdA" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#2d6a4f"/></marker>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="border border-[var(--border)] rounded p-2 bg-white">
+        <div class="text-xs font-bold mb-2">2) Wait-for Graph Cycle + Resolution</div>
+        <svg viewBox="0 0 420 230" class="w-full h-auto" preserveAspectRatio="xMidYMid meet">
+          <circle cx="120" cy="86" r="34" fill="#457b9d"/>
+          <text x="120" y="92" text-anchor="middle" fill="white" font-size="16" font-weight="bold">T1</text>
+
+          <circle cx="300" cy="86" r="34" fill="#457b9d"/>
+          <text x="300" y="92" text-anchor="middle" fill="white" font-size="16" font-weight="bold">T2</text>
+
+          <path d="M154 74 C195 40, 225 40, 266 74" stroke="#e63946" stroke-width="3" fill="none" marker-end="url(#wfg)"/>
+          <text x="210" y="30" text-anchor="middle" fill="#e63946" font-size="11" font-weight="bold">T1 -> T2</text>
+
+          <path d="M266 98 C225 132, 195 132, 154 98" stroke="#e63946" stroke-width="3" fill="none" marker-end="url(#wfg)"/>
+          <text x="210" y="152" text-anchor="middle" fill="#e63946" font-size="11" font-weight="bold">T2 -> T1</text>
+
+          <rect x="138" y="162" width="144" height="24" rx="4" fill="#0a0a0f"/>
+          <text x="210" y="178" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Cycle present => DEADLOCK</text>
+
+          <rect x="18" y="194" width="384" height="26" rx="4" fill="#f0f7ff" stroke="#457b9d"/>
+          <text x="210" y="211" text-anchor="middle" fill="#1d4e89" font-size="11" font-weight="bold">After resolution: abort victim (say T2) -> Lock B released -> T1 acquires B -> continues</text>
+
+          <defs>
+            <marker id="wfg" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#e63946"/></marker>
+          </defs>
+        </svg>
+      </div>
     </div>
-    
-    <div class="mt-3">
-      <div class="font-bold text-sm mb-1">Detection: Wait-for Graph</div>
-      <div class="text-xs">Nodes = Transactions &nbsp;|&nbsp; Edge T1→T2 = T1 waiting for T2's lock<br>
-      <strong>Cycle in graph = Deadlock!</strong> → Select victim T → abort & rollback to break cycle.</div>
+
+    <div class="mt-3 text-xs">
+      <strong>Detection rule:</strong> In a wait-for graph, node = transaction and edge Ti->Tj means Ti is waiting for Tj. <strong>If a cycle exists, deadlock exists.</strong>
     </div>
   </div>
 
   <!-- Prevention schemes -->
   <div class="card mb-4">
     <div class="font-bold mb-2">Deadlock Prevention Schemes</div>
-    <div class="text-xs text-[var(--muted)] mb-2">Both use timestamps: <strong>older T = lower TS = higher priority</strong></div>
+    <div class="text-xs text-[var(--muted)] mb-2">Both use timestamps. <strong>Older transaction = smaller TS = higher priority.</strong></div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <div class="bg-blue-50 border border-blue-200 p-3 rounded">
         <div class="font-extrabold text-blue-700">Wait-Die</div>
         <div class="text-xs mt-1 space-y-1">
-          <div>🧓 Older T requests lock held by younger T → <strong>WAIT</strong></div>
-          <div>🧒 Younger T requests lock held by older T → <strong>DIE</strong> (rollback)</div>
+          <div><strong>If requester is older:</strong> it <strong>WAITS</strong>.</div>
+          <div><strong>If requester is younger:</strong> it <strong>DIES</strong> (rollback + restart later).</div>
         </div>
-        <div class="mono text-xs mt-2 text-blue-700">Older never rolled back</div>
+        <div class="mono text-xs mt-2 text-blue-700">Rule focus: younger requester gets rolled back.</div>
       </div>
       <div class="bg-red-50 border border-red-200 p-3 rounded">
         <div class="font-extrabold text-red-700">Wound-Wait</div>
         <div class="text-xs mt-1 space-y-1">
-          <div>🧓 Older T requests lock held by younger T → <strong>WOUND</strong> (abort younger)</div>
-          <div>🧒 Younger T requests lock held by older T → <strong>WAIT</strong></div>
+          <div><strong>If requester is older:</strong> it <strong>WOUNDS</strong> younger holder (abort holder).</div>
+          <div><strong>If requester is younger:</strong> it <strong>WAITS</strong>.</div>
         </div>
-        <div class="mono text-xs mt-2 text-red-700">Younger rolled back if blocking older</div>
+        <div class="mono text-xs mt-2 text-red-700">Rule focus: older requester never waits behind younger.</div>
       </div>
+    </div>
+    <div class="highlight-blue p-2 text-xs mt-3">
+      <strong>Quick example:</strong> TS(T1)=5 (older), TS(T2)=20 (younger), and T2 holds a lock needed by T1.<br>
+      <strong>Wait-Die:</strong> T1 waits.<br>
+      <strong>Wound-Wait:</strong> T1 aborts T2 immediately.
     </div>
     <div class="mt-3 overflow-x-auto">
       <table>
@@ -624,6 +668,7 @@ COMMIT;</pre>
         </tbody>
       </table>
     </div>
+    <div class="text-xs mt-2 text-[var(--muted)]"><strong>Memory trick:</strong> Wait-Die = requester may die. Wound-Wait = holder may be wounded.</div>
   </div>
 
   <!-- Timestamp Ordering -->
@@ -720,6 +765,47 @@ COMMIT;</pre>
   </div>
 </section>
 
+<!-- ─── GLOSSARY ─── -->
+<section id="glossary">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num" style="color:var(--accent3);">G</div>
+    <div>
+      <div class="tag tag-green mb-1">Quick Terms</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Glossary of Shorthands</h2>
+      <p class="text-sm text-[var(--muted)]">Fast meaning lookup for symbols and abbreviations used in this module.</p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Common Symbols</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Short Form</th><th>Meaning</th><th>Example / Context</th></tr></thead>
+        <tbody>
+          <tr><td class="mono font-bold">T</td><td>Transaction</td><td>T1, T2 are two concurrent transactions</td></tr>
+          <tr><td class="mono font-bold">TS(T)</td><td>Timestamp of transaction T</td><td>Smaller TS means older transaction</td></tr>
+          <tr><td class="mono font-bold">RTS(X)</td><td>Read Timestamp of item X</td><td>Latest TS of any transaction that read X</td></tr>
+          <tr><td class="mono font-bold">WTS(X)</td><td>Write Timestamp of item X</td><td>Latest TS of any transaction that wrote X</td></tr>
+          <tr><td class="mono font-bold">R(X)</td><td>Read operation on item X</td><td>Read item X from DB/buffer</td></tr>
+          <tr><td class="mono font-bold">W(X)</td><td>Write operation on item X</td><td>Write updated value of X to DB</td></tr>
+          <tr><td class="mono font-bold">S-lock</td><td>Shared lock (read lock)</td><td>Multiple transactions may hold it together</td></tr>
+          <tr><td class="mono font-bold">X-lock</td><td>Exclusive lock (write lock)</td><td>Only one transaction can hold it</td></tr>
+          <tr><td class="mono font-bold">2PL</td><td>Two-Phase Locking</td><td>Growing phase then shrinking phase</td></tr>
+          <tr><td class="mono font-bold">WAL</td><td>Write-Ahead Logging</td><td>Write log record before writing data item</td></tr>
+          <tr><td class="mono font-bold">WFG</td><td>Wait-For Graph</td><td>Cycle in WFG indicates deadlock</td></tr>
+          <tr><td class="mono font-bold">ACID</td><td>Atomicity, Consistency, Isolation, Durability</td><td>Core transaction correctness properties</td></tr>
+          <tr><td class="mono font-bold">DBMS / RDBMS</td><td>Database Management System / Relational DBMS</td><td>Software that stores and manages structured data</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card highlight-blue text-sm">
+    <span class="tag tag-blue">Memory Tip</span>
+    <p class="mt-1"><strong>T</strong> = transaction, <strong>TS</strong> = transaction age/order, <strong>RTS/WTS</strong> = latest read/write time on a data item.</p>
+  </div>
+</section>
+
 </main>
 
 <footer class="text-center py-6 text-xs text-[var(--muted)] border-t border-[var(--border)] mt-8">
@@ -727,7 +813,11 @@ COMMIT;</pre>
 </footer>
 
 <script>
-function scrollTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
 
 const cards=[
   {q:"What is a Transaction?",a:"A logical unit of work — one or more DB operations that must execute atomically. Starts from a consistent state, leaves DB in a consistent state."},
