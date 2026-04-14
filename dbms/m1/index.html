@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDBMS Module 1 — Database System Concepts</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+  code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+  pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+  .kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+  td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+  tr:nth-child(even) td{background:#f0ede5;}
+  details summary{cursor:pointer;list-style:none;user-select:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+  .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+  .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .teal{background:#0f766e;color:#fff;} .pink{background:#be185d;color:#fff;}
+  .tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .fc-wrap{perspective:700px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+  nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ddd;display:inline-block;}
+  nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+  h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+  h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 01</div>
+  <div class="font-black text-sm tracking-wide mb-1">DATABASE SYSTEM CONCEPTS — INTRO, CHARACTERISTICS, MODELS & LANGUAGES</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Core Concepts</a>
+    <a href="#s2">File vs DB</a>
+    <a href="#s3">Actors</a>
+    <a href="#s4">Advantages</a>
+    <a href="#s5">Data Models</a>
+    <a href="#s6">3-Schema</a>
+    <a href="#s7">Languages</a>
+    <a href="#s8">Data Types</a>
+    <a href="#fc">Flashcards</a>
+    <a href="#cheat">Cheatsheet</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- ═══ S1: CORE CONCEPTS ═══ -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill blue mb-1">Core Concepts</div><h2>Data, Information, Database & DBMS</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>The Chain:</strong> Raw <strong>Data</strong> → (processing) → <strong>Information</strong> → (stored together) → <strong>Database</strong> → (managed by) → <strong>DBMS</strong>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Data vs Information</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Raw Data</th><th>Processed Information</th></tr></thead>
+      <tbody>
+        <tr><td><code>9884567890</code></td><td>Mobile number of student Rajesh</td></tr>
+        <tr><td><code>72.5</code></td><td>Marks scored by Priya in Maths (out of 100)</td></tr>
+        <tr><td><code>2024-03-15</code></td><td>Date of DBMS lecture</td></tr>
+        <tr><td><code>500001</code></td><td>PIN code: Hyderabad, Telangana</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2"><strong>Exam tip:</strong> Data = raw facts with no context. Information = data + context + meaning. Information enables decision-making.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Database — Key Definitions</h3>
+    <div class="info mb-2"><strong>Database</strong> = logically coherent, organized collection of <em>related</em> data to meet an organization's information needs.</div>
+    <div class="good mb-2"><strong>Formal (Coronel):</strong> "A DATABASE is a shared, integrated computer structure that stores <strong>end-user data</strong> (raw facts) and <strong>metadata</strong> (data about the structure of the data)."</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Domain</th><th>What's Stored</th></tr></thead>
+      <tbody>
+        <tr><td>University</td><td>Students, courses, faculty, enrollment, marks, fees</td></tr>
+        <tr><td>Hospital</td><td>Patients, doctors, appointments, diagnoses, prescriptions</td></tr>
+        <tr><td>Bank</td><td>Accounts, transactions, loans, customers, branches</td></tr>
+        <tr><td>E-Commerce</td><td>Products, orders, customers, inventory, payments</td></tr>
+        <tr><td>Railway</td><td>Trains, seats, passengers, bookings, schedules</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DBMS — What It Does</h3>
+    <div class="info mb-2"><strong>DBMS</strong> = collection of programs that enables users to <strong>create, maintain, and control access</strong> to a database. Acts as intermediary between DB and users/apps.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Capability</th><th>What It Means</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Define</strong></td><td>Specify data types, structures, constraints (DDL)</td></tr>
+        <tr><td><strong>Construct</strong></td><td>Store data on storage medium</td></tr>
+        <tr><td><strong>Manipulate</strong></td><td>Query, update, generate reports (DML)</td></tr>
+        <tr><td><strong>Share</strong></td><td>Allow multiple users concurrent access</td></tr>
+        <tr><td><strong>Protect &amp; Maintain</strong></td><td>Security, backup, recovery</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn mt-2">⚠ <strong>MySQL is the DBMS</strong>; the student records stored using MySQL form the <strong>Database</strong>. They are NOT the same thing!</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Database System Environment — 4 Components</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
+      <div class="bg-blue-50 border border-blue-200 rounded p-2 text-center text-xs"><div class="font-bold text-blue-800 mb-1">💻 HARDWARE</div>Servers, Storage, Network</div>
+      <div class="bg-green-50 border border-green-200 rounded p-2 text-center text-xs"><div class="font-bold text-green-800 mb-1">🛠 SOFTWARE</div>DBMS, OS, Apps</div>
+      <div class="bg-orange-50 border border-orange-200 rounded p-2 text-center text-xs"><div class="font-bold text-orange-800 mb-1">📦 DATA</div>Content + Metadata</div>
+      <div class="bg-purple-50 border border-purple-200 rounded p-2 text-center text-xs"><div class="font-bold text-purple-800 mb-1">👥 USERS</div>End Users, Programmers, DBA</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S2: FILE vs DATABASE ═══ -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill red mb-1">File vs DB</div><h2>File-Based Problems &amp; 10 DB Characteristics</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>8 Problems of File-Based Systems</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>#</th><th>Problem</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Data Redundancy</strong></td><td>Same data stored in multiple files; wastes storage</td></tr>
+        <tr><td>2</td><td><strong>Data Inconsistency</strong></td><td>Different files have contradictory values for same data</td></tr>
+        <tr><td>3</td><td><strong>Difficult Data Access</strong></td><td>New program needed for every new query; no standard SQL</td></tr>
+        <tr><td>4</td><td><strong>Data Isolation</strong></td><td>Data in different formats across files; integration is hard</td></tr>
+        <tr><td>5</td><td><strong>Integrity Problems</strong></td><td>Constraints buried in programs; adding new rules is costly</td></tr>
+        <tr><td>6</td><td><strong>Atomicity Problems</strong></td><td>System crash leaves partial updates; no rollback</td></tr>
+        <tr><td>7</td><td><strong>Concurrent Access</strong></td><td>Two users book last seat — both succeed (race condition)</td></tr>
+        <tr><td>8</td><td><strong>Security Limitations</strong></td><td>Only coarse-grained file-level access control</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>10 Characteristics of the Database Approach</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>#</th><th>Characteristic</th><th>Core Benefit</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Self-Describing Nature</strong></td><td>DB stores its own structure via <em>System Catalog / Data Dictionary</em> (metadata)</td></tr>
+        <tr><td>2</td><td><strong>Program-Data Independence</strong></td><td>Storage structure changes don't break application programs</td></tr>
+        <tr><td>3</td><td><strong>Multiple Views of Data</strong></td><td>Each user/group sees only the data they need (virtual tables)</td></tr>
+        <tr><td>4</td><td><strong>Multiuser Transaction Processing (ACID)</strong></td><td>Safe concurrent access; all-or-nothing operations</td></tr>
+        <tr><td>5</td><td><strong>Control of Data Redundancy</strong></td><td>Each item stored once; foreign keys establish relationships</td></tr>
+        <tr><td>6</td><td><strong>Authorization and Security</strong></td><td>Fine-grained access at table/column/row/operation level</td></tr>
+        <tr><td>7</td><td><strong>Persistent Storage of Objects</strong></td><td>Complex objects (GIS, multimedia) survive program execution</td></tr>
+        <tr><td>8</td><td><strong>Efficient Query Processing</strong></td><td>Indexes (B+ Trees), buffer pools, query optimizer</td></tr>
+        <tr><td>9</td><td><strong>Backup and Recovery</strong></td><td>WAL logs + checkpoints enable full DB recovery</td></tr>
+        <tr><td>10</td><td><strong>Integrity Constraints</strong></td><td>Centrally defined rules enforced for all users automatically</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Deep-dives on key characteristics -->
+  <div class="card mb-3">
+    <h3>ACID Properties (Characteristic #4) — Deep Dive</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Property</th><th>Meaning</th><th>Bank Transfer Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong class="text-blue-700">A</strong>tomicity</td><td>All-or-nothing execution</td><td>Debit + Credit both happen, or neither does</td></tr>
+        <tr><td><strong class="text-blue-700">C</strong>onsistency</td><td>DB moves from one valid state to another</td><td>Total money before = total money after</td></tr>
+        <tr><td><strong class="text-blue-700">I</strong>solation</td><td>Concurrent transactions don't see each other's intermediate states</td><td>No one sees A debited but B not yet credited</td></tr>
+        <tr><td><strong class="text-blue-700">D</strong>urability</td><td>Committed changes survive crashes</td><td>Transfer saved even if power fails right after commit</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Integrity Constraint Types (Characteristic #10)</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Constraint</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Domain</strong></td><td>Values must be in defined domain</td><td>Age: INTEGER, Marks: 0–100</td></tr>
+        <tr><td><strong>Entity Integrity</strong></td><td>Primary Key ≠ NULL</td><td>Student_ID cannot be null</td></tr>
+        <tr><td><strong>Referential Integrity</strong></td><td>FK must match existing PK or be NULL</td><td>Dept_ID must exist in DEPARTMENT</td></tr>
+        <tr><td><strong>Key</strong></td><td>Candidate key uniqueness enforced</td><td>No two students with same roll number</td></tr>
+        <tr><td><strong>Semantic</strong></td><td>Business rules via CHECK/triggers</td><td>Salary increase ≤ 30% per update</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <pre class="mt-2"><span class="kw">CREATE TABLE</span> STUDENT (
+  Student_ID  <span class="fn">INT</span>         <span class="kw">PRIMARY KEY</span>,
+  Name        <span class="fn">VARCHAR</span>(50) <span class="kw">NOT NULL</span>,
+  Age         <span class="fn">INT</span>         <span class="kw">CHECK</span> (Age <span class="kw">BETWEEN</span> <span class="str">15</span> <span class="kw">AND</span> <span class="str">35</span>),
+  Dept_ID     <span class="fn">INT</span>         <span class="kw">REFERENCES</span> DEPARTMENT(Dept_ID)
+);</pre>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Backup &amp; Recovery Mechanisms (Characteristic #9)</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Failure Type</th><th>Recovery Mechanism</th></tr></thead>
+      <tbody>
+        <tr><td>Transaction Failure</td><td>Transaction Rollback (undo log)</td></tr>
+        <tr><td>System Crash</td><td>Crash Recovery (redo committed, undo uncommitted)</td></tr>
+        <tr><td>Media Failure</td><td>Media Recovery (restore from backup + logs)</td></tr>
+        <tr><td>Human Error</td><td>Point-in-Time Recovery (restore to timestamp)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="good mt-2"><strong>WAL (Write-Ahead Log)</strong> = log the change BEFORE writing to DB. Checkpoints = periodic snapshots to reduce recovery time.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>File System vs Database — Master Comparison</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>File System</th><th>Database (DBMS)</th></tr></thead>
+      <tbody>
+        <tr><td>Data Storage</td><td>Separate, independent files</td><td>Centralized, integrated</td></tr>
+        <tr><td>Data Redundancy</td><td>High — duplicated everywhere</td><td>Controlled — stored once</td></tr>
+        <tr><td>Consistency</td><td>Low — files can contradict</td><td>High — DBMS enforces</td></tr>
+        <tr><td>Data Access</td><td>Custom program per query</td><td>Standard SQL</td></tr>
+        <tr><td>Security</td><td>File-level only</td><td>Table/column/row/op level</td></tr>
+        <tr><td>Backup &amp; Recovery</td><td>Manual — programmer's job</td><td>Automatic — DBMS manages</td></tr>
+        <tr><td>Concurrency</td><td>Race conditions possible</td><td>Full ACID control</td></tr>
+        <tr><td>Data Independence</td><td>None — tied to programs</td><td>Physical &amp; logical independence</td></tr>
+        <tr><td>Cost</td><td>Low initial cost</td><td>High initial, lower long-term</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Multiple Views Example (Characteristic #3)</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>User Role</th><th>View Access</th></tr></thead>
+      <tbody>
+        <tr><td>Student</td><td>Own marks, attendance, fee status only</td></tr>
+        <tr><td>Faculty</td><td>Marks of students in their course (no financial data)</td></tr>
+        <tr><td>Accounts Clerk</td><td>Fee records, dues, scholarships (no academic records)</td></tr>
+        <tr><td>Registrar</td><td>All student data, enrollment, degrees</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2">Views provide <strong>security, simplicity, customization, and data abstraction</strong> — all from one underlying database.</div>
+  </div>
+</section>
+
+<!-- ═══ S3: ACTORS ═══ -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill green mb-1">Actors</div><h2>Actors on the Scene &amp; Workers Behind the Scene</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Actors on the Scene (Direct Users — interact with DB)</h3>
+
+    <!-- DBA -->
+    <div class="good mb-2">
+      <strong>Database Administrator (DBA)</strong> — Manages the ENTIRE database environment. Most critical human resource.
+    </div>
+    <div class="scroll-x mb-3">
+    <table>
+      <thead><tr><th colspan="2">DBA Responsibilities</th></tr></thead>
+      <tbody>
+        <tr><td>Install &amp; configure DBMS</td><td>Define schema (tables, columns, constraints)</td></tr>
+        <tr><td>Grant/revoke access privileges</td><td>Monitor performance &amp; tune queries</td></tr>
+        <tr><td>Manage backup &amp; recovery</td><td>Apply security patches &amp; upgrades</td></tr>
+        <tr><td>Enforce data standards</td><td>Handle concurrency control &amp; deadlocks</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- Database Designers -->
+    <div class="info mb-2">
+      <strong>Database Designers</strong> — Design structure BEFORE data is loaded; understand user requirements.
+    </div>
+    <ul class="text-sm space-y-1 mb-3 ml-4 list-disc">
+      <li>Identify data to be stored and relationships</li>
+      <li>Create ER diagrams → convert to relational tables</li>
+      <li>Define primary keys, foreign keys, constraints</li>
+      <li>Apply normalization rules; create indexes</li>
+    </ul>
+
+    <!-- End Users -->
+    <h3>End Users Classification</h3>
+    <div class="scroll-x mb-3">
+    <table>
+      <thead><tr><th>Type</th><th>Description</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Naive (Casual)</strong></td><td>Use pre-written apps, unaware of DB internals</td><td>ATM users, e-commerce shoppers, hospital registration</td></tr>
+        <tr><td><strong>Sophisticated</strong></td><td>Direct SQL interaction; understand DB concepts</td><td>Business analysts, scientists, engineers</td></tr>
+        <tr><td><strong>Standalone</strong></td><td>Maintain personal databases using desktop tools</td><td>Personal library in MS Access</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- Analysts & Programmers -->
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Role</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td><strong>System Analysts</strong></td><td>Determine user requirements; design specifications</td></tr>
+        <tr><td><strong>Application Programmers</strong></td><td>Implement specs; write SQL-embedded programs (Java, Python, PHP)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Workers Behind the Scene (Invisible — build/maintain the DBMS itself)</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Role</th><th>Function</th></tr></thead>
+      <tbody>
+        <tr><td><strong>DBMS System Designers</strong></td><td>Design/build DBMS components: query processor, storage engine, transaction manager</td></tr>
+        <tr><td><strong>Tool Developers</strong></td><td>Create design tools, GUI tools (SQL Workbench, pgAdmin, TOAD), performance monitors</td></tr>
+        <tr><td><strong>Operators &amp; Maintenance</strong></td><td>Run/maintain hardware/software environment; backups; monitoring</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2"><strong>Key distinction:</strong> Actors <em>on</em> the scene use the DB. Workers <em>behind</em> the scene build/maintain the DBMS software itself.</div>
+  </div>
+</section>
+
+<!-- ═══ S4: ADVANTAGES ═══ -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill orange mb-1">Advantages</div><h2>13 Advantages of the DBMS Approach</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>#</th><th>Advantage</th><th>How</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Controlling Data Redundancy</strong></td><td>Each item stored once; FK establishes relationships</td></tr>
+        <tr><td>2</td><td><strong>Restricting Unauthorized Access</strong></td><td>Authentication, roles, audit logging</td></tr>
+        <tr><td>3</td><td><strong>Persistent Storage</strong></td><td>Data persists across program executions and restarts</td></tr>
+        <tr><td>4</td><td><strong>Efficient Query Processing</strong></td><td>Indexes, buffer pools, query optimizer</td></tr>
+        <tr><td>5</td><td><strong>Backup and Recovery</strong></td><td>Automatic management with WAL, checkpoints</td></tr>
+        <tr><td>6</td><td><strong>Multiple User Interfaces</strong></td><td>SQL for experts, GUI for naive users, APIs for programmers</td></tr>
+        <tr><td>7</td><td><strong>Complex Relationships</strong></td><td>1:1, 1:N, M:N via keys and joins</td></tr>
+        <tr><td>8</td><td><strong>Integrity Constraints</strong></td><td>Centrally defined and enforced for all users</td></tr>
+        <tr><td>9</td><td><strong>Inferencing and Rules</strong></td><td>Triggers and stored procedures for automatic actions</td></tr>
+        <tr><td>10</td><td><strong>Reduced Development Time</strong></td><td>Developers focus on business logic, not data management</td></tr>
+        <tr><td>11</td><td><strong>Flexibility</strong></td><td>Schema modifications with minimal program impact</td></tr>
+        <tr><td>12</td><td><strong>Current Information</strong></td><td>All users see most current data after commit</td></tr>
+        <tr><td>13</td><td><strong>Economies of Scale</strong></td><td>Centralized data reduces overall cost</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>When NOT to Use a DBMS</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Situation</th><th>Reason to Avoid DBMS</th></tr></thead>
+      <tbody>
+        <tr><td>High initial cost</td><td>Software, hardware, training are expensive</td></tr>
+        <tr><td>High overhead</td><td>DBMS consumes significant CPU, memory, disk</td></tr>
+        <tr><td>Simple applications</td><td>Single-user, single-purpose with small fixed dataset</td></tr>
+        <tr><td>Real-time systems</td><td>Strict timing constraints may find DBMS overhead unacceptable</td></tr>
+        <tr><td>Embedded systems</td><td>Very limited resources may not support full DBMS</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2">For exam: <strong>DBMS always has overhead</strong> — justifiable only when data is large, shared, or complex. A simple to-do list app doesn't need Oracle.</div>
+  </div>
+</section>
+
+<!-- ═══ S5: DATA MODELS ═══ -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill purple mb-1">Data Models</div><h2>Data Models, Schemas &amp; Instances</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Data Model</strong> = a collection of concepts used to describe database structure — data types, relationships, and constraints. The "blueprint" for a database.
+  </div>
+
+  <div class="card mb-3">
+    <h3>3 Categories of Data Models</h3>
+    <!-- SVG diagram for data model levels -->
+    <div class="flex justify-center mb-3">
+    <svg viewBox="0 0 500 160" class="w-full max-w-xl" style="min-width:300px;">
+      <!-- High-Level -->
+      <rect x="10" y="10" width="150" height="140" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+      <text x="85" y="35" text-anchor="middle" font-size="11" font-weight="bold" fill="#1d4ed8" font-family="system-ui">HIGH-LEVEL</text>
+      <text x="85" y="50" text-anchor="middle" font-size="10" fill="#1e3a8a" font-family="system-ui">(Conceptual)</text>
+      <text x="85" y="72" text-anchor="middle" font-size="10" fill="#1e40af" font-family="system-ui">• ER Model</text>
+      <text x="85" y="88" text-anchor="middle" font-size="10" fill="#1e40af" font-family="system-ui">• Object-Oriented</text>
+      <text x="85" y="108" text-anchor="middle" font-size="9" fill="#3b82f6" font-family="system-ui">Close to user</text>
+      <text x="85" y="122" text-anchor="middle" font-size="9" fill="#3b82f6" font-family="system-ui">perception</text>
+      <!-- Representational -->
+      <rect x="175" y="10" width="150" height="140" rx="6" fill="#d1fae5" stroke="#15803d" stroke-width="2"/>
+      <text x="250" y="35" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803d" font-family="system-ui">REPRESENTATIONAL</text>
+      <text x="250" y="50" text-anchor="middle" font-size="10" fill="#166534" font-family="system-ui">(Implementation)</text>
+      <text x="250" y="72" text-anchor="middle" font-size="10" fill="#166534" font-family="system-ui">• Relational (SQL)</text>
+      <text x="250" y="88" text-anchor="middle" font-size="10" fill="#166534" font-family="system-ui">• Network</text>
+      <text x="250" y="104" text-anchor="middle" font-size="10" fill="#166534" font-family="system-ui">• Hierarchical</text>
+      <text x="250" y="122" text-anchor="middle" font-size="9" fill="#16a34a" font-family="system-ui">Between conceptual</text>
+      <text x="250" y="136" text-anchor="middle" font-size="9" fill="#16a34a" font-family="system-ui">and physical</text>
+      <!-- Low-Level -->
+      <rect x="340" y="10" width="150" height="140" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+      <text x="415" y="35" text-anchor="middle" font-size="11" font-weight="bold" fill="#b45309" font-family="system-ui">LOW-LEVEL</text>
+      <text x="415" y="50" text-anchor="middle" font-size="10" fill="#92400e" font-family="system-ui">(Physical)</text>
+      <text x="415" y="72" text-anchor="middle" font-size="10" fill="#92400e" font-family="system-ui">• Record formats</text>
+      <text x="415" y="88" text-anchor="middle" font-size="10" fill="#92400e" font-family="system-ui">• Storage allocation</text>
+      <text x="415" y="104" text-anchor="middle" font-size="10" fill="#92400e" font-family="system-ui">• Access paths</text>
+      <text x="415" y="122" text-anchor="middle" font-size="9" fill="#b45309" font-family="system-ui">Managed internally</text>
+      <text x="415" y="136" text-anchor="middle" font-size="9" fill="#b45309" font-family="system-ui">by DBMS</text>
+    </svg>
+    </div>
+
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Level</th><th>Also Called</th><th>Examples</th><th>User</th></tr></thead>
+      <tbody>
+        <tr><td><strong>High-Level</strong></td><td>Conceptual Model</td><td>ER Model, Object-Oriented Model</td><td>Database Designer</td></tr>
+        <tr><td><strong>Representational</strong></td><td>Implementation / Logical Model</td><td>Relational, Network, Hierarchical</td><td>Programmer / DBA</td></tr>
+        <tr><td><strong>Low-Level</strong></td><td>Physical Model</td><td>Record formats, Indexes, B-Trees</td><td>DBMS (internal)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Schema vs Instance</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+      <div class="bg-blue-50 border border-blue-200 rounded p-3">
+        <div class="pill blue mb-2">Schema (Structure)</div>
+        <ul class="text-sm space-y-1 list-disc ml-4">
+          <li>Description of database — types &amp; constraints</li>
+          <li>Defined at design time</li>
+          <li>Changes infrequently (like a class definition)</li>
+          <li>Also called <strong>intension</strong></li>
+        </ul>
+        <div class="font-mono text-xs mt-2 bg-white p-2 rounded border">STUDENT(Student_ID: INT, Name: VARCHAR(50), Age: INT, Dept_ID: INT)</div>
+      </div>
+      <div class="bg-green-50 border border-green-200 rounded p-3">
+        <div class="pill green mb-2">Instance (State / Snapshot)</div>
+        <ul class="text-sm space-y-1 list-disc ml-4">
+          <li>Actual data at a particular moment</li>
+          <li>Changes with every INSERT/UPDATE/DELETE</li>
+          <li>Also called <strong>extension</strong></li>
+          <li>Multiple valid instances for one schema</li>
+        </ul>
+        <div class="font-mono text-xs mt-2 bg-white p-2 rounded border">(101, 'Arun', 20, 'CS')<br>(102, 'Priya', 21, 'IT')</div>
+      </div>
+    </div>
+    <div class="info text-sm">📌 <strong>Analogy:</strong> Schema = blueprint/class. Instance = actual building/object. You have one schema but many instances over time.</div>
+  </div>
+</section>
+
+<!-- ═══ S6: THREE-SCHEMA ARCHITECTURE ═══ -->
+<section id="s6">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">06</div>
+    <div><div class="pill teal mb-1">3-Schema</div><h2>Three-Schema Architecture &amp; Data Independence</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Purpose (ANSI/SPARC Architecture):</strong> Achieve <strong>data independence</strong> — separate user applications from physical database. Proposed to standardize DBMS structure.
+  </div>
+
+  <!-- Three-schema SVG diagram -->
+  <div class="card mb-3">
+    <h3>Three-Schema Architecture — Visual</h3>
+    <div class="flex justify-center">
+    <svg viewBox="0 0 400 340" class="w-full max-w-sm">
+      <!-- External Level -->
+      <rect x="20" y="10" width="360" height="70" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+      <text x="200" y="32" text-anchor="middle" font-size="13" font-weight="bold" fill="#1d4ed8" font-family="system-ui">EXTERNAL LEVEL (View Schema)</text>
+      <text x="70" y="52" text-anchor="middle" font-size="10" fill="#1e3a8a" font-family="system-ui">View 1</text>
+      <text x="200" y="52" text-anchor="middle" font-size="10" fill="#1e3a8a" font-family="system-ui">View 2</text>
+      <text x="330" y="52" text-anchor="middle" font-size="10" fill="#1e3a8a" font-family="system-ui">View 3</text>
+      <text x="200" y="68" text-anchor="middle" font-size="9" fill="#3b82f6" font-family="system-ui">Multiple user views — customized per group</text>
+
+      <!-- Mapping 1 -->
+      <rect x="100" y="88" width="200" height="24" rx="3" fill="#e0e7ff" stroke="#6366f1" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="200" y="104" text-anchor="middle" font-size="10" fill="#4338ca" font-family="system-ui">External/Conceptual Mapping</text>
+
+      <!-- Conceptual Level -->
+      <rect x="20" y="120" width="360" height="70" rx="6" fill="#d1fae5" stroke="#15803d" stroke-width="2"/>
+      <text x="200" y="142" text-anchor="middle" font-size="13" font-weight="bold" fill="#15803d" font-family="system-ui">CONCEPTUAL LEVEL (Logical Schema)</text>
+      <text x="200" y="162" text-anchor="middle" font-size="10" fill="#166534" font-family="system-ui">Complete logical structure of entire DB</text>
+      <text x="200" y="178" text-anchor="middle" font-size="10" fill="#166534" font-family="system-ui">Tables, relationships, constraints — no physical details</text>
+
+      <!-- Mapping 2 -->
+      <rect x="100" y="198" width="200" height="24" rx="3" fill="#fef3c7" stroke="#d97706" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="200" y="214" text-anchor="middle" font-size="10" fill="#b45309" font-family="system-ui">Conceptual/Internal Mapping</text>
+
+      <!-- Internal Level -->
+      <rect x="20" y="230" width="360" height="70" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+      <text x="200" y="252" text-anchor="middle" font-size="13" font-weight="bold" fill="#b45309" font-family="system-ui">INTERNAL LEVEL (Physical Schema)</text>
+      <text x="200" y="272" text-anchor="middle" font-size="10" fill="#92400e" font-family="system-ui">Physical storage structure</text>
+      <text x="200" y="288" text-anchor="middle" font-size="10" fill="#92400e" font-family="system-ui">Files, indexes, storage allocation, B-Trees</text>
+
+      <!-- Actual DB at bottom -->
+      <rect x="130" y="308" width="140" height="24" rx="3" fill="#1a1a1a"/>
+      <text x="200" y="324" text-anchor="middle" font-size="10" fill="white" font-weight="bold" font-family="system-ui">PHYSICAL DATABASE</text>
+    </svg>
+    </div>
+
+    <div class="scroll-x mt-3">
+    <table>
+      <thead><tr><th>Level</th><th>Also Called</th><th>What It Describes</th><th>Who Uses It</th></tr></thead>
+      <tbody>
+        <tr><td><strong>External</strong></td><td>View Level / User Schema</td><td>What individual users/groups see — customized subsets</td><td>End Users, App Programs</td></tr>
+        <tr><td><strong>Conceptual</strong></td><td>Logical Level</td><td>Complete logical structure — all tables, relationships, constraints</td><td>DBA, Designers</td></tr>
+        <tr><td><strong>Internal</strong></td><td>Physical Level</td><td>How data is physically stored — files, indexes, storage structures</td><td>DBMS (internal)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Data Independence — The Main Goal</h3>
+    <div class="info mb-3"><strong>Data Independence</strong> = ability to change schema at one level WITHOUT changing schema at the next higher level.</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="bg-blue-50 border border-blue-200 rounded p-3">
+        <div class="pill blue mb-2">Physical Data Independence</div>
+        <p class="text-sm"><strong>What changes:</strong> Internal schema (storage, indexes, file organization)</p>
+        <p class="text-sm mt-1"><strong>What stays same:</strong> Conceptual schema + external views</p>
+        <p class="text-sm mt-1"><strong>Examples:</strong> Add/remove indexes, move to SSD, change file organization</p>
+      </div>
+      <div class="bg-green-50 border border-green-200 rounded p-3">
+        <div class="pill green mb-2">Logical Data Independence</div>
+        <p class="text-sm"><strong>What changes:</strong> Conceptual schema (add tables/columns)</p>
+        <p class="text-sm mt-1"><strong>What stays same:</strong> External views + application programs</p>
+        <p class="text-sm mt-1"><strong>Examples:</strong> Add new table, add columns, split tables</p>
+        <p class="text-sm mt-2 text-orange-700"><strong>⚠ Harder to achieve</strong> than physical independence</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7: LANGUAGES ═══ -->
+<section id="s7">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">07</div>
+    <div><div class="pill gray mb-1">Languages</div><h2>Database Languages &amp; Interfaces</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>SQL Sub-Languages Overview</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Language</th><th>Full Name</th><th>Purpose</th><th>Commands</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill blue">DDL</span></td><td>Data Definition Language</td><td>Define/modify DB structure (schema)</td><td>CREATE, ALTER, DROP, TRUNCATE</td></tr>
+        <tr><td><span class="pill green">DML</span></td><td>Data Manipulation Language</td><td>Retrieve, insert, update, delete data</td><td>SELECT, INSERT, UPDATE, DELETE</td></tr>
+        <tr><td><span class="pill red">DCL</span></td><td>Data Control Language</td><td>Control access/permissions</td><td>GRANT, REVOKE</td></tr>
+        <tr><td><span class="pill orange">TCL</span></td><td>Transaction Control Language</td><td>Manage transactions</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+        <tr><td><span class="pill purple">VDL</span></td><td>View Definition Language</td><td>Define user views (external schema)</td><td>CREATE VIEW</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DDL Examples</h3>
+    <pre><span class="cm">-- Create table with constraints</span>
+<span class="kw">CREATE TABLE</span> STUDENT (
+  Student_ID <span class="fn">INT</span>         <span class="kw">PRIMARY KEY</span>,
+  Name       <span class="fn">VARCHAR</span>(50) <span class="kw">NOT NULL</span>,
+  Age        <span class="fn">INT</span>
+);
+<span class="cm">-- Add a column</span>
+<span class="kw">ALTER TABLE</span> STUDENT <span class="kw">ADD COLUMN</span> Email <span class="fn">VARCHAR</span>(100);
+<span class="cm">-- Remove table (irreversible!)</span>
+<span class="kw">DROP TABLE</span> STUDENT;</pre>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DML Examples + Procedural vs Non-Procedural</h3>
+    <div class="scroll-x mb-2">
+    <table>
+      <thead><tr><th>Type</th><th>User specifies</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Procedural</strong></td><td>WHAT + HOW to get it</td><td>Network/hierarchical languages</td></tr>
+        <tr><td><strong>Non-Procedural (Declarative)</strong></td><td>WHAT only — DBMS decides HOW</td><td>SQL (most common)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <pre><span class="kw">SELECT</span> Name, Age <span class="kw">FROM</span> STUDENT <span class="kw">WHERE</span> Dept_ID = <span class="str">'CS'</span>;
+<span class="kw">INSERT INTO</span> STUDENT <span class="kw">VALUES</span> (<span class="str">103</span>, <span class="str">'Kavya'</span>, <span class="str">20</span>, <span class="str">'EC'</span>);
+<span class="kw">UPDATE</span> STUDENT <span class="kw">SET</span> Age = <span class="str">21</span> <span class="kw">WHERE</span> Student_ID = <span class="str">101</span>;
+<span class="kw">DELETE FROM</span> STUDENT <span class="kw">WHERE</span> Student_ID = <span class="str">102</span>;</pre>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DCL &amp; TCL Examples</h3>
+    <pre><span class="cm">-- DCL: Permissions</span>
+<span class="kw">GRANT</span> <span class="fn">SELECT</span>, <span class="fn">INSERT</span> <span class="kw">ON</span> STUDENT <span class="kw">TO</span> faculty_user;
+<span class="kw">REVOKE</span> <span class="fn">DELETE</span> <span class="kw">ON</span> MARKS <span class="kw">FROM</span> exam_staff;
+
+<span class="cm">-- TCL: Transactions</span>
+<span class="kw">COMMIT</span>;                        <span class="cm">-- permanently save changes</span>
+<span class="kw">ROLLBACK</span>;                      <span class="cm">-- undo since last commit</span>
+<span class="kw">SAVEPOINT</span> before_update;      <span class="cm">-- partial rollback point</span>
+
+<span class="cm">-- VDL: Views</span>
+<span class="kw">CREATE VIEW</span> Student_Marks <span class="kw">AS</span>
+  <span class="kw">SELECT</span> s.Name, m.Subject, m.Marks
+  <span class="kw">FROM</span> STUDENT s <span class="kw">JOIN</span> MARKS m <span class="kw">ON</span> s.Student_ID = m.Student_ID;</pre>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Database Interfaces</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Interface Type</th><th>Description</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Menu-Based</strong></td><td>Lists of options; no SQL knowledge needed</td><td>Web clients, e-commerce portals</td></tr>
+        <tr><td><strong>Forms-Based</strong></td><td>Screen fields for data entry</td><td>Banking forms, employee records</td></tr>
+        <tr><td><strong>GUI</strong></td><td>Visual tools, drag-and-drop</td><td>MS Access, pgAdmin, SQL Workbench</td></tr>
+        <tr><td><strong>Natural Language</strong></td><td>English queries converted to SQL</td><td>"Show students with marks &gt; 80"</td></tr>
+        <tr><td><strong>Keyword-Based</strong></td><td>Search engine style queries</td><td>Document databases</td></tr>
+        <tr><td><strong>Speech I/O</strong></td><td>Voice input and synthesized output</td><td>Telephone inquiry systems</td></tr>
+        <tr><td><strong>Parametric</strong></td><td>Predefined transactions via function keys</td><td>Bank tellers, booking agents</td></tr>
+        <tr><td><strong>DBA Interface</strong></td><td>Admin tools: schema, security, performance</td><td>Oracle Enterprise Manager</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DBMS Internal Components</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Component</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Query Processor</strong></td><td>Parses and compiles SQL into execution plans</td></tr>
+        <tr><td><strong>Query Optimizer</strong></td><td>Selects lowest-cost execution strategy</td></tr>
+        <tr><td><strong>Transaction Manager</strong></td><td>Enforces ACID properties</td></tr>
+        <tr><td><strong>Concurrency Control Manager</strong></td><td>Implements locking and timestamp protocols</td></tr>
+        <tr><td><strong>Recovery Manager</strong></td><td>Manages WAL, checkpoints, crash recovery</td></tr>
+        <tr><td><strong>Buffer Manager</strong></td><td>Manages memory buffer pool (caching)</td></tr>
+        <tr><td><strong>Storage Manager</strong></td><td>Manages physical storage and indexes</td></tr>
+        <tr><td><strong>Data Dictionary/Catalog</strong></td><td>Stores all metadata (the self-describing part)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S8: DATA TYPES ═══ -->
+<section id="s8">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">08</div>
+    <div><div class="pill pink mb-1">Data Types</div><h2>Structured, Semi-Structured &amp; Unstructured Data</h2></div>
+  </div>
+
+  <!-- Visual comparison SVG -->
+  <div class="card mb-3">
+    <h3>Visual Overview</h3>
+    <div class="flex justify-center">
+    <svg viewBox="0 0 500 180" class="w-full max-w-xl" style="min-width:300px;">
+      <!-- Structured -->
+      <rect x="5" y="10" width="155" height="160" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+      <text x="82" y="32" text-anchor="middle" font-size="12" font-weight="bold" fill="#1d4ed8" font-family="system-ui">STRUCTURED</text>
+      <rect x="20" y="42" width="125" height="12" rx="2" fill="#1d4ed8" opacity="0.8"/>
+      <rect x="20" y="58" width="125" height="10" rx="2" fill="#93c5fd"/>
+      <rect x="20" y="72" width="125" height="10" rx="2" fill="#bfdbfe"/>
+      <rect x="20" y="86" width="125" height="10" rx="2" fill="#93c5fd"/>
+      <text x="82" y="115" text-anchor="middle" font-size="9" fill="#1e3a8a" font-family="system-ui">Fixed schema</text>
+      <text x="82" y="128" text-anchor="middle" font-size="9" fill="#1e3a8a" font-family="system-ui">Rows &amp; Columns</text>
+      <text x="82" y="141" text-anchor="middle" font-size="9" fill="#1e3a8a" font-family="system-ui">Queried with SQL</text>
+      <text x="82" y="157" text-anchor="middle" font-size="9" fill="#3b82f6" font-family="system-ui">MySQL, Oracle, PostgreSQL</text>
+
+      <!-- Semi-Structured -->
+      <rect x="172" y="10" width="155" height="160" rx="6" fill="#d1fae5" stroke="#15803d" stroke-width="2"/>
+      <text x="249" y="32" text-anchor="middle" font-size="12" font-weight="bold" fill="#15803d" font-family="system-ui">SEMI-STRUCTURED</text>
+      <text x="249" y="55" text-anchor="middle" font-size="10" fill="#166534" font-family="system-ui">{</text>
+      <text x="249" y="70" text-anchor="middle" font-size="9" fill="#166534" font-family="system-ui">"name": "Priya",</text>
+      <text x="249" y="84" text-anchor="middle" font-size="9" fill="#166534" font-family="system-ui">"age": 21,</text>
+      <text x="249" y="98" text-anchor="middle" font-size="9" fill="#166534" font-family="system-ui">"courses": [...]</text>
+      <text x="249" y="112" text-anchor="middle" font-size="10" fill="#166534" font-family="system-ui">}</text>
+      <text x="249" y="130" text-anchor="middle" font-size="9" fill="#166534" font-family="system-ui">Flexible/self-describing</text>
+      <text x="249" y="143" text-anchor="middle" font-size="9" fill="#166534" font-family="system-ui">XML / JSON</text>
+      <text x="249" y="157" text-anchor="middle" font-size="9" fill="#16a34a" font-family="system-ui">MongoDB, CouchDB</text>
+
+      <!-- Unstructured -->
+      <rect x="339" y="10" width="155" height="160" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="2"/>
+      <text x="416" y="32" text-anchor="middle" font-size="12" font-weight="bold" fill="#b45309" font-family="system-ui">UNSTRUCTURED</text>
+      <text x="416" y="60" text-anchor="middle" font-size="22" font-family="system-ui">📄🖼🎵</text>
+      <text x="416" y="95" text-anchor="middle" font-size="9" fill="#92400e" font-family="system-ui">No schema at all</text>
+      <text x="416" y="110" text-anchor="middle" font-size="9" fill="#92400e" font-family="system-ui">~80–90% of all data</text>
+      <text x="416" y="125" text-anchor="middle" font-size="9" fill="#92400e" font-family="system-ui">Needs AI/ML to process</text>
+      <text x="416" y="143" text-anchor="middle" font-size="9" fill="#b45309" font-family="system-ui">Text, images, audio,</text>
+      <text x="416" y="157" text-anchor="middle" font-size="9" fill="#b45309" font-family="system-ui">video, social media</text>
+    </svg>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Master Comparison Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>Structured</th><th>Semi-Structured</th><th>Unstructured</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Schema</strong></td><td>Fixed, predefined</td><td>Flexible, self-describing</td><td>None</td></tr>
+        <tr><td><strong>Format</strong></td><td>Tables (rows/cols)</td><td>XML, JSON, HTML</td><td>Text, images, video, audio</td></tr>
+        <tr><td><strong>Query Language</strong></td><td>SQL</td><td>XQuery, MongoDB Query</td><td>Full-text search, AI/ML</td></tr>
+        <tr><td><strong>DBMS</strong></td><td>MySQL, Oracle, PostgreSQL</td><td>MongoDB, CouchDB, eXist-db</td><td>Amazon S3, Elasticsearch</td></tr>
+        <tr><td><strong>Consistency</strong></td><td>High</td><td>Medium</td><td>Low</td></tr>
+        <tr><td><strong>Scalability</strong></td><td>Moderate</td><td>High</td><td>Very High</td></tr>
+        <tr><td><strong>% of World Data</strong></td><td>~20%</td><td>~&lt;5%</td><td>~80–90%</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Polyglot Persistence — Using All Three Together</h3>
+    <div class="info mb-2"><strong>Polyglot Persistence</strong> = using different database types within a single application architecture for different data types.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Data Type</th><th>Storage</th><th>Use Case (Hospital System)</th></tr></thead>
+      <tbody>
+        <tr><td>Structured</td><td>RDBMS (MySQL)</td><td>Patient records, billing, appointments</td></tr>
+        <tr><td>Semi-Structured</td><td>MongoDB</td><td>JSON messages from medical devices</td></tr>
+        <tr><td>Unstructured</td><td>Object Storage (S3)</td><td>MRI scan images, X-rays</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLASHCARDS ═══ -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">?</div>
+    <div><div class="pill blue mb-1">Flashcards</div><h2>Tap to Flip</h2><p class="text-sm text-gray-500">Click any card to reveal the answer</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ═══ CHEATSHEET ═══ -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Quick Ref</div><h2>Master Cheatsheet</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Everything in One Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Topic</th><th>Key Fact</th></tr></thead>
+      <tbody>
+        <tr><td>Data vs Information</td><td>Data = raw facts; Information = data + context + meaning</td></tr>
+        <tr><td>Database (Coronel def)</td><td>Shared, integrated structure storing end-user data + metadata</td></tr>
+        <tr><td>DBMS vs Database</td><td>MySQL = DBMS. Student records in MySQL = Database.</td></tr>
+        <tr><td>DB Environment components</td><td>Hardware, Software, Data, Users (4 things)</td></tr>
+        <tr><td>File system problems count</td><td>8 problems (redundancy, inconsistency, difficult access, isolation, integrity, atomicity, concurrency, security)</td></tr>
+        <tr><td>DB Characteristics count</td><td>10 characteristics</td></tr>
+        <tr><td>Characteristic #1</td><td>Self-Describing — DB stores its own metadata in System Catalog</td></tr>
+        <tr><td>Characteristic #2</td><td>Program-Data Independence — structure changes don't break programs</td></tr>
+        <tr><td>Characteristic #4</td><td>Multiuser Transaction Processing — ACID properties</td></tr>
+        <tr><td>ACID stands for</td><td>Atomicity, Consistency, Isolation, Durability</td></tr>
+        <tr><td>Atomicity</td><td>All or nothing — no partial transactions</td></tr>
+        <tr><td>Isolation</td><td>Concurrent txns don't see each other's intermediate states</td></tr>
+        <tr><td>WAL</td><td>Write-Ahead Log — log BEFORE writing to DB</td></tr>
+        <tr><td>Schema</td><td>Structure/blueprint — changes infrequently (intension)</td></tr>
+        <tr><td>Instance</td><td>Actual data at a moment — changes constantly (extension)</td></tr>
+        <tr><td>3-Schema levels</td><td>External (View) → Conceptual (Logical) → Internal (Physical)</td></tr>
+        <tr><td>Physical Data Independence</td><td>Change internal schema; conceptual schema unchanged</td></tr>
+        <tr><td>Logical Data Independence</td><td>Change conceptual schema; external views unchanged (harder)</td></tr>
+        <tr><td>DBA role</td><td>Manages entire DB environment: schema, security, backup, performance</td></tr>
+        <tr><td>Naive end users</td><td>Use pre-written apps; unaware of DB internals (ATM users)</td></tr>
+        <tr><td>Workers behind the scene</td><td>Build/maintain DBMS itself (not the data)</td></tr>
+        <tr><td>Advantages count</td><td>13 advantages of DBMS approach</td></tr>
+        <tr><td>High-Level data model</td><td>ER Model, Object-Oriented — close to user perception</td></tr>
+        <tr><td>Representational data model</td><td>Relational, Network, Hierarchical</td></tr>
+        <tr><td>DDL commands</td><td>CREATE, ALTER, DROP, TRUNCATE</td></tr>
+        <tr><td>DML commands</td><td>SELECT, INSERT, UPDATE, DELETE</td></tr>
+        <tr><td>DCL commands</td><td>GRANT, REVOKE</td></tr>
+        <tr><td>TCL commands</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+        <tr><td>SQL type</td><td>Non-procedural/Declarative — user says WHAT, not HOW</td></tr>
+        <tr><td>Structured data</td><td>Fixed schema, SQL, RDBMS (MySQL, Oracle)</td></tr>
+        <tr><td>Semi-structured data</td><td>Flexible schema, XML/JSON, MongoDB/CouchDB</td></tr>
+        <tr><td>Unstructured data</td><td>No schema, ~80–90% of all data, needs AI/ML</td></tr>
+        <tr><td>Polyglot persistence</td><td>Using different DB types for different data in same app</td></tr>
+        <tr><td>Query optimizer does</td><td>Selects lowest-cost execution plan for SQL queries</td></tr>
+        <tr><td>Data Dictionary</td><td>Stores metadata — enables self-describing characteristic</td></tr>
+        <tr><td>Index performance</td><td>B+ Tree: O(log n) lookups vs O(n) full scan</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  RDBMS Module 1 Study Guide &nbsp;·&nbsp; Database System Concepts — Introduction, Characteristics, Models &amp; Languages
+</footer>
+
+<script>
+const cards=[
+  {q:"What is the difference between Data and Information?",a:"Data = raw, unprocessed facts with no context (e.g. '72.5').\nInformation = data + context + meaning = useful for decisions (e.g. 'Priya scored 72.5% in Maths').\nData needs processing to become information."},
+  {q:"What is a Database? Give Coronel's formal definition.",a:"Database = organized collection of related data for an organization's information needs.\nCoronel: 'A shared, integrated computer structure storing end-user data (raw facts) + metadata (data about the structure).'"},
+  {q:"DBMS vs Database — what's the difference?",a:"DBMS = software (programs) to create, maintain, control access to a database.\nDatabase = the actual stored data.\nMySQL = DBMS. Student records in MySQL = Database.\nThey are NOT the same!"},
+  {q:"What are the 4 components of a Database System Environment?",a:"1. Hardware (servers, storage, network)\n2. Software (DBMS, OS, apps)\n3. Data (content + metadata)\n4. Users (end users, programmers, DBA)"},
+  {q:"Name the 8 problems of File-Based Systems.",a:"1. Data Redundancy\n2. Data Inconsistency\n3. Difficult Data Access (new program per query)\n4. Data Isolation (different formats)\n5. Integrity Problems (constraints in programs)\n6. Atomicity Problems (no rollback)\n7. Concurrent Access (race conditions)\n8. Security Limitations (file-level only)"},
+  {q:"What are the 10 Characteristics of the Database Approach?",a:"1. Self-Describing Nature\n2. Program-Data Independence\n3. Multiple Views of Data\n4. Multiuser Transaction Processing (ACID)\n5. Control of Data Redundancy\n6. Authorization & Security\n7. Persistent Storage of Objects\n8. Efficient Query Processing\n9. Backup and Recovery\n10. Integrity Constraints"},
+  {q:"What is Self-Describing Nature? (Characteristic #1)",a:"The DB stores not just data but also its own structure description in the System Catalog (Data Dictionary) — this is called metadata.\nMetadata = column names, data types, sizes, constraints.\nAny program can understand DB structure by reading the catalog — no hardcoding needed."},
+  {q:"What is Program-Data Independence? (Characteristic #2)",a:"DB structure is stored separately from application programs.\nChanges to storage (physical) don't require program changes.\nPhysical independence: change storage, programs unaffected.\nLogical independence: add columns/tables, existing programs unaffected."},
+  {q:"What are ACID properties? Explain each.",a:"A = Atomicity: All-or-nothing (debit + credit both happen or neither)\nC = Consistency: DB moves from one valid state to another\nI = Isolation: Concurrent transactions don't see each other's intermediate states\nD = Durability: Committed changes survive system crashes"},
+  {q:"What are the 5 types of Integrity Constraints?",a:"1. Domain: values in defined range (Age: 15-35)\n2. Entity Integrity: Primary Key ≠ NULL\n3. Referential Integrity: FK must match existing PK or be NULL\n4. Key: uniqueness of candidate keys\n5. Semantic: business rules via CHECK/triggers (salary ≤ 30% increase)"},
+  {q:"What is WAL? What are Checkpoints?",a:"WAL = Write-Ahead Log. Log the change BEFORE writing to DB.\nEnsures recovery is possible even if crash occurs during write.\nCheckpoint = periodic snapshot of consistent DB state.\nReduces recovery time — only redo/undo since last checkpoint."},
+  {q:"Who are the Actors ON the Scene?",a:"1. DBA: manages entire DB environment (schema, security, backup, tuning)\n2. Database Designers: design ER diagrams, schema, normalization\n3. End Users: Naive (ATM users), Sophisticated (analysts, SQL users), Standalone (MS Access)\n4. System Analysts: determine requirements\n5. Application Programmers: implement programs with embedded SQL"},
+  {q:"Who are the Workers BEHIND the Scene?",a:"1. DBMS System Designers: build DBMS components (query processor, storage engine, transaction manager)\n2. Tool Developers: create GUI tools (pgAdmin, SQL Workbench, TOAD)\n3. Operators & Maintenance: run/maintain hardware/software environment\nThey don't USE the data — they build/maintain the DBMS software itself."},
+  {q:"When should you NOT use a DBMS?",a:"1. High initial cost — software, hardware, training expensive\n2. High overhead — significant CPU/memory/disk consumption\n3. Simple applications — single-user, small fixed dataset\n4. Real-time systems — timing constraints, DBMS overhead too much\n5. Embedded systems — limited resources"},
+  {q:"What are the 3 categories of Data Models?",a:"1. High-Level (Conceptual): ER Model, OO Model — close to user perception\n2. Representational (Implementation): Relational, Network, Hierarchical — between conceptual & physical\n3. Low-Level (Physical): record formats, storage allocation, indexes — managed internally by DBMS"},
+  {q:"Schema vs Instance — key differences",a:"Schema = structure/blueprint. Fixed at design time. Changes infrequently. Also called 'intension'.\nInstance = actual data at a moment. Changes with every INSERT/UPDATE/DELETE. Also called 'extension' or 'state'.\nAnalogy: Schema = class definition. Instance = object/snapshot."},
+  {q:"What is the Three-Schema Architecture? Name the 3 levels.",a:"ANSI/SPARC Architecture to achieve data independence.\n3 Levels:\n1. External (View): what each user/group sees — customized subsets\n2. Conceptual (Logical): complete logical structure — all tables, relationships, constraints\n3. Internal (Physical): how data is physically stored — files, indexes, B-Trees"},
+  {q:"Physical vs Logical Data Independence — difference",a:"Physical: change INTERNAL schema (storage/indexes); conceptual schema unchanged.\nLogical: change CONCEPTUAL schema (add tables/columns); external views unchanged.\nLogical independence is HARDER to achieve.\nBoth serve the goal: changes at one level don't break higher levels."},
+  {q:"DDL vs DML vs DCL vs TCL — name all commands",a:"DDL (structure): CREATE, ALTER, DROP, TRUNCATE\nDML (data): SELECT, INSERT, UPDATE, DELETE\nDCL (access): GRANT, REVOKE\nTCL (transactions): COMMIT, ROLLBACK, SAVEPOINT\nVDL (views): CREATE VIEW"},
+  {q:"Procedural vs Non-Procedural DML — difference",a:"Procedural: user specifies WHAT data is needed AND HOW to get it (e.g. network/hierarchical language programs).\nNon-Procedural (Declarative): user specifies WHAT only; DBMS optimizer decides HOW.\nSQL is non-procedural/declarative — major advantage over file system programming."},
+  {q:"Name 5 types of Database Interfaces",a:"1. Menu-Based: options list, no SQL (web portals)\n2. Forms-Based: screen fields (banking, HR)\n3. GUI: drag-and-drop (pgAdmin, MS Access)\n4. Natural Language: English → SQL\n5. Parametric: predefined transactions via function keys (bank tellers)\n+ Speech I/O, Keyword-Based, DBA Interface"},
+  {q:"Structured vs Semi-Structured vs Unstructured Data",a:"Structured: fixed schema, rows/cols, SQL, RDBMS. High consistency.\nSemi-Structured: flexible/self-describing, XML/JSON, MongoDB. Medium consistency.\nUnstructured: no schema, text/images/video/audio, ~80-90% of all data, needs AI/ML."},
+  {q:"What is Polyglot Persistence? Give an example.",a:"Using DIFFERENT database types for different data within ONE application.\nExample — Hospital System:\n• Structured → RDBMS: patient records, billing\n• Semi-Structured → MongoDB: JSON from medical devices\n• Unstructured → Object Storage (S3): MRI images, X-rays"},
+  {q:"What does a Query Optimizer do?",a:"Selects the lowest-cost execution plan for a SQL query.\nFor the same SELECT statement, there may be many valid execution orders.\nOptimizer analyzes statistics (index size, row counts) and picks the fastest plan.\nThis is why SQL is declarative — user says WHAT, optimizer decides HOW."},
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.length>200?200:160;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>

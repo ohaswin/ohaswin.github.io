@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDBMS Module 2 — Database Design</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+  code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+  pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+  .kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+  td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+  tr:nth-child(even) td{background:#f0ede5;}
+  details summary{cursor:pointer;list-style:none;user-select:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+  .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+  .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .fc-wrap{perspective:700px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+  nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #ccc;cursor:pointer;text-decoration:none;color:inherit;display:inline-block;}
+  nav a:hover{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+  h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+  h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  /* ER diagram shapes */
+  .er-entity{fill:#1d4ed8;rx:4;}
+  .er-rel{fill:#dc2626;}
+  .er-attr{fill:#15803d;}
+  .er-weak{fill:none;stroke:#1d4ed8;stroke-width:2;}
+  .er-text{fill:#fff;font-size:12px;font-weight:bold;font-family:system-ui,sans-serif;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 02</div>
+  <div class="font-black text-sm tracking-wide mb-1">DATABASE DESIGN — ER MODEL, RELATIONAL MODEL & NORMALIZATION</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">ER Basics</a>
+    <a href="#s2">Relationships</a>
+    <a href="#s3">Relational Model</a>
+    <a href="#s4">Constraints</a>
+    <a href="#s5">1NF–BCNF</a>
+    <a href="#s6">4NF–5NF</a>
+    <a href="#fc">Flashcards</a>
+    <a href="#cheat">Cheatsheet</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- ═══ S1: ER MODEL BASICS ═══ -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill blue mb-1">ER Model</div><h2>Basic Concepts, Entities & Attributes</h2><p class="text-sm text-gray-500">Proposed by Peter Chen, 1976</p></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>ER Model</strong> = Entity-Relationship Model. A <strong>high-level conceptual</strong> data model used to visually design databases before converting to relational tables. Three core concepts: <strong>Entities</strong>, <strong>Attributes</strong>, <strong>Relationships</strong>.
+  </div>
+
+  <!-- Entity terminology -->
+  <div class="card mb-3">
+    <h3>Entity Terminology</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Term</th><th>Definition</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Entity</td><td>A specific real-world object with independent existence</td><td>Student 'Arun' (Roll 101)</td></tr>
+        <tr><td class="font-bold">Entity Type</td><td>Category/class of similar entities — shown as <strong>Rectangle</strong></td><td>STUDENT</td></tr>
+        <tr><td class="font-bold">Entity Set</td><td>All entities of a type currently in DB (like a table)</td><td>All enrolled students</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Attribute types with visual -->
+  <div class="card mb-3">
+    <h3>Attribute Types — ER Notation</h3>
+
+    <!-- SVG showing all attribute notations -->
+    <div class="flex justify-center mb-4">
+    <svg viewBox="0 0 560 220" class="w-full max-w-2xl" style="min-width:320px;">
+      <!-- ENTITY box in center -->
+      <rect x="225" y="85" width="110" height="40" rx="4" fill="#1d4ed8"/>
+      <text x="280" y="110" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="system-ui">STUDENT</text>
+
+      <!-- Simple attr: Student_ID (key = underline) -->
+      <ellipse cx="100" cy="30" rx="55" ry="20" fill="#15803d" opacity=".9"/>
+      <text x="100" y="26" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">Student_ID</text>
+      <line x1="100" y1="34" x2="82" y2="36" stroke="white" stroke-width="1.5"/>
+      <line x1="100" y1="34" x2="118" y2="36" stroke="white" stroke-width="1.5"/>
+      <text x="100" y="58" text-anchor="middle" fill="#15803d" font-size="9" font-family="system-ui">Key (underlined)</text>
+      <line x1="155" y1="30" x2="225" y2="90" stroke="#999" stroke-width="1"/>
+
+      <!-- Multi-valued: Phone (double oval) -->
+      <ellipse cx="100" cy="130" rx="48" ry="17" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+      <ellipse cx="100" cy="130" rx="40" ry="11" fill="#7c3aed" opacity=".85"/>
+      <text x="100" y="134" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">Phone</text>
+      <text x="100" y="157" text-anchor="middle" fill="#7c3aed" font-size="9" font-family="system-ui">Multi-valued (double oval)</text>
+      <line x1="148" y1="128" x2="225" y2="105" stroke="#999" stroke-width="1"/>
+
+      <!-- Derived: Age (dashed oval) -->
+      <ellipse cx="100" cy="190" rx="40" ry="16" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="100" y="195" text-anchor="middle" fill="#b45309" font-size="11" font-weight="bold" font-family="system-ui">Age</text>
+      <text x="100" y="214" text-anchor="middle" fill="#b45309" font-size="9" font-family="system-ui">Derived (dashed oval)</text>
+      <line x1="140" y1="190" x2="225" y2="115" stroke="#999" stroke-width="1"/>
+
+      <!-- Simple attr: Gender -->
+      <ellipse cx="280" cy="30" rx="38" ry="16" fill="#dc2626" opacity=".85"/>
+      <text x="280" y="35" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">Gender</text>
+      <text x="280" y="56" text-anchor="middle" fill="#dc2626" font-size="9" font-family="system-ui">Simple (plain oval)</text>
+      <line x1="280" y1="46" x2="280" y2="85" stroke="#999" stroke-width="1"/>
+
+      <!-- Composite: Name (oval with sub-ovals) -->
+      <ellipse cx="430" cy="30" rx="38" ry="16" fill="#374151" opacity=".85"/>
+      <text x="430" y="35" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">Name</text>
+      <text x="430" y="56" text-anchor="middle" fill="#374151" font-size="9" font-family="system-ui">Composite (sub-ovals)</text>
+      <line x1="405" y1="35" x2="335" y2="85" stroke="#999" stroke-width="1"/>
+      <!-- sub-ovals -->
+      <ellipse cx="390" cy="8" rx="28" ry="10" fill="#9ca3af"/>
+      <text x="390" y="12" text-anchor="middle" fill="white" font-size="9" font-family="system-ui">First</text>
+      <line x1="410" y1="20" x2="415" y2="20" stroke="#666" stroke-width=".8"/>
+      <ellipse cx="465" cy="8" rx="28" ry="10" fill="#9ca3af"/>
+      <text x="465" y="12" text-anchor="middle" fill="white" font-size="9" font-family="system-ui">Last</text>
+      <line x1="430" y1="14" x2="445" y2="12" stroke="#666" stroke-width=".8"/>
+      <line x1="430" y1="14" x2="415" y2="12" stroke="#666" stroke-width=".8"/>
+    </svg>
+    </div>
+
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Attribute Type</th><th>Description</th><th>ER Notation</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Simple (Atomic)</td><td>Cannot be divided further</td><td>Plain oval</td><td>Age, Gender, Salary</td></tr>
+        <tr><td class="font-bold">Composite</td><td>Can be split into sub-parts</td><td>Oval with sub-ovals</td><td>Name → First, Last</td></tr>
+        <tr><td class="font-bold">Single-Valued</td><td>One value per entity</td><td>Plain oval</td><td>Date_of_Birth, NID</td></tr>
+        <tr><td class="font-bold text-purple-700">Multi-Valued</td><td>Multiple values per entity</td><td><strong>Double oval</strong></td><td>Phone_Numbers, Degrees</td></tr>
+        <tr><td class="font-bold text-orange-700">Derived</td><td>Computed from other attributes</td><td><strong>Dashed oval</strong></td><td>Age (from DOB)</td></tr>
+        <tr><td class="font-bold text-green-700">Key</td><td>Uniquely identifies entity</td><td><strong>Underlined</strong> oval</td><td>Student_ID, EmpID</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- NULL -->
+  <div class="card mb-3">
+    <h3>NULL Values</h3>
+    <div class="warn mb-2">NULL is <strong>NOT</strong> zero, <strong>NOT</strong> empty string '', <strong>NOT</strong> a blank space. It means <em>missing</em>, <em>unknown</em>, or <em>not applicable</em>.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>NULL Type</th><th>Meaning</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Missing</td><td>Value exists but unknown</td><td>Phone number not collected</td></tr>
+        <tr><td class="font-bold">Not Applicable</td><td>Attribute irrelevant for this entity</td><td>Spouse_Name for unmarried person</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- ER Notation summary -->
+  <div class="card mb-3">
+    <h3>ER Diagram Notation — Complete Reference</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>ER Concept</th><th>Notation</th></tr></thead>
+      <tbody>
+        <tr><td>Entity Type</td><td>Rectangle</td></tr>
+        <tr><td>Relationship Type</td><td>Diamond</td></tr>
+        <tr><td>Simple Attribute</td><td>Oval (ellipse)</td></tr>
+        <tr><td>Key Attribute</td><td>Oval with <u>underlined</u> name</td></tr>
+        <tr><td>Multi-Valued Attribute</td><td><strong>Double oval</strong></td></tr>
+        <tr><td>Derived Attribute</td><td><strong>Dashed oval</strong></td></tr>
+        <tr><td>Composite Attribute</td><td>Oval with sub-ovals attached</td></tr>
+        <tr><td>Total Participation</td><td><strong>Double line</strong></td></tr>
+        <tr><td>Partial Participation</td><td>Single line</td></tr>
+        <tr><td>Weak Entity Type</td><td><strong>Double rectangle</strong></td></tr>
+        <tr><td>Identifying Relationship</td><td><strong>Double diamond</strong></td></tr>
+        <tr><td>Partial Key (Discriminator)</td><td>Dashed underline</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> Double = weak/multi-valued. Dashed = derived/partial key. Underlined = key attribute. These distinctions are frequently tested.</div>
+</section>
+
+<!-- ═══ S2: RELATIONSHIPS ═══ -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill red mb-1">Relationships</div><h2>Relationships, Constraints & Weak Entities</h2></div>
+  </div>
+
+  <!-- Degree -->
+  <div class="card mb-3">
+    <h3>Degree of a Relationship</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Degree</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Unary (1)</td><td>Same entity type relates to itself</td><td>EMPLOYEE <em>supervises</em> EMPLOYEE</td></tr>
+        <tr><td class="font-bold">Binary (2)</td><td>Two entity types — most common</td><td>STUDENT <em>enrolls in</em> COURSE</td></tr>
+        <tr><td class="font-bold">Ternary (3)</td><td>Three entity types simultaneously</td><td>SUPPLIER <em>supplies</em> PART to PROJECT</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Cardinality with visual -->
+  <div class="card mb-3">
+    <h3>Cardinality Ratios (Mapping Cardinality)</h3>
+    <div class="info text-sm mb-3">Specifies <strong>max number of relationship instances</strong> an entity can participate in.</div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+
+      <!-- 1:1 -->
+      <div class="border rounded p-2">
+        <div class="font-bold text-sm mb-1 text-blue-700">1 : 1 (One-to-One)</div>
+        <svg viewBox="0 0 200 60" class="w-full">
+          <rect x="5" y="20" width="55" height="25" rx="3" fill="#1d4ed8"/>
+          <text x="32" y="37" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="system-ui">EMP</text>
+          <diamond-placeholder/>
+          <polygon points="80,32 110,22 110,42" fill="#dc2626"/>
+          <text x="95" y="37" text-anchor="middle" fill="white" font-size="8" font-family="system-ui">manages</text>
+          <rect x="140" y="20" width="55" height="25" rx="3" fill="#1d4ed8"/>
+          <text x="167" y="37" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="system-ui">DEPT</text>
+          <line x1="60" y1="32" x2="80" y2="32" stroke="#666" stroke-width="1.5"/>
+          <text x="68" y="18" fill="#333" font-size="10" font-family="system-ui">1</text>
+          <line x1="110" y1="32" x2="140" y2="32" stroke="#666" stroke-width="1.5"/>
+          <text x="123" y="18" fill="#333" font-size="10" font-family="system-ui">1</text>
+        </svg>
+        <div class="text-xs text-gray-500">Each entity in A ↔ at most one in B</div>
+        <div class="text-xs mt-1">e.g. EMPLOYEE manages DEPARTMENT</div>
+      </div>
+
+      <!-- 1:N -->
+      <div class="border rounded p-2">
+        <div class="font-bold text-sm mb-1 text-green-700">1 : N (One-to-Many)</div>
+        <svg viewBox="0 0 200 60" class="w-full">
+          <rect x="5" y="20" width="55" height="25" rx="3" fill="#15803d"/>
+          <text x="32" y="37" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="system-ui">DEPT</text>
+          <polygon points="80,32 110,22 110,42" fill="#dc2626"/>
+          <rect x="140" y="20" width="55" height="25" rx="3" fill="#15803d"/>
+          <text x="167" y="37" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="system-ui">EMP</text>
+          <line x1="60" y1="32" x2="80" y2="32" stroke="#666" stroke-width="1.5"/>
+          <text x="68" y="18" fill="#333" font-size="10" font-family="system-ui">1</text>
+          <line x1="110" y1="32" x2="140" y2="32" stroke="#666" stroke-width="1.5"/>
+          <text x="118" y="18" fill="#333" font-size="10" font-family="system-ui">N</text>
+        </svg>
+        <div class="text-xs text-gray-500">One in A → many in B</div>
+        <div class="text-xs mt-1">e.g. DEPARTMENT has many EMPLOYEES</div>
+      </div>
+
+      <!-- M:N -->
+      <div class="border rounded p-2 sm:col-span-2">
+        <div class="font-bold text-sm mb-1 text-purple-700">M : N (Many-to-Many)</div>
+        <svg viewBox="0 0 200 60" class="w-full max-w-sm mx-auto">
+          <rect x="5" y="20" width="60" height="25" rx="3" fill="#7c3aed"/>
+          <text x="35" y="37" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="system-ui">STUDENT</text>
+          <polygon points="85,32 115,22 115,42" fill="#dc2626"/>
+          <rect x="140" y="20" width="55" height="25" rx="3" fill="#7c3aed"/>
+          <text x="167" y="37" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="system-ui">COURSE</text>
+          <line x1="65" y1="32" x2="85" y2="32" stroke="#666" stroke-width="1.5"/>
+          <text x="73" y="18" fill="#333" font-size="10" font-family="system-ui">M</text>
+          <line x1="115" y1="32" x2="140" y2="32" stroke="#666" stroke-width="1.5"/>
+          <text x="122" y="18" fill="#333" font-size="10" font-family="system-ui">N</text>
+        </svg>
+        <div class="text-xs text-gray-500">Many in A ↔ many in B. Requires junction table in relational model.</div>
+        <div class="text-xs mt-1">e.g. STUDENT enrolls in COURSE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Participation -->
+  <div class="card mb-3">
+    <h3>Participation Constraints</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Constraint</th><th>Meaning</th><th>ER Notation</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold text-red-700">Total (Mandatory)</td><td>Every entity MUST participate</td><td><strong>Double line</strong></td><td>Every EMPLOYEE works for a DEPT</td></tr>
+        <tr><td class="font-bold">Partial (Optional)</td><td>Some entities may not participate</td><td>Single line</td><td>Not every EMP manages a DEPT</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Weak Entities -->
+  <div class="card mb-3">
+    <h3>Weak Entity Types</h3>
+    <div class="warn mb-3">A <strong>weak entity</strong> has no primary key of its own. Its existence depends on an <strong>owner entity</strong> via an <strong>identifying relationship</strong>.</div>
+
+    <div class="flex justify-center mb-3">
+    <svg viewBox="0 0 340 100" class="w-full max-w-md">
+      <!-- Owner entity: EMPLOYEE (double rect) -->
+      <rect x="10" y="30" width="90" height="35" rx="3" fill="#1d4ed8"/>
+      <text x="55" y="52" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="system-ui">EMPLOYEE</text>
+      <!-- key attr -->
+      <ellipse cx="55" cy="10" rx="35" ry="12" fill="#15803d"/>
+      <text x="55" y="8" text-anchor="middle" fill="white" font-size="9" font-family="system-ui">Emp_ID</text>
+      <line x1="55" y1="5" x2="42" y2="7" stroke="white" stroke-width="1.2"/>
+      <line x1="55" y1="5" x2="68" y2="7" stroke="white" stroke-width="1.2"/>
+      <line x1="55" y1="22" x2="55" y2="30" stroke="#999" stroke-width="1"/>
+
+      <!-- Identifying relationship (double diamond) -->
+      <polygon points="160,30 200,48 160,65 120,48" fill="none" stroke="#dc2626" stroke-width="1.5"/>
+      <polygon points="165,35 197,48 165,61 133,48" fill="#dc2626" opacity=".7"/>
+      <text x="165" y="52" text-anchor="middle" fill="white" font-size="9" font-weight="bold" font-family="system-ui">HAS</text>
+      <line x1="100" y1="48" x2="120" y2="48" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- Weak entity: DEPENDENT (double rectangle) -->
+      <rect x="205" y="25" width="110" height="45" rx="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+      <rect x="211" y="31" width="98" height="33" rx="2" fill="#7c3aed" opacity=".85"/>
+      <text x="260" y="52" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">DEPENDENT</text>
+      <line x1="200" y1="48" x2="205" y2="48" stroke="#dc2626" stroke-width="2"/>
+
+      <!-- partial key: Dep_Name (dashed underline) -->
+      <ellipse cx="260" cy="10" rx="42" ry="12" fill="#9ca3af"/>
+      <text x="260" y="8" text-anchor="middle" fill="white" font-size="9" font-family="system-ui">Dep_Name</text>
+      <line x1="245" y1="14" x2="275" y2="14" stroke="white" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="260" y1="22" x2="260" y2="31" stroke="#999" stroke-width="1"/>
+
+      <!-- labels -->
+      <text x="55" y="90" text-anchor="middle" fill="#1d4ed8" font-size="9" font-family="system-ui">Owner (strong)</text>
+      <text x="260" y="90" text-anchor="middle" fill="#7c3aed" font-size="9" font-family="system-ui">Weak entity (double rect)</text>
+    </svg>
+    </div>
+
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>Strong Entity</th><th>Weak Entity</th></tr></thead>
+      <tbody>
+        <tr><td>Primary Key</td><td>Has its own PK</td><td class="text-red-600 font-bold">No PK — identified by Partial Key + Owner PK</td></tr>
+        <tr><td>Existence</td><td>Independent</td><td>Depends on owner entity</td></tr>
+        <tr><td>ER Notation</td><td>Single rectangle</td><td><strong>Double rectangle</strong></td></tr>
+        <tr><td>Relationship</td><td>Ordinary diamond</td><td><strong>Double diamond</strong> (identifying)</td></tr>
+        <tr><td>Key</td><td>Primary key (solid underline)</td><td>Partial key/discriminator (<strong>dashed underline</strong>)</td></tr>
+        <tr><td>Example</td><td>EMPLOYEE (Emp_ID)</td><td>DEPENDENT (Dep_Name + Emp_ID)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- EER -->
+  <details class="card mb-3">
+    <summary class="font-bold flex justify-between items-center">Extended ER (EER) — Specialization & Generalization <span class="pill gray">▼</span></summary>
+    <div class="mt-3 space-y-3">
+      <div class="scroll-x">
+      <table>
+        <thead><tr><th>Concept</th><th>Direction</th><th>Description</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Specialization</td><td>Top-down ↓</td><td>Define subclasses of a superclass (IS-A)</td><td>EMPLOYEE → MANAGER, ENGINEER</td></tr>
+          <tr><td class="font-bold">Generalization</td><td>Bottom-up ↑</td><td>Combine entities into a superclass</td><td>CAR + TRUCK → VEHICLE</td></tr>
+          <tr><td class="font-bold">Inheritance</td><td>—</td><td>Subclass inherits all superclass attributes</td><td>MANAGER inherits all EMPLOYEE attrs</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="scroll-x">
+      <table>
+        <thead><tr><th>Constraint</th><th>Symbol</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Disjoint</td><td>'d' in circle</td><td>Entity belongs to AT MOST one subclass</td></tr>
+          <tr><td class="font-bold">Overlapping</td><td>'o' in circle</td><td>Entity can belong to MULTIPLE subclasses</td></tr>
+          <tr><td class="font-bold">Total</td><td>Double line</td><td>Every superclass entity is in at least one subclass</td></tr>
+          <tr><td class="font-bold">Partial</td><td>Single line</td><td>Superclass entity may not be in any subclass</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </details>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> Weak entity needs TWO things: double rectangle + double diamond. Partial key uses dashed underline. M:N relationships must be split into a junction/bridge table in relational schema.</div>
+</section>
+
+<!-- ═══ S3: RELATIONAL MODEL ═══ -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill green mb-1">Relational Model</div><h2>Domains, Attributes, Tuples, Relations & NULLs</h2><p class="text-sm text-gray-500">E.F. Codd, 1970</p></div>
+  </div>
+
+  <div class="card info mb-3">
+    Proposed by <strong>E.F. Codd in 1970</strong>. Data is represented as a collection of <strong>relations (tables)</strong>. Foundation of all RDBMS: MySQL, Oracle, PostgreSQL.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Core Terminology</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Term</th><th>Definition</th><th>SQL equivalent</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Domain</td><td>Set of ALL possible atomic values for an attribute</td><td>Data type + constraints</td></tr>
+        <tr><td class="font-bold">Relation Schema</td><td>R(A1, A2…An) — name + list of attributes with domains</td><td>Table definition</td></tr>
+        <tr><td class="font-bold">Relation</td><td>A set of tuples conforming to the schema</td><td>Table (with rows)</td></tr>
+        <tr><td class="font-bold">Tuple</td><td>A single row — ordered list of values</td><td>Row / Record</td></tr>
+        <tr><td class="font-bold">Attribute</td><td>A named column in the relation</td><td>Column</td></tr>
+        <tr><td class="font-bold">Degree (Arity)</td><td>Number of <em>attributes</em> (columns)</td><td>Number of columns</td></tr>
+        <tr><td class="font-bold">Cardinality</td><td>Number of <em>tuples</em> (rows) at a given time</td><td>Row count</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Properties of a Relation — Must Know</h3>
+    <ul class="space-y-2 text-sm">
+      <li class="good p-2">✅ <strong>No duplicate tuples</strong> — every row must be unique</li>
+      <li class="good p-2">✅ <strong>No tuple ordering</strong> — order of rows doesn't matter</li>
+      <li class="good p-2">✅ <strong>Atomic values</strong> — each cell holds ONE indivisible value (1NF requirement)</li>
+      <li class="info p-2">ℹ️ <strong>Attribute order matters</strong> for positional notation (not for named)</li>
+      <li class="info p-2">ℹ️ <strong>NULL values allowed</strong> unless constrained otherwise</li>
+    </ul>
+  </div>
+
+  <div class="card mb-3">
+    <h3>NULL Values in Tuples</h3>
+    <div class="warn mb-2">NULL ≠ 0 &nbsp;|&nbsp; NULL ≠ '' &nbsp;|&nbsp; NULL ≠ ' '</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>NULL Interpretation</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Unknown</strong> — value exists but not known</td><td>Phone number not provided</td></tr>
+        <tr><td><strong>Not Available</strong> — value exists but not given</td><td>Salary withheld</td></tr>
+        <tr><td><strong>Not Applicable</strong> — attribute irrelevant</td><td>Spouse_Name for unmarried person</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2 text-sm">Any arithmetic with NULL → NULL. Any comparison with NULL → UNKNOWN (three-valued logic: TRUE / FALSE / UNKNOWN).</div>
+  </div>
+</section>
+
+<!-- ═══ S4: CONSTRAINTS ═══ -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill purple mb-1">Constraints</div><h2>Relational Model Constraints & Database Schemas</h2></div>
+  </div>
+
+  <!-- Keys -->
+  <div class="card mb-3">
+    <h3>Key Types — Hierarchy</h3>
+
+    <!-- visual key hierarchy -->
+    <div class="flex justify-center mb-3">
+    <svg viewBox="0 0 320 130" class="w-full max-w-sm">
+      <rect x="10" y="5" width="300" height="30" rx="3" fill="#374151"/>
+      <text x="160" y="25" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">SUPERKEY — any set that uniquely identifies tuples</text>
+
+      <rect x="30" y="50" width="260" height="30" rx="3" fill="#1d4ed8"/>
+      <text x="160" y="70" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">CANDIDATE KEY — minimal superkey (no redundant attrs)</text>
+
+      <rect x="50" y="95" width="110" height="30" rx="3" fill="#dc2626"/>
+      <text x="105" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">PRIMARY KEY</text>
+      <rect x="175" y="95" width="115" height="30" rx="3" fill="#6b7280"/>
+      <text x="232" y="115" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="system-ui">ALTERNATE KEY</text>
+
+      <line x1="160" y1="35" x2="160" y2="50" stroke="#aaa" stroke-width="1.5" marker-end="url(#da)"/>
+      <line x1="160" y1="80" x2="160" y2="95" stroke="#aaa" stroke-width="1.5"/>
+      <line x1="160" y1="95" x2="105" y2="95" stroke="#aaa" stroke-width="1.5" marker-end="url(#da)"/>
+      <line x1="160" y1="95" x2="232" y2="95" stroke="#aaa" stroke-width="1.5" marker-end="url(#da)"/>
+      <defs><marker id="da" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0,6 3,0 6" fill="#aaa"/></marker></defs>
+    </svg>
+    </div>
+
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Key Type</th><th>Definition</th><th>Properties</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Superkey</td><td>Any set of attributes that uniquely identifies a tuple</td><td>Can have extra/redundant attributes</td></tr>
+        <tr><td class="font-bold">Candidate Key</td><td>Minimal superkey — no redundant attributes</td><td>Removing any attr breaks uniqueness</td></tr>
+        <tr><td class="font-bold text-red-700">Primary Key</td><td>Chosen candidate key — official identifier</td><td><strong>NOT NULL + UNIQUE</strong>. Exactly one per table.</td></tr>
+        <tr><td class="font-bold">Alternate Key</td><td>Candidate keys NOT chosen as primary</td><td>Enforced via UNIQUE constraint in SQL</td></tr>
+        <tr><td class="font-bold text-blue-700">Foreign Key</td><td>References PK of another relation</td><td>Enforces referential integrity</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- 4 Constraints -->
+  <div class="card mb-3">
+    <h3>Four Main Integrity Constraints</h3>
+    <div class="space-y-3">
+
+      <div class="border-l-4 border-blue-600 pl-3">
+        <div class="font-bold">1. Domain Constraint</div>
+        <div class="text-sm">Each attribute value must be atomic and from its defined domain.</div>
+        <div class="mono text-xs mt-1 text-gray-500">Marks domain: INTEGER, 0–100. Storing 'Excellent' or 150 → rejected.</div>
+      </div>
+
+      <div class="border-l-4 border-green-600 pl-3">
+        <div class="font-bold">2. Key Constraint</div>
+        <div class="text-sm">Primary key values must be unique across all tuples.</div>
+        <div class="mono text-xs mt-1 text-gray-500">No two students can have same Student_ID.</div>
+      </div>
+
+      <div class="border-l-4 border-red-600 pl-3">
+        <div class="font-bold">3. Entity Integrity Constraint</div>
+        <div class="text-sm"><strong>Primary key attribute(s) CANNOT be NULL.</strong> Must be able to identify every tuple.</div>
+        <div class="mono text-xs mt-1 text-gray-500">Student_ID cannot be NULL — how would we identify the student?</div>
+      </div>
+
+      <div class="border-l-4 border-purple-600 pl-3">
+        <div class="font-bold">4. Referential Integrity Constraint (Foreign Key)</div>
+        <div class="text-sm">A foreign key value must either match an existing PK value in the referenced relation, or be NULL.</div>
+        <div class="mono text-xs mt-1 text-gray-500">STUDENT.Dept_ID must exist in DEPARTMENT.Dept_ID — no orphan records.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Operations & Possible Violations</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Operation</th><th>Can Violate</th></tr></thead>
+      <tbody>
+        <tr><td class="mono font-bold">INSERT</td><td>Domain, Key, Entity Integrity, Referential Integrity</td></tr>
+        <tr><td class="mono font-bold">DELETE</td><td>Referential Integrity (if other tables reference this row)</td></tr>
+        <tr><td class="mono font-bold">UPDATE</td><td>Domain, Key, Entity Integrity, Referential Integrity</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> Every PK is a Candidate Key but not vice versa. Every Candidate Key is a Superkey but not vice versa. Entity Integrity = PK cannot be NULL. Referential Integrity = FK must exist in referenced table.</div>
+</section>
+
+<!-- ═══ S5: NORMALIZATION 1NF–BCNF ═══ -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill orange mb-1">Normalization</div><h2>1NF, 2NF, 3NF, BCNF</h2><p class="text-sm text-gray-500">Reduce redundancy, eliminate anomalies</p></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Normalization</strong> = organizing a relational DB to <strong>reduce data redundancy</strong> and <strong>improve data integrity</strong> by applying progressive normal form rules.
+  </div>
+
+  <!-- Anomalies -->
+  <div class="card mb-3">
+    <h3>Why Normalize? — The 3 Anomalies</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Anomaly</th><th>Problem</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold text-red-700">Update</td><td>Same data in many rows — update one, others become inconsistent</td><td>Faculty dept change must update every course row</td></tr>
+        <tr><td class="font-bold text-orange-700">Insert</td><td>Can't add data without also adding unrelated data</td><td>Can't add dept unless a student is enrolled</td></tr>
+        <tr><td class="font-bold text-purple-700">Delete</td><td>Deleting one thing accidentally removes other info</td><td>Delete last student → course info also lost</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Functional Dependencies -->
+  <div class="card mb-3">
+    <h3>Functional Dependency (FD)</h3>
+    <div class="info mb-2"><strong>X → Y</strong> means "X determines Y" — for any two tuples with same X value, Y must also be same.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>FD Type</th><th>Definition</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold text-green-700">Full FD</td><td>Y depends on the ENTIRE composite key (not a subset)</td><td>Grade depends on {Student_ID, Course_ID}</td></tr>
+        <tr><td class="font-bold text-red-700">Partial FD</td><td>Y depends on only a PART of a composite key</td><td>Student_Name depends only on Student_ID (part of key)</td></tr>
+        <tr><td class="font-bold text-purple-700">Transitive FD</td><td>X→Y and Y→Z therefore X→Z (via intermediate)</td><td>Student_ID → Dept_ID → Dept_Name</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- NF progression visual -->
+  <div class="card mb-3">
+    <h3>Normal Form Progression</h3>
+    <div class="flex flex-col items-center gap-0 text-sm mb-4">
+      <div class="w-full max-w-sm bg-[#1a1a1a] text-white text-center py-2 px-3 rounded-t font-bold">Unnormalized (UNF) — has repeating groups</div>
+      <div class="text-gray-400 font-bold">↓ apply 1NF</div>
+      <div class="w-full max-w-sm bg-[#dc2626] text-white text-center py-2 px-3 font-bold">1NF — all values atomic</div>
+      <div class="text-gray-400 font-bold">↓ remove partial deps</div>
+      <div class="w-full max-w-sm bg-[#b45309] text-white text-center py-2 px-3 font-bold">2NF — no partial dependencies</div>
+      <div class="text-gray-400 font-bold">↓ remove transitive deps</div>
+      <div class="w-full max-w-sm bg-[#1d4ed8] text-white text-center py-2 px-3 font-bold">3NF — no transitive dependencies</div>
+      <div class="text-gray-400 font-bold">↓ every determinant is a superkey</div>
+      <div class="w-full max-w-sm bg-[#15803d] text-white text-center py-2 px-3 font-bold">BCNF — stronger than 3NF</div>
+      <div class="text-gray-400 font-bold">↓ remove multi-valued deps</div>
+      <div class="w-full max-w-sm bg-[#7c3aed] text-white text-center py-2 px-3 font-bold">4NF → 5NF (next section)</div>
+    </div>
+  </div>
+
+  <!-- 1NF -->
+  <div class="card mb-3" style="border-top:3px solid #dc2626;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill red">1NF</span><h3 class="mb-0">First Normal Form</h3></div>
+    <div class="good mb-2"><strong>Rule:</strong> All attribute values must be <strong>atomic</strong> (indivisible). No multi-valued attributes, no repeating groups, no arrays in cells.</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+      <div>
+        <div class="font-bold text-red-600 mb-1">❌ Violates 1NF</div>
+        <div class="scroll-x">
+        <table>
+          <thead><tr><th>Stu_ID</th><th>Phone</th></tr></thead>
+          <tbody><tr><td>101</td><td class="text-red-600">9876543, 8765432</td></tr></tbody>
+        </table>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">Cell has multiple values</div>
+      </div>
+      <div>
+        <div class="font-bold text-green-600 mb-1">✅ 1NF</div>
+        <div class="scroll-x">
+        <table>
+          <thead><tr><th>Stu_ID</th><th>Phone</th></tr></thead>
+          <tbody>
+            <tr><td>101</td><td>9876543</td></tr>
+            <tr><td>101</td><td>8765432</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">Separate row per value</div>
+      </div>
+    </div>
+    <div class="tip mt-2 text-sm"><strong>Rule of thumb:</strong> If a cell contains a list/multiple values → NOT in 1NF</div>
+  </div>
+
+  <!-- 2NF -->
+  <div class="card mb-3" style="border-top:3px solid #b45309;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill orange">2NF</span><h3 class="mb-0">Second Normal Form</h3></div>
+    <div class="good mb-2"><strong>Rule:</strong> In 1NF + every non-prime attribute is <strong>fully functionally dependent</strong> on the ENTIRE primary key. <em>Applies only when PK is composite.</em></div>
+    <div class="text-sm mb-2">
+      <strong>Problem relation:</strong> ENROLLMENT(Student_ID, Course_ID, <span class="text-red-600">Grade</span>, <span class="text-red-600">Student_Name</span>, <span class="text-red-600">Course_Name</span>)<br>
+      PK = {Student_ID, Course_ID}<br>
+      <span class="text-green-700">Grade → depends on both ✅</span><br>
+      <span class="text-red-600">Student_Name → depends only on Student_ID ❌ (partial)</span><br>
+      <span class="text-red-600">Course_Name → depends only on Course_ID ❌ (partial)</span>
+    </div>
+    <div class="text-sm font-bold mb-1">→ Decompose to 2NF:</div>
+<pre>STUDENT(Student_ID, Student_Name)
+COURSE(Course_ID, Course_Name)
+ENROLLMENT(Student_ID, Course_ID, Grade)  <span class="cm">← only Grade here</span></pre>
+  </div>
+
+  <!-- 3NF -->
+  <div class="card mb-3" style="border-top:3px solid #1d4ed8;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill blue">3NF</span><h3 class="mb-0">Third Normal Form</h3></div>
+    <div class="good mb-2"><strong>Rule:</strong> In 2NF + no transitive dependencies. For every FD X→Y: either (a) X is a superkey, OR (b) Y is a prime attribute.</div>
+    <div class="text-sm mb-2">
+      <strong>Problem:</strong> STUDENT(Student_ID, Name, <span class="text-red-600">Dept_ID, Dept_Name, HOD_Name</span>)<br>
+      <span class="text-red-600">Student_ID → Dept_ID → Dept_Name (transitive!) ❌</span>
+    </div>
+    <div class="text-sm font-bold mb-1">→ Decompose to 3NF:</div>
+<pre>STUDENT(Student_ID, Name, Dept_ID)
+DEPARTMENT(Dept_ID, Dept_Name, HOD_Name)</pre>
+  </div>
+
+  <!-- BCNF -->
+  <div class="card mb-3" style="border-top:3px solid #15803d;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill green">BCNF</span><h3 class="mb-0">Boyce-Codd Normal Form</h3></div>
+    <div class="good mb-2"><strong>Rule:</strong> For every non-trivial FD X→Y, <strong>X must be a superkey</strong>. Stronger than 3NF — eliminates ALL FD anomalies.</div>
+    <div class="text-sm mb-2">
+      <strong>Problem:</strong> COURSE_TEACHER(Student_ID, Subject, Teacher)<br>
+      Candidate keys: {Student_ID, Subject}, {Student_ID, Teacher}<br>
+      <span class="text-red-600">Teacher → Subject ❌ (Teacher is not a superkey)</span>
+    </div>
+    <div class="text-sm font-bold mb-1">→ Decompose to BCNF:</div>
+<pre>TEACHER_SUBJECT(Teacher, Subject)
+STUDENT_TEACHER(Student_ID, Teacher)</pre>
+    <div class="warn mt-2 text-sm"><strong>BCNF vs 3NF:</strong> 3NF allows Y to be a prime attribute as exception. BCNF is stricter — no exceptions. Every BCNF relation is in 3NF, but NOT vice versa.</div>
+  </div>
+
+  <!-- NF Comparison table -->
+  <div class="card mb-3">
+    <h3>Normal Forms — Quick Comparison</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Normal Form</th><th>Condition to satisfy</th><th>Eliminates</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold text-red-700">1NF</td><td>All values atomic; no repeating groups; each row unique</td><td>Multi-valued cells, repeating groups</td></tr>
+        <tr><td class="font-bold text-orange-700">2NF</td><td>1NF + no partial dependencies on composite PK</td><td>Partial functional dependencies</td></tr>
+        <tr><td class="font-bold text-blue-700">3NF</td><td>2NF + no transitive dependencies</td><td>Transitive functional dependencies</td></tr>
+        <tr><td class="font-bold text-green-700">BCNF</td><td>For ALL X→Y: X is a superkey</td><td>All FD-based anomalies</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> 2NF only matters when PK is composite. If PK is a single attribute, 1NF → 2NF automatically. BCNF is stricter than 3NF. Most production DBs target 3NF or BCNF.</div>
+</section>
+
+<!-- ═══ S6: 4NF & 5NF ═══ -->
+<section id="s6">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">06</div>
+    <div><div class="pill purple mb-1">Advanced NF</div><h2>4NF and 5NF</h2><p class="text-sm text-gray-500">Multi-valued & Join dependencies</p></div>
+  </div>
+
+  <!-- MVD -->
+  <div class="card mb-3">
+    <h3>Multi-Valued Dependency (MVD)</h3>
+    <div class="info mb-2"><strong>X →→ Y</strong> ("X multi-determines Y"): for a given X, there's a set of Y values independent of other attributes in the relation.</div>
+    <div class="text-sm mb-2">
+      <strong>Example:</strong> EMPLOYEE_SKILLS(Employee_ID, Skill, Language)<br>
+      An employee can have multiple skills AND multiple languages — independently of each other.<br>
+      <span class="mono">Employee_ID →→ Skill</span> &nbsp; AND &nbsp; <span class="mono">Employee_ID →→ Language</span>
+    </div>
+    <div class="warn text-sm">
+      <strong>Problem:</strong> 3 skills × 2 languages = 6 rows (redundancy explosion). Inserting a new language requires adding N rows (one per skill).
+    </div>
+  </div>
+
+  <!-- 4NF -->
+  <div class="card mb-3" style="border-top:3px solid #7c3aed;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill purple">4NF</span><h3 class="mb-0">Fourth Normal Form</h3></div>
+    <div class="good mb-2"><strong>Rule:</strong> In BCNF + no non-trivial multi-valued dependencies, unless the left side is a superkey.</div>
+<pre>EMPLOYEE_SKILLS(Employee_ID, Skill, Language) <span class="cm">← violates 4NF</span>
+
+<span class="cm">→ Decompose:</span>
+EMPLOYEE_SKILL(Employee_ID, Skill)
+EMPLOYEE_LANGUAGE(Employee_ID, Language)  <span class="cm">← 4NF ✅</span></pre>
+    <div class="text-sm mt-2 text-gray-600">Result: Adding a new language now requires only 1 row, not N rows.</div>
+  </div>
+
+  <!-- Join Dependency -->
+  <div class="card mb-3">
+    <h3>Join Dependency (JD)</h3>
+    <div class="info text-sm">*{R1, R2…Rn} on R means R can be <strong>reconstructed exactly</strong> by joining its projections R1, R2…Rn. Every MVD is a special case of JD (with just 2 components).</div>
+  </div>
+
+  <!-- 5NF -->
+  <div class="card mb-3" style="border-top:3px solid #374151;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill gray">5NF</span><h3 class="mb-0">Fifth Normal Form (PJNF)</h3></div>
+    <div class="good mb-2"><strong>Rule:</strong> In 4NF + every join dependency is implied by the candidate keys. (Project-Join Normal Form)</div>
+    <div class="text-sm mb-2">
+      <strong>Example:</strong> SUPPLY(Supplier, Part, Project) — complex 3-way dependency.<br>
+      Rule: if a supplier supplies a part AND that part is used in a project AND the supplier works on that project → supplier supplies that part for that project.
+    </div>
+<pre>SUPPLIER_PART(Supplier, Part)
+PART_PROJECT(Part, Project)
+SUPPLIER_PROJECT(Supplier, Project)
+<span class="cm">← Original SUPPLY = join of these three ✅</span></pre>
+  </div>
+
+  <!-- Complete NF summary -->
+  <div class="card mb-3">
+    <h3>All Normal Forms — Master Summary</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>NF</th><th>Prerequisite</th><th>Eliminates</th><th>When to apply</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold text-red-700">1NF</td><td>—</td><td>Non-atomic values, repeating groups</td><td>Always — minimum requirement</td></tr>
+        <tr><td class="font-bold text-orange-700">2NF</td><td>1NF</td><td>Partial FDs on composite PK</td><td>When PK is composite</td></tr>
+        <tr><td class="font-bold text-blue-700">3NF</td><td>2NF</td><td>Transitive dependencies</td><td>Most production DBs stop here</td></tr>
+        <tr><td class="font-bold text-green-700">BCNF</td><td>3NF</td><td>All FD anomalies (stricter 3NF)</td><td>When 3NF still has anomalies</td></tr>
+        <tr><td class="font-bold text-purple-700">4NF</td><td>BCNF</td><td>Non-trivial MVD redundancy</td><td>Many-to-many independent attrs</td></tr>
+        <tr><td class="font-bold">5NF</td><td>4NF</td><td>Join dependency anomalies</td><td>Complex 3-way+ relationships</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="good mt-2 text-sm">⭐ <strong>Practical target:</strong> 3NF or BCNF for most real databases. 4NF/5NF for complex M:N relationships.</div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> FD = one value determines another (X→Y). MVD = one value determines a SET of values independently (X→→Y). 4NF handles MVDs; 5NF handles JDs. MVD is a special case of JD.</div>
+</section>
+
+<!-- ═══ FLASHCARDS ═══ -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#dc2626;">FC</div>
+    <div><div class="pill red mb-1">Study Mode</div><h2>Flashcards</h2><p class="text-sm text-gray-500">Tap card to flip</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ═══ CHEATSHEET ═══ -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Quick Ref</div><h2>Master Cheatsheet</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Every Key Rule in One Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Topic</th><th>Key Rule / Fact</th></tr></thead>
+      <tbody>
+        <tr><td>ER Model by</td><td>Peter Chen, 1976</td></tr>
+        <tr><td>Relational Model by</td><td>E.F. Codd, 1970</td></tr>
+        <tr><td>Entity vs Entity Type</td><td>Entity = specific object; Entity Type = category (rectangle)</td></tr>
+        <tr><td>Multi-valued attribute</td><td>Double oval — e.g. Phone_Numbers</td></tr>
+        <tr><td>Derived attribute</td><td>Dashed oval — e.g. Age from DOB</td></tr>
+        <tr><td>Key attribute</td><td>Underlined oval — uniquely identifies entity</td></tr>
+        <tr><td>Weak entity notation</td><td>Double rectangle + Double diamond</td></tr>
+        <tr><td>Partial key notation</td><td>Dashed underline</td></tr>
+        <tr><td>Total participation</td><td>Double line — every entity MUST participate</td></tr>
+        <tr><td>Cardinality 1:N</td><td>One in A → many in B (e.g. Dept has many Employees)</td></tr>
+        <tr><td>Cardinality M:N</td><td>Requires junction table in relational schema</td></tr>
+        <tr><td>Degree of relation</td><td># of attributes (columns)</td></tr>
+        <tr><td>Cardinality of relation</td><td># of tuples (rows)</td></tr>
+        <tr><td>NULL ≠</td><td>NULL ≠ 0, NULL ≠ '', any op with NULL = NULL</td></tr>
+        <tr><td>Superkey vs Candidate Key</td><td>CK = minimal superkey (no redundant attrs)</td></tr>
+        <tr><td>Entity Integrity</td><td>PK cannot be NULL</td></tr>
+        <tr><td>Referential Integrity</td><td>FK must match existing PK or be NULL</td></tr>
+        <tr><td>1NF rule</td><td>All values atomic — no lists in cells</td></tr>
+        <tr><td>2NF rule</td><td>No partial FDs on composite PK</td></tr>
+        <tr><td>3NF rule</td><td>No transitive FDs</td></tr>
+        <tr><td>BCNF rule</td><td>For every X→Y, X must be superkey (no exceptions)</td></tr>
+        <tr><td>4NF rule</td><td>No non-trivial MVDs unless LHS is superkey</td></tr>
+        <tr><td>5NF rule</td><td>All JDs implied by candidate keys</td></tr>
+        <tr><td>FD vs MVD</td><td>FD: X→Y (one value). MVD: X→→Y (set of values independently)</td></tr>
+        <tr><td>Practical NF target</td><td>3NF or BCNF for most databases</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  RDBMS Module 2 Study Guide &nbsp;·&nbsp; Database Design — ER Model, Relational Model & Normalization
+</footer>
+
+<script>
+const cards=[
+  {q:"Who proposed the ER Model and when?",a:"Peter Chen in 1976. Used for high-level conceptual database design. Represents Entities, Attributes, and Relationships."},
+  {q:"Entity vs Entity Type vs Entity Set",a:"Entity: specific object (Student 'Arun', Roll 101).\nEntity Type: category — shown as Rectangle (STUDENT).\nEntity Set: all entities of that type currently in DB."},
+  {q:"6 types of attributes in ER Model",a:"Simple (atomic, plain oval)\nComposite (sub-ovals)\nSingle-valued (one value)\nMulti-valued (DOUBLE oval)\nDerived (DASHED oval)\nKey (UNDERLINED oval)"},
+  {q:"How is a Multi-Valued attribute shown in ER diagram?",a:"Double oval. Example: Phone_Numbers (a person can have multiple phones). In relational model, converted to a separate table."},
+  {q:"How is a Derived attribute shown in ER diagram?",a:"Dashed oval. Value is computed from other attributes. Example: Age derived from Date_of_Birth. Not stored — calculated at runtime."},
+  {q:"What is NULL? What is it NOT?",a:"NULL = missing, unknown, or not applicable.\nNOT: 0, empty string '', blank space.\nAny arithmetic with NULL = NULL.\nComparison with NULL = UNKNOWN (3-valued logic)."},
+  {q:"What is a Weak Entity? Two ER notations?",a:"Weak entity has NO primary key. Existence depends on owner entity.\nER: Double Rectangle (entity) + Double Diamond (identifying relationship). Has Partial Key (dashed underline)."},
+  {q:"What is a Partial Key (Discriminator)?",a:"Attribute of a weak entity that uniquely identifies it RELATIVE TO its owner. Shown with dashed underline.\nExample: Dep_Name in DEPENDENT (combined with Emp_ID = unique ID)."},
+  {q:"4 Cardinality types in ER",a:"1:1 (one-to-one): EMPLOYEE manages DEPARTMENT\n1:N (one-to-many): DEPT has many EMPs\nN:1 (many-to-one): many STUDENTs in one DEPT\nM:N (many-to-many): STUDENT enrolls COURSE"},
+  {q:"Total vs Partial Participation",a:"Total (Mandatory): EVERY entity must participate → Double line.\nPartial (Optional): some may not participate → Single line.\nExample: every EMP must work for a DEPT (total); not every EMP manages a DEPT (partial)."},
+  {q:"Specialization vs Generalization in EER",a:"Specialization: Top-down — define subclasses of superclass (EMPLOYEE → MANAGER, ENGINEER).\nGeneralization: Bottom-up — combine entities into superclass (CAR + TRUCK → VEHICLE).\nBoth use IS-A (triangle in ER)."},
+  {q:"Who proposed the Relational Model and when?",a:"E.F. Codd in 1970 — 'A Relational Model of Data for Large Shared Data Banks'. Foundation of all RDBMS."},
+  {q:"Degree vs Cardinality of a relation",a:"Degree = number of ATTRIBUTES (columns). Fixed.\nCardinality = number of TUPLES (rows). Changes with every INSERT/DELETE."},
+  {q:"5 properties of a relation (table)",a:"1. No duplicate tuples\n2. No tuple ordering (row order doesn't matter)\n3. Atomic values (1NF)\n4. Attribute order matters for positional notation\n5. NULL values allowed unless constrained"},
+  {q:"Superkey vs Candidate Key vs Primary Key",a:"Superkey: any set of attrs that uniquely identifies tuples (can have extras).\nCandidate Key: minimal superkey — no redundant attrs.\nPrimary Key: chosen candidate key — NOT NULL + UNIQUE. Exactly one per table."},
+  {q:"What is Entity Integrity?",a:"Primary key attribute(s) CANNOT be NULL. Every tuple must be uniquely and completely identifiable.\nIf PK = NULL, how do you identify that row?"},
+  {q:"What is Referential Integrity?",a:"A foreign key value must either match an existing primary key value in the referenced table, OR be NULL. Prevents orphan/dangling records."},
+  {q:"3 anomalies that normalization eliminates",a:"Update anomaly: same data in many rows, update one → inconsistency.\nInsert anomaly: can't add data without unrelated data.\nDelete anomaly: deleting one row accidentally removes other info."},
+  {q:"What is a Functional Dependency (FD)?",a:"X → Y: 'X determines Y'. For any two tuples with same X value, their Y values must also be the same.\nExample: Student_ID → Name (knowing ID tells you the Name)."},
+  {q:"Full vs Partial vs Transitive FD",a:"Full: Y depends on entire composite PK.\nPartial: Y depends on only PART of composite PK (violates 2NF).\nTransitive: X→Y and Y→Z therefore X→Z via intermediate (violates 3NF)."},
+  {q:"1NF — rule and what it eliminates",a:"Rule: All attribute values must be ATOMIC (indivisible). No multi-valued attributes, no repeating groups.\nViolation: Phone = '9876543, 8765432' in one cell."},
+  {q:"2NF — rule and when it applies",a:"Rule: In 1NF + every non-prime attribute is FULLY dependent on the entire primary key.\nONLY applies when PK is composite. Single-attribute PK → automatically in 2NF if in 1NF."},
+  {q:"3NF — rule (formal version)",a:"Rule: For every non-trivial FD X→Y:\n(a) X is a superkey, OR\n(b) Y is a prime attribute (member of some candidate key).\nEliminates transitive dependencies."},
+  {q:"BCNF — rule and difference from 3NF",a:"Rule: For every non-trivial FD X→Y, X must be a SUPERKEY. No exceptions.\n3NF allows Y to be a prime attribute — BCNF doesn't. Every BCNF relation is 3NF, but not vice versa."},
+  {q:"What is a Multi-Valued Dependency (MVD)?",a:"X →→ Y: for a given X, there's a set of Y values INDEPENDENT of other attributes.\nExample: Emp_ID →→ Skill AND Emp_ID →→ Language (skills and languages are independent of each other)."},
+  {q:"4NF rule — what does it eliminate?",a:"In BCNF + no non-trivial MVDs unless left side is superkey.\nEliminates redundancy from independent multi-valued facts.\nDecompose EMPLOYEE_SKILLS(EmpID, Skill, Language) into two tables."},
+  {q:"5NF rule — what is PJNF?",a:"In 4NF + every join dependency is implied by candidate keys.\nPJNF = Project-Join Normal Form.\nHandles complex 3-way relationships where the table can only be split into 3+ projections (not just 2)."},
+  {q:"Practical normalization target?",a:"Most production databases aim for 3NF or BCNF.\n4NF and 5NF applied for complex many-to-many relationships.\nData warehouses sometimes DENORMALIZE intentionally for query performance."},
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.length>150?150:130;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>
