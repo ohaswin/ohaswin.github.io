@@ -481,6 +481,96 @@
     </div>
     <div class="info text-sm">📌 <strong>Analogy:</strong> Schema = blueprint/class. Instance = actual building/object. You have one schema but many instances over time.</div>
   </div>
+
+  <div class="card mb-3">
+    <h3>Major Data Models — Visual + Simple Properties</h3>
+    <div class="warn mb-3"><strong>Note:</strong> In exams, "rational model" usually means <strong>Relational model</strong>. Here, <strong>Float model</strong> is treated as a distinct 2D-array numeric model.</div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="border rounded p-3 bg-blue-50 border-blue-200">
+        <div class="pill blue mb-2">ER Model</div>
+        <pre>[STUDENT] --- ENROLLS --- [COURSE]
+   | PK: Student_ID            | PK: Course_ID
+   | Name, Dept                | Title, Credits</pre>
+        <ul class="text-sm list-disc ml-4 space-y-1">
+          <li>Conceptual model for database design.</li>
+          <li>Uses <strong>entities, attributes, relationships</strong>.</li>
+          <li>Easy for users to understand before table creation.</li>
+        </ul>
+      </div>
+
+      <div class="border rounded p-3 bg-green-50 border-green-200">
+        <div class="pill green mb-2">Relational Model</div>
+        <pre>STUDENT(Student_ID, Name, Dept_ID)
+COURSE(Course_ID, Title)
+ENROLL(Student_ID, Course_ID)
+
+Join by keys: STUDENT.Student_ID = ENROLL.Student_ID</pre>
+        <ul class="text-sm list-disc ml-4 space-y-1">
+          <li>Data stored as <strong>tables (relations)</strong>.</li>
+          <li>Primary keys and foreign keys define links.</li>
+          <li>Manipulated using <strong>SQL</strong>; most widely used model.</li>
+        </ul>
+      </div>
+
+      <div class="border rounded p-3 bg-amber-50 border-amber-200">
+        <div class="pill orange mb-2">Hierarchical Model</div>
+        <pre>COMPANY
+  |
+  +-- DEPARTMENT
+        |
+        +-- EMPLOYEE</pre>
+        <ul class="text-sm list-disc ml-4 space-y-1">
+          <li>Tree structure with <strong>parent-child</strong> records.</li>
+          <li>Supports <strong>1:N</strong> naturally.</li>
+          <li>Fast for fixed paths, less flexible for complex queries.</li>
+        </ul>
+      </div>
+
+      <div class="border rounded p-3 bg-cyan-50 border-cyan-200">
+        <div class="pill teal mb-2">Network Model</div>
+        <pre>[SUPPLIER] ---- supplies ---- [PART]
+     \                          /
+      \---- works_with --------/</pre>
+        <ul class="text-sm list-disc ml-4 space-y-1">
+          <li>Graph-like structure (records + set links).</li>
+          <li>Supports <strong>M:N</strong> relationships directly.</li>
+          <li>More flexible than hierarchical, but complex to manage.</li>
+        </ul>
+      </div>
+
+      <div class="border rounded p-3 bg-violet-50 border-violet-200">
+        <div class="pill purple mb-2">Object-Oriented Model</div>
+        <pre>class Student {
+  id, name
+  enroll(course)
+}
+
+object s1 : Student</pre>
+        <ul class="text-sm list-disc ml-4 space-y-1">
+          <li>Stores data as <strong>objects</strong> with state and behavior.</li>
+          <li>Supports classes, inheritance, encapsulation.</li>
+          <li>Good for complex data like CAD, multimedia, GIS.</li>
+        </ul>
+      </div>
+
+      <div class="border rounded p-3 bg-gray-50 border-gray-300">
+        <div class="pill gray mb-2">Float Model</div>
+        <pre>2D Array (no duplicates)
+
+[ 1.2500, 2.5000, 3.7500 ]
+[ 4.1250, 5.2500, 6.5000 ]
+[ 7.8750, 8.0000, 9.6250 ]</pre>
+        <ul class="text-sm list-disc ml-4 space-y-1">
+          <li><strong>Structure:</strong> Organized as a two-dimensional array.</li>
+          <li><strong>No Duplicates:</strong> Duplicate elements are not allowed.</li>
+          <li><strong>Precision:</strong> Useful for high-precision decimal numeric values.</li>
+          <li><strong>Use Case:</strong> Best for small, specialized numeric datasets.</li>
+          <li><strong>Limitations:</strong> Inefficient for large-scale storage and lacks complex relational mapping.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ═══ S6: THREE-SCHEMA ARCHITECTURE ═══ -->
