@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CN Module 4 — Transport & Application Layer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:16px;line-height:1.6;margin:0;padding:0;}
+  code,pre,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px;}
+  pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:8px;overflow-x:auto;margin:12px 0;}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin-bottom:1rem;}
+  th{background:#1a1a1a;color:#fff;padding:10px;text-align:left;font-weight:700;position:sticky;top:0;z-index:10;}
+  td{padding:10px;border-bottom:1px solid #e5e0d5;vertical-align:top;}
+  tr:nth-child(even) td{background:#f3f1ec;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:8px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+  .pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:4px;margin-bottom:4px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;} .green{background:#15803d;color:#fff;}
+  .gray{background:#374151;color:#fff;} .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .teal{background:#0d9488;color:#fff;} .pink{background:#be185d;color:#fff;}
+  .tip,.info,.good,.warn{padding:12px 16px;border-radius:0 6px 6px 0;font-size:14px;margin:12px 0;border-left:4px solid;}
+  .tip{border-left-color:#dc2626;background:#fff5f5;}
+  .info{border-left-color:#1d4ed8;background:#eff6ff;}
+  .good{border-left-color:#15803d;background:#f0fdf4;}
+  .warn{border-left-color:#b45309;background:#fffbeb;}
+  h2{font-size:1.5rem;font-weight:800;margin-bottom:8px;line-height:1.2;}
+  h3{font-size:1.1rem;font-weight:700;margin-bottom:8px;margin-top:0;}
+  h4{font-size:1rem;font-weight:700;margin-bottom:6px;margin-top:12px;color:#374151;}
+  .secnum{font-size:2.5rem;font-weight:900;color:#e5e7eb;line-height:1;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:1rem;border-radius:6px;border:1px solid #eee;}
+  nav a{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;padding:6px 10px;border-radius:4px;border:1px solid #444;cursor:pointer;text-decoration:none;color:#ccc;display:inline-block;white-space:nowrap;transition:all 0.2s;}
+  nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+  .fc-wrap{perspective:1000px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .4s;min-height:100%;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;border-radius:8px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;font-size:13px;}
+  .fc-f{background:#fff;border:1px solid #ddd8cc;box-shadow:0 2px 4px rgba(0,0,0,0.05);}
+  .port-box{display:inline-block;background:#2d2d3a;color:#fff;padding:2px 8px;border-radius:4px;font-family:monospace;font-size:12px;font-weight:700;}
+  ul.compact{list-style:none;padding:0;margin:0;}
+  ul.compact li{padding:6px 0;border-bottom:1px solid #f0ede5;}
+  ul.compact li:last-child{border-bottom:none;}
+  .grid-2{display:grid;grid-template-columns:1fr;gap:12px;}
+  @media(min-width:640px){.grid-2{grid-template-columns:1fr 1fr;}}
+  .svg-container{display:flex;justify-content:center;margin:16px 0;background:#fff;padding:12px;border-radius:8px;border:1px solid #eee;}
+  .svg-container svg{max-width:100%;height:auto;}
+  @media(max-width:640px){
+    h2{font-size:1.25rem;}
+    .secnum{font-size:2rem;}
+    .card{padding:12px;margin-bottom:12px;}
+    nav{gap:6px;}
+    nav a{padding:4px 8px;font-size:11px;}
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 04</div>
+  <div class="font-black text-sm tracking-wide mb-1">TRANSPORT & APPLICATION LAYER</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s17">Transport</a>
+    <a href="#s18">Congestion/QoS</a>
+    <a href="#s19">DNS/Email</a>
+    <a href="#s20">FTP/WWW</a>
+    <a href="#s21">SNMP</a>
+    <a href="#s22">SMTP</a>
+    <a href="#ports">Ports</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-8">
+
+<!-- MODULE 17: TRANSPORT LAYER -->
+<section id="s17">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">17</div>
+    <div><div class="pill blue mb-1">Transport Layer</div><h2>Process-to-Process Delivery: UDP & TCP</h2></div>
+  </div>
+
+  <div class="card info">
+    <strong>Transport Layer</strong> bridges Network Layer (host-to-host) and Application Layer. Uses <strong>port numbers</strong> for process-to-process communication. Two protocols: <strong>UDP</strong> (fast, unreliable) and <strong>TCP</strong> (reliable, connection-oriented).
+  </div>
+
+  <div class="card" style="border-top:3px solid #b45309;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill orange">UDP</span><h3 class="mb-0">User Datagram Protocol</h3></div>
+    <div class="good text-sm mb-2">Connectionless, unreliable, minimal overhead. No ACKs, no retransmissions, no ordering guarantee.</div>
+    <div class="scroll-x mb-2">
+    <table>
+      <thead><tr><th>Field</th><th>Size</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Source Port</td><td>16 bits</td><td>Sending process port</td></tr>
+        <tr><td class="font-bold">Destination Port</td><td>16 bits</td><td>Receiving process port</td></tr>
+        <tr><td class="font-bold">Length</td><td>16 bits</td><td>Header + data length (bytes)</td></tr>
+        <tr><td class="font-bold">Checksum</td><td>16 bits</td><td>Error detection (optional IPv4, mandatory IPv6)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h4>Use Cases</h4>
+    <ul class="compact small">
+      <li>DNS queries (primarily)</li>
+      <li>VoIP / real-time streaming</li>
+      <li>Online gaming</li>
+      <li>DHCP, SNMP, TFTP</li>
+    </ul>
+  </div>
+
+  <div class="card" style="border-top:3px solid #1d4ed8;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill blue">TCP</span><h3 class="mb-0">Transmission Control Protocol</h3></div>
+    <div class="good text-sm mb-2">Connection-oriented, reliable, stream-oriented, full-duplex. Uses sequence numbers, ACKs, sliding window.</div>
+    <h4>6 Core Services</h4>
+    <ul class="compact small">
+      <li><strong>Process-to-process</strong> — port numbers</li>
+      <li><strong>Stream delivery</strong> — byte stream with send/receive buffers</li>
+      <li><strong>Full-duplex</strong> — bidirectional simultaneously</li>
+      <li><strong>Multiplexing/Demultiplexing</strong> — per connection</li>
+      <li><strong>Connection-oriented</strong> — 3 phases: establish → transfer → terminate</li>
+      <li><strong>Reliable</strong> — ACK mechanism</li>
+    </ul>
+    <h4>Three-Way Handshake</h4>
+    <div class="svg-container">
+      <svg viewBox="0 0 300 120" class="w-full max-w-sm">
+        <text x="30" y="20" text-anchor="middle" font-size="11" font-weight="bold" fill="#1d4ed8">CLIENT</text>
+        <text x="270" y="20" text-anchor="middle" font-size="11" font-weight="bold" fill="#15803d">SERVER</text>
+        <line x1="30" y1="30" x2="30" y2="110" stroke="#ccc" stroke-width="1"/>
+        <line x1="270" y1="30" x2="270" y2="110" stroke="#ccc" stroke-width="1"/>
+        <line x1="30" y1="45" x2="270" y2="55" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="150" y="48" text-anchor="middle" font-size="10" fill="#1d4ed8">1. SYN</text>
+        <line x1="270" y1="70" x2="30" y2="80" stroke="#15803d" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="150" y="73" text-anchor="middle" font-size="10" fill="#15803d">2. SYN-ACK</text>
+        <line x1="30" y1="95" x2="270" y2="105" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="150" y="98" text-anchor="middle" font-size="10" fill="#1d4ed8">3. ACK</text>
+        <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0,6 3,0 6" fill="#666"/></marker></defs>
+      </svg>
+    </div>
+    <h4>TCP Header Key Fields</h4>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Field</th><th>Size</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>Source/Dest Port</td><td>16 bits each</td><td>Process identification</td></tr>
+        <tr><td>Sequence Number</td><td>32 bits</td><td>Byte-stream position</td></tr>
+        <tr><td>Ack Number</td><td>32 bits</td><td>Next expected byte</td></tr>
+        <tr><td>Header Length</td><td>4 bits</td><td>TCP header size in 32-bit words</td></tr>
+        <tr><td>Flags (SYN,ACK,FIN,RST,PSH,URG)</td><td>6 bits</td><td>Control bits</td></tr>
+        <tr><td>Window Size</td><td>16 bits</td><td>Flow control credit</td></tr>
+        <tr><td>Checksum</td><td>16 bits</td><td>Segment + pseudoheader (IP/Protocol/Length)</td></tr>
+        <tr><td>Urgent Pointer</td><td>16 bits</td><td>Valid if URG flag set; offset to last urgent byte</td></tr>
+        <tr><td>Options</td><td>Up to 40 bytes</td><td>Optional info</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h4>TCP Connection Phases</h4>
+    <ul class="compact small mb-3">
+      <li><strong>Phase 1: Connection Establishment</strong> — 3-Way Handshake (SYN → SYN-ACK → ACK).</li>
+      <li><strong>Phase 2: Data Transfer</strong> — Bidirectional byte-stream exchange with sequence numbers and windowing.</li>
+      <li><strong>Phase 3: Connection Termination</strong> — Usually a 4-Way Handshake (FIN/ACK exchange) for graceful closure.</li>
+    </ul>
+
+    <h4>TCP Reliability Mechanisms</h4>
+    <div class="grid-2 small">
+      <div class="good p-2">
+        <strong>Ordering/Detection</strong><br>
+        Sequence numbers for ordering and duplicate detection.
+      </div>
+      <div class="info p-2">
+        <strong>Acknowledgments</strong><br>
+        Cumulative or selective ACKs to confirm delivery.
+      </div>
+      <div class="warn p-2">
+        <strong>Lost Segments</strong><br>
+        Retransmission timers for recovery of missing data.
+      </div>
+      <div class="gray p-2">
+        <strong>Flow & Congestion</strong><br>
+        Sliding window for flow control and algorithms for congestion.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>UDP vs TCP — Quick Comparison</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Feature</th><th>UDP</th><th>TCP</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Connection</td><td>Connectionless</td><td>Connection-oriented</td></tr>
+        <tr><td class="font-bold">Reliability</td><td>Unreliable</td><td>Reliable (ACKs, retrans)</td></tr>
+        <tr><td class="font-bold">Ordering</td><td>No guarantee</td><td>In-order delivery</td></tr>
+        <tr><td class="font-bold">Flow Control</td><td>None</td><td>Sliding window</td></tr>
+        <tr><td class="font-bold">Congestion Control</td><td>None</td><td>Yes</td></tr>
+        <tr><td class="font-bold">Header Size</td><td>8 bytes</td><td>20-60 bytes</td></tr>
+        <tr><td class="font-bold">Speed</td><td>Faster</td><td>Slower (overhead)</td></tr>
+        <tr><td class="font-bold">Use Case</td><td>Streaming, DNS, VoIP</td><td>Web, email, file transfer</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> UDP header = 8 bytes fixed. TCP header = 20 bytes minimum (up to 60 with options). TCP 3-way handshake: SYN → SYN-ACK → ACK. Connection termination: 4-way (FIN/ACK exchange).</div>
+</section>
+
+<!-- MODULE 18: CONGESTION CONTROL & QoS -->
+<section id="s18">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">18</div>
+    <div><div class="pill red mb-1">Congestion & QoS</div><h2>Congestion Control & Quality of Service</h2></div>
+  </div>
+
+  <div class="card info">
+    <strong>Congestion</strong> = load > capacity (too many sources, router buffers overflow). <strong>Congestion Control</strong> = keep load below capacity. Two categories: <strong>Open-Loop</strong> (prevention) and <strong>Closed-Loop</strong> (removal after it happens).
+  </div>
+
+  <div class="card" style="border-top:3px solid #dc2626;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill red">Open-Loop</span><h3 class="mb-0">Congestion Prevention (Before it happens)</h3></div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Policy</th><th>Description</th><th>Key Point</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Retransmission</td><td>Optimize retransmission timers</td><td>TCP prevents/alleviates congestion</td></tr>
+        <tr><td class="font-bold">Window</td><td>Selective Repeat preferred over Go-Back-N</td><td>GBN resends already-received packets → worsens congestion</td></tr>
+        <tr><td class="font-bold">Acknowledgment</td><td>Send fewer ACKs (ACK every N packets or timer-based)</td><td>ACKs are part of network load</td></tr>
+        <tr><td class="font-bold">Discarding</td><td>Drop less sensitive packets during congestion</td><td>E.g., discard some audio packets in VoIP</td></tr>
+        <tr><td class="font-bold">Admission</td><td>QoS in virtual-circuit networks</td><td>Deny new VC if congestion exists/likely</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #7c3aed;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill purple">Closed-Loop</span><h3 class="mb-0">Congestion Removal (After it happens)</h3></div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Method</th><th>Description</th><th>Network Type</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold text-red-700">Backpressure</td><td>Congested node stops receiving from upstream node; propagates backward</td><td>Virtual circuit ONLY (knows upstream)</td></tr>
+        <tr><td class="font-bold text-purple-700">Choke Packet</td><td>Congested router sends packet directly to source</td><td>Any (goes direct to source)</td></tr>
+        <tr><td class="font-bold text-blue-700">Implicit Signalling</td><td>Source infers congestion from symptoms (no ACK, delay)</td><td>Any (no direct communication)</td></tr>
+        <tr><td class="font-bold text-green-700">Explicit Signalling</td><td>Signal included in data packets (forward or backward)</td><td>Any</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn text-sm mt-2"><strong>Key distinction:</strong> Backpressure = node-to-node, opposite data flow. Choke packet = router-to-source direct. Implicit = source guesses. Explicit = signal in data packets.</div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #0d9488;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill teal">QoS</span><h3 class="mb-0">Quality of Service Parameters</h3></div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Parameter</th><th>Definition</th><th>Acceptable Values</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Bandwidth</td><td>Max transmission rate (bps)</td><td>1080p: 3-5 Mbps; 4K: 15-25 Mbps</td></tr>
+        <tr><td class="font-bold">Latency</td><td>Total travel time (propagation + transmission + processing + queuing)</td><td>VoIP &lt;150ms; Video &lt;200ms</td></tr>
+        <tr><td class="font-bold">Jitter</td><td>Variation in packet arrival times</td><td>Minimize via jitter buffers</td></tr>
+        <tr><td class="font-bold">Packet Loss</td><td>% of packets lost</td><td>VoIP &lt;1%; Video &lt;0.1-0.5%</td></tr>
+        <tr><td class="font-bold">Reliability</td><td>Data arrives intact and ordered</td><td>TCP ensures; UDP needs QoS guarantees</td></tr>
+        <tr><td class="font-bold">Priority</td><td>Traffic classification (DiffServ, MPLS)</td><td>VoIP > file downloads</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #0d9488;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill teal">QoS</span><h3 class="mb-0">Need for Quality of Service</h3></div>
+    <ul class="compact small">
+      <li><strong>1. Prevent Congestion:</strong> Stop high-bandwidth traffic from starving real-time traffic.</li>
+      <li><strong>2. Predictable Performance:</strong> Ensure consistent bandwidth, low latency, and minimal jitter.</li>
+      <li><strong>3. Improved UX:</strong> Avoid frozen screens, delayed audio, or dropped calls.</li>
+      <li><strong>4. Multi-App Support:</strong> Allocate resources so critical apps function despite background traffic.</li>
+      <li><strong>5. Differentiated Services:</strong> Prioritize premium services or critical flows (e.g., Enterprise VoIP).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>QoS Mechanisms</h3>
+    <ul class="compact small">
+      <li><strong>Traffic Shaping</strong> — controls rate to prevent bursts</li>
+      <li><strong>Traffic Policing</strong> — drops excess traffic beyond limits</li>
+      <li><strong>Resource Reservation (RSVP)</strong> — reserves bandwidth along path</li>
+      <li><strong>Packet Scheduling</strong> — WFQ, Priority Queuing</li>
+      <li><strong>DiffServ</strong> — DSCP in IP headers for classification</li>
+      <li><strong>IntServ</strong> — guaranteed bandwidth/latency per flow</li>
+    </ul>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> Backpressure ONLY works in virtual-circuit networks (routers know upstream). In datagram networks, use choke packets or explicit/implicit signalling. QoS is essential for real-time apps (VoIP, video conferencing).</div>
+</section>
+
+<!-- MODULE 19: DNS, REMOTE LOGIN, EMAIL -->
+<section id="s19">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">19</div>
+    <div><div class="pill green mb-1">DNS & Email</div><h2>Domain Name System, Remote Login & Email</h2></div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #15803d;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill green">DNS</span><h3 class="mb-0">Domain Name System</h3></div>
+    <div class="good text-sm mb-2">Translates human-readable domain names → IP addresses. Distributed, hierarchical database. Operates at <strong>Application Layer</strong>.</div>
+    <h4>Resolution Process</h4>
+    <ol class="small" style="padding-left:18px;margin:4px 0;">
+      <li>User types URL (e.g., google.com)</li>
+      <li>Check local DNS cache</li>
+      <li>Query DNS resolver (ISP)</li>
+      <li>Recursive lookup: Root → TLD → Authoritative</li>
+      <li>Authoritative server returns IP</li>
+      <li>Client connects using IP</li>
+    </ol>
+    <h4>DNS Components</h4>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Component</th><th>Function</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">DNS Resolver</td><td>Client-side intermediary; performs recursive lookups; maintains cache</td></tr>
+        <tr><td class="font-bold">Root Name Servers</td><td>Top-level; direct queries to appropriate TLD server (no domain IPs)</td></tr>
+        <tr><td class="font-bold">TLD Servers</td><td>Manage .com, .org, .net, .edu; direct to authoritative server</td></tr>
+        <tr><td class="font-bold">Authoritative NS</td><td>Holds definitive DNS records for a domain</td></tr>
+        <tr><td class="font-bold">DNS Cache</td><td>Temporary storage at resolver, ISP, OS to reduce lookup time</td></tr>
+        <tr><td class="font-bold">Zone Files</td><td>Contain DNS records (A, AAAA, MX, CNAME, NS, PTR)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h4>DNS Record Types</h4>
+    <div class="grid-2 small">
+      <div><span class="port-box">A</span> → IPv4 address</div>
+      <div><span class="port-box">AAAA</span> → IPv6 address</div>
+      <div><span class="port-box">MX</span> → Mail server</div>
+      <div><span class="port-box">CNAME</span> → Alias</div>
+      <div><span class="port-box">NS</span> → Name server</div>
+      <div><span class="port-box">PTR</span> → Reverse DNS</div>
+    </div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #374151;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill gray">Remote Login</span><h3 class="mb-0">Telnet vs SSH</h3></div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Feature</th><th>Telnet</th><th>SSH</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Port</td><td>23 (TCP)</td><td>22 (TCP)</td></tr>
+        <tr><td class="font-bold">Security</td><td>Plaintext (INSECURE)</td><td>Encrypted</td></tr>
+        <tr><td class="font-bold">Authentication</td><td>Password only</td><td>Password, public-key, MFA</td></tr>
+        <tr><td class="font-bold">Use</td><td>Legacy/legacy systems</td><td>Modern standard</td></tr>
+        <tr><td class="font-bold">Additional</td><td>—</td><td>SFTP, port forwarding</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn text-sm mt-2">Telnet transmits credentials in plaintext — vulnerable to eavesdropping. <strong>SSH is the secure replacement.</strong></div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #be185d;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill pink">Email</span><h3 class="mb-0">Email Protocols: SMTP, POP3, IMAP, MIME</h3></div>
+    <div class="scroll-x mb-2">
+    <table>
+      <thead><tr><th>Protocol</th><th>Port(s)</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">SMTP</td><td>25 (server), 587 (client), 465 (SSL)</td><td>Sending emails</td></tr>
+        <tr><td class="font-bold">POP3</td><td>110 (standard), 995 (SSL)</td><td>Receiving — download to client, usually delete from server</td></tr>
+        <tr><td class="font-bold">IMAP</td><td>143 (standard), 993 (SSL)</td><td>Receiving — manage on server, sync across devices</td></tr>
+        <tr><td class="font-bold">MIME</td><td>—</td><td>Multimedia attachments, non-ASCII text</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h4>SMTP Operation</h4>
+    <ol class="small" style="padding-left:18px;margin:4px 0;">
+      <li>Client connects to SMTP server (port 587)</li>
+      <li>Sender provides credentials and message</li>
+      <li>SMTP sends to recipient's SMTP server via TCP (port 25)</li>
+      <li>Recipient server delivers to mailbox</li>
+    </ol>
+    <h4>POP3 vs IMAP</h4>
+    <div class="grid-2 small mb-3">
+      <div class="good p-2">
+        <strong>POP3</strong><br>
+        ✓ Works offline<br>
+        ✓ Simple, minimal server load<br>
+        ✗ No multi-device sync<br>
+        ✗ Limited folder management
+      </div>
+      <div class="info p-2">
+        <strong>IMAP</strong><br>
+        ✓ Centralized server storage<br>
+        ✓ Multi-device sync<br>
+        ✓ Folder management, flags, search<br>
+        ✗ Requires internet connection
+      </div>
+    </div>
+
+    <h4>MIME (Multipurpose Internet Mail Extensions)</h4>
+    <div class="scroll-x">
+      <table>
+        <thead><tr><th>Component</th><th>Function</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Content-Type</td><td>Specifies type of content (text, image, audio, video)</td></tr>
+          <tr><td class="font-bold">Content-Transfer-Encoding</td><td>Specifies encoding for safe transmission</td></tr>
+          <tr><td class="font-bold">Multipart</td><td>Allows sending multiple parts (text + attachments) in one email</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> DNS is application layer. Telnet=23 (insecure), SSH=22 (secure). SMTP sends; POP3/IMAP receive. MIME enables attachments. IMAP keeps mail on server; POP3 downloads and removes.</div>
+</section>
+
+<!-- MODULE 20: FTP, WWW, HTTP -->
+<section id="s20">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">20</div>
+    <div><div class="pill purple mb-1">Web & File Transfer</div><h2>FTP, WWW & HTTP/HTTPS</h2></div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #7c3aed;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill purple">FTP</span><h3 class="mb-0">File Transfer Protocol</h3></div>
+    <div class="good text-sm mb-2">Reliable file transfer between client and server over TCP. Uses <strong>two ports</strong>.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Feature</th><th>Detail</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Control Connection</td><td>Port 21 — commands (GET, PUT, LIST, DELETE, RENAME)</td></tr>
+        <tr><td class="font-bold">Data Connection</td><td>Port 20 — actual file transfer</td></tr>
+        <tr><td class="font-bold">Active Mode</td><td>Server connects to client for data</td></tr>
+        <tr><td class="font-bold">Passive Mode</td><td>Client initiates both connections (firewall-friendly)</td></tr>
+        <tr><td class="font-bold">Security</td><td>Plaintext credentials — use SFTP/FTPS instead</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #1d4ed8;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill blue">HTTP</span><h3 class="mb-0">Hypertext Transfer Protocol</h3></div>
+    <div class="grid-2 small">
+      <div>
+        <h4>HTTP</h4>
+        <ul class="compact">
+          <li>Port <span class="port-box">80</span></li>
+          <li>Request-Response model</li>
+          <li>Stateless (no session memory)</li>
+          <li>Methods: GET, POST, PUT, DELETE</li>
+        </ul>
+      </div>
+      <div>
+        <h4>HTTPS</h4>
+        <ul class="compact">
+          <li>Port <span class="port-box">443</span></li>
+          <li>SSL/TLS encryption</li>
+          <li>Confidentiality + Integrity + Authentication</li>
+          <li>Prevents MITM, eavesdropping</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #0d9488;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill teal">WWW</span><h3 class="mb-0">World Wide Web</h3></div>
+    <div class="scroll-x mb-3">
+    <table>
+      <thead><tr><th>Component</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Web Browser</td><td>Client app (Chrome, Firefox) — requests and renders content</td></tr>
+        <tr><td class="font-bold">Web Server</td><td>Hosts content, responds to HTTP/HTTPS requests</td></tr>
+        <tr><td class="font-bold">URL</td><td>Address: <code>protocol://domain/path</code></td></tr>
+        <tr><td class="font-bold">HTML</td><td>Markup language for web pages</td></tr>
+        <tr><td class="font-bold">Hyperlinks</td><td>Navigation between pages/sites</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <h4>Operation Flow</h4>
+    <ol class="small" style="padding-left:18px;margin:4px 0;">
+      <li>User enters URL; Browser sends HTTP/HTTPS request.</li>
+      <li>Server responds with page (HTML, CSS, JS, multimedia).</li>
+      <li>Browser renders content and displays it.</li>
+      <li>Additional resources (images/scripts) are requested separately.</li>
+    </ol>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> FTP uses port 20 (data) + 21 (control). HTTP=80, HTTPS=443. WWW is a system of interlinked hypertext documents accessed via browsers. Stateless means each request is independent.</div>
+</section>
+
+<!-- MODULE 21: SNMP -->
+<section id="s21">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">21</div>
+    <div><div class="pill orange mb-1">Network Mgmt</div><h2>SNMP & Network Management</h2></div>
+  </div>
+
+  <div class="card info">
+    <strong>SNMP</strong> (Simple Network Management Protocol) = application-layer protocol to monitor, manage, and configure network devices (routers, switches, servers, printers).
+  </div>
+
+  <div class="card">
+    <h3>SNMP Components</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Component</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Managed Devices</td><td>Network elements with SNMP agents (routers, switches, servers)</td></tr>
+        <tr><td class="font-bold">SNMP Agent</td><td>Software on managed device that collects/stores management info</td></tr>
+        <tr><td class="font-bold">NMS</td><td>Network Management Station — central system monitoring all devices</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>SNMP Operations</h3>
+    <div class="grid-2 small">
+      <div class="good p-2">
+        <strong>GET</strong><br>
+        Retrieve information from managed device
+      </div>
+      <div class="info p-2">
+        <strong>SET</strong><br>
+        Modify configuration parameter
+      </div>
+      <div class="warn p-2 sm:col-span-2">
+        <strong>TRAP</strong><br>
+        Unsolicited notification from agent to NMS when significant event occurs (device failure, link down)
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-top:3px solid #b45309;">
+    <div class="flex items-center gap-2 mb-2"><span class="pill orange">MIB</span><h3 class="mb-0">Management Information Base</h3></div>
+    <ul class="compact small mb-3">
+      <li>Database of managed objects maintained by each device.</li>
+      <li>Each object = parameter/statistic (interface status, traffic counters).</li>
+      <li>Objects identified by <strong>Object Identifiers (OIDs)</strong>.</li>
+    </ul>
+    <div class="grid-2 small">
+      <div class="good p-2">
+        <strong>SNMP Advantages</strong><br>
+        Centralized management, real-time monitoring/alerts, automated data collection.
+      </div>
+      <div class="tip p-2">
+        <strong>SNMP Disadvantages</strong><br>
+        Plaintext in v1/2c (insecure), overhead from frequent polling, NMS resource intensive.
+      </div>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> SNMP is application layer. Uses UDP ports 161 (agent) and 162 (traps). v1 and 2c lack strong security (plaintext). Trap = unsolicited alert from agent to manager.</div>
+</section>
+
+<!-- MODULE 22: SMTP DETAILED -->
+<section id="s22">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">22</div>
+    <div><div class="pill red mb-1">Mail Transfer</div><h2>SMTP — Detailed</h2></div>
+  </div>
+
+  <div class="card info">
+    <strong>SMTP</strong> = Simple Mail Transfer Protocol. Core protocol for mail transfer (client→server and server→server). TCP-based, store-and-forward model.
+  </div>
+
+  <div class="card">
+    <h3>SMTP Ports</h3>
+    <div class="grid-2 small">
+      <div><span class="port-box">25</span> Server-to-server relay</div>
+      <div><span class="port-box">587</span> Client submission (with auth)</div>
+      <div><span class="port-box">465</span> SMTP over SSL (secure)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Mail Transfer Flow</h3>
+    <div class="svg-container">
+      <svg viewBox="0 0 400 100" class="w-full max-w-lg">
+        <rect x="10" y="30" width="70" height="35" rx="3" fill="#1d4ed8"/>
+        <text x="45" y="52" text-anchor="middle" fill="white" font-size="9" font-weight="bold">MUA</text>
+        <rect x="110" y="30" width="70" height="35" rx="3" fill="#15803d"/>
+        <text x="145" y="52" text-anchor="middle" fill="white" font-size="9" font-weight="bold">MTA 1</text>
+        <rect x="210" y="30" width="70" height="35" rx="3" fill="#7c3aed"/>
+        <text x="245" y="52" text-anchor="middle" fill="white" font-size="9" font-weight="bold">DNS</text>
+        <rect x="310" y="30" width="70" height="35" rx="3" fill="#15803d"/>
+        <text x="345" y="52" text-anchor="middle" fill="white" font-size="9" font-weight="bold">MTA 2</text>
+        <line x1="80" y1="47" x2="110" y2="47" stroke="#666" stroke-width="1.5" marker-end="url(#a2)"/>
+        <text x="95" y="42" text-anchor="middle" font-size="8" fill="#666">587</text>
+        <line x1="180" y1="47" x2="210" y2="47" stroke="#666" stroke-width="1.5" marker-end="url(#a2)"/>
+        <text x="195" y="42" text-anchor="middle" font-size="8" fill="#666">MX</text>
+        <line x1="280" y1="47" x2="310" y2="47" stroke="#666" stroke-width="1.5" marker-end="url(#a2)"/>
+        <text x="295" y="42" text-anchor="middle" font-size="8" fill="#666">25</text>
+        <text x="45" y="85" text-anchor="middle" font-size="8" fill="#666">Sender</text>
+        <text x="145" y="85" text-anchor="middle" font-size="8" fill="#666">Local</text>
+        <text x="245" y="85" text-anchor="middle" font-size="8" fill="#666">Lookup</text>
+        <text x="345" y="85" text-anchor="middle" font-size="8" fill="#666">Recipient</text>
+        <defs><marker id="a2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0,6 3,0 6" fill="#666"/></marker></defs>
+      </svg>
+    </div>
+    <ol class="small" style="padding-left:18px;margin:4px 0;">
+      <li>Sender's MUA submits to local MTA via SMTP (port 587)</li>
+      <li>Local MTA looks up recipient domain's MX record via DNS</li>
+      <li>MTA establishes SMTP connection to recipient's MTA (port 25)</li>
+      <li>Recipient MTA places message in user's mailbox</li>
+      <li>Recipient retrieves using POP3 or IMAP</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>SMTP + Complementary Protocols</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Protocol</th><th>Role</th><th>Port</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">SMTP</td><td>Send mail (MTA→MTA, MUA→MTA)</td><td>25, 587, 465</td></tr>
+        <tr><td class="font-bold">POP3</td><td>Retrieve mail (download)</td><td>110, 995</td></tr>
+        <tr><td class="font-bold">IMAP</td><td>Retrieve mail (server sync)</td><td>143, 993</td></tr>
+        <tr><td class="font-bold">MIME</td><td>Encode multimedia content</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="tip text-sm"><strong>Exam tip:</strong> SMTP uses DNS MX records to find recipient mail servers. Store-and-forward: if recipient server unavailable, message is queued and retried. MIME extends SMTP for non-text content.</div>
+</section>
+
+<!-- PORT REFERENCE -->
+<section id="ports">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#dc2626;">P</div>
+    <div><div class="pill red mb-1">Quick Ref</div><h2>Protocol Port Reference</h2></div>
+  </div>
+
+  <div class="card">
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Protocol</th><th>Port(s)</th><th>Layer</th><th>TCP/UDP</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">DNS</td><td><span class="port-box">53</span></td><td>Application</td><td>UDP/TCP</td></tr>
+        <tr><td class="font-bold">Telnet</td><td><span class="port-box">23</span></td><td>Application</td><td>TCP</td></tr>
+        <tr><td class="font-bold">SSH</td><td><span class="port-box">22</span></td><td>Application</td><td>TCP</td></tr>
+        <tr><td class="font-bold">SMTP</td><td><span class="port-box">25</span> <span class="port-box">587</span> <span class="port-box">465</span></td><td>Application</td><td>TCP</td></tr>
+        <tr><td class="font-bold">POP3</td><td><span class="port-box">110</span> <span class="port-box">995</span></td><td>Application</td><td>TCP</td></tr>
+        <tr><td class="font-bold">IMAP</td><td><span class="port-box">143</span> <span class="port-box">993</span></td><td>Application</td><td>TCP</td></tr>
+        <tr><td class="font-bold">FTP</td><td><span class="port-box">20</span> <span class="port-box">21</span></td><td>Application</td><td>TCP</td></tr>
+        <tr><td class="font-bold">HTTP</td><td><span class="port-box">80</span></td><td>Application</td><td>TCP</td></tr>
+        <tr><td class="font-bold">HTTPS</td><td><span class="port-box">443</span></td><td>Application</td><td>TCP</td></tr>
+        <tr><td class="font-bold">SNMP</td><td><span class="port-box">161</span> <span class="port-box">162</span></td><td>Application</td><td>UDP</td></tr>
+        <tr><td class="font-bold">UDP</td><td>—</td><td>Transport</td><td>Transport</td></tr>
+        <tr><td class="font-bold">TCP</td><td>—</td><td>Transport</td><td>Transport</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- FLASHCARDS -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#dc2626;">FC</div>
+    <div><div class="pill red mb-1">Study Mode</div><h2>Flashcards</h2><p class="text-sm text-gray-500">Tap card to flip</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- MASTER CHEATSHEET -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Master Ref</div><h2>Complete Cheatsheet</h2></div>
+  </div>
+
+  <div class="card">
+    <h3>Every Key Fact in One Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Topic</th><th>Key Rule / Fact</th></tr></thead>
+      <tbody>
+        <tr><td>Transport Layer</td><td>Process-to-process via port numbers. Bridges network and application layers.</td></tr>
+        <tr><td>UDP</td><td>Connectionless, unreliable, 8-byte header, no congestion control. DNS, VoIP, gaming.</td></tr>
+        <tr><td>TCP</td><td>Connection-oriented, reliable, 20-60 byte header, 3-way handshake, full-duplex.</td></tr>
+        <tr><td>3-Way Handshake</td><td>SYN → SYN-ACK → ACK</td></tr>
+        <tr><td>Congestion</td><td>Load > capacity. Open-loop = prevention. Closed-loop = removal.</td></tr>
+        <tr><td>Backpressure</td><td>Node-to-node, opposite data flow. Virtual circuit networks ONLY.</td></tr>
+        <tr><td>Choke Packet</td><td>Router sends directly to source. Works in any network.</td></tr>
+        <tr><td>QoS Parameters</td><td>Bandwidth, Latency, Jitter, Packet Loss, Reliability, Priority</td></tr>
+        <tr><td>DNS</td><td>Application layer. Distributed hierarchical database. A=IPv4, AAAA=IPv6, MX=mail, CNAME=alias.</td></tr>
+        <tr><td>DNS Resolution</td><td>Client → Cache → Resolver → Root → TLD → Authoritative → IP</td></tr>
+        <tr><td>Telnet</td><td>Port 23. Plaintext. Insecure. Replaced by SSH.</td></tr>
+        <tr><td>SSH</td><td>Port 22. Encrypted. Supports SFTP and port forwarding.</td></tr>
+        <tr><td>SMTP</td><td>Port 25/587/465. Sends mail. Store-and-forward. Uses MX records.</td></tr>
+        <tr><td>POP3</td><td>Port 110/995. Downloads mail, usually deletes from server.</td></tr>
+        <tr><td>IMAP</td><td>Port 143/993. Manages mail on server. Multi-device sync.</td></tr>
+        <tr><td>MIME</td><td>Extends email for attachments and non-ASCII text.</td></tr>
+        <tr><td>FTP</td><td>Port 20 (data) + 21 (control). Active vs Passive mode.</td></tr>
+        <tr><td>HTTP</td><td>Port 80. Stateless request-response.</td></tr>
+        <tr><td>HTTPS</td><td>Port 443. SSL/TLS encrypted.</td></tr>
+        <tr><td>SNMP</td><td>Port 161 (agent) / 162 (traps). Application layer. GET, SET, TRAP.</td></tr>
+        <tr><td>MIB</td><td>Management Information Base. Objects identified by OIDs.</td></tr>
+        <tr><td>Selective Repeat vs GBN</td><td>SR better for congestion — only resends lost packets. GBN resends window.</td></tr>
+        <tr><td>Implicit vs Explicit Signalling</td><td>Implicit = source guesses congestion. Explicit = signal in data packets.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  CN Module 4 Study Guide · Transport Layer & Application Layer · Topics 17-22
+</footer>
+
+<script>
+const cards=[
+  {q:"What is the main function of the Transport Layer?",a:"Process-to-process communication using port numbers. Bridges network layer (host-to-host) and application layer."},
+  {q:"UDP vs TCP: Connection type?",a:"UDP = Connectionless. TCP = Connection-oriented (3-way handshake: SYN → SYN-ACK → ACK)."},
+  {q:"UDP Header size and fields?",a:"8 bytes. 4 fields: Source Port (16b), Destination Port (16b), Length (16b), Checksum (16b)."},
+  {q:"TCP Header size range?",a:"20-60 bytes. Minimum 20 bytes, up to 60 bytes with options."},
+  {q:"What is the 3-Way Handshake?",a:"1. Client sends SYN
+2. Server responds SYN-ACK
+3. Client sends ACK
+Connection established."},
+  {q:"TCP reliability mechanisms?",a:"Sequence numbers, acknowledgments (ACKs), retransmission timers, flow control (sliding window), congestion control."},
+  {q:"What is congestion?",a:"Load > capacity. Too many sources sending data, causing router buffer overflow and packet loss."},
+  {q:"Open-Loop vs Closed-Loop congestion control?",a:"Open-Loop = prevention (before it happens). Closed-Loop = removal (after it happens)."},
+  {q:"Backpressure — where does it work?",a:"Virtual circuit networks ONLY. Node-to-node, opposite direction of data flow. Not possible in datagram networks."},
+  {q:"Choke Packet vs Backpressure?",a:"Backpressure = node-to-node propagation. Choke packet = congested router sends directly to source."},
+  {q:"Implicit vs Explicit Signalling?",a:"Implicit = source infers congestion from symptoms (no ACK, delay). Explicit = signal included in data packets."},
+  {q:"6 QoS Parameters?",a:"1. Bandwidth (throughput)
+2. Latency (delay)
+3. Jitter (delay variation)
+4. Packet Loss
+5. Reliability
+6. Priority/Traffic Classification"},
+  {q:"DNS Record Types: A, AAAA, MX, CNAME?",a:"A = IPv4 address
+AAAA = IPv6 address
+MX = Mail server
+CNAME = Canonical name (alias)"},
+  {q:"DNS Resolution steps?",a:"1. Check local cache
+2. Query resolver (ISP)
+3. Root server → TLD server
+4. TLD → Authoritative server
+5. Return IP address"},
+  {q:"Telnet vs SSH: Ports and Security?",a:"Telnet = Port 23, plaintext (INSECURE). SSH = Port 22, encrypted (secure). SSH replaces Telnet."},
+  {q:"SMTP, POP3, IMAP ports?",a:"SMTP: 25 (server), 587 (client), 465 (SSL)
+POP3: 110 (standard), 995 (SSL)
+IMAP: 143 (standard), 993 (SSL)"},
+  {q:"POP3 vs IMAP key difference?",a:"POP3 = download to client, usually delete from server. IMAP = manage on server, sync across devices."},
+  {q:"MIME purpose?",a:"Multipurpose Internet Mail Extensions. Enables attachments, non-ASCII text, multipart messages in email."},
+  {q:"FTP ports and modes?",a:"Port 21 = control, Port 20 = data. Active mode = server connects to client. Passive mode = client initiates both."},
+  {q:"HTTP vs HTTPS ports?",a:"HTTP = Port 80 (plaintext). HTTPS = Port 443 (SSL/TLS encrypted)."},
+  {q:"SNMP components and operations?",a:"Components: Managed Devices, Agents, NMS. Operations: GET (retrieve), SET (modify), TRAP (unsolicited alert)."},
+  {q:"SNMP ports?",a:"Port 161 (agent queries), Port 162 (trap notifications). Uses UDP."},
+  {q:"What is MIB?",a:"Management Information Base. Database of managed objects on network devices. Objects identified by OIDs (Object Identifiers)."},
+  {q:"Selective Repeat vs Go-Back-N for congestion?",a:"Selective Repeat is better. GBN resends entire window on timeout, including already-received packets, worsening congestion."},
+  {q:"What does 'stateless' mean in HTTP?",a:"Each request is independent. Server does not maintain session state between requests (unless using cookies/sessions)."},
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.length>140?140:120;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>

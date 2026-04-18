@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CN Module 3 — Network Layer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+  code,.mono{font-family:ui-monospace,monospace;font-size:12px;background:#e8e4dc;padding:1px 5px;border-radius:3px;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+  td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+  tr:nth-child(even) td{background:#f0ede5;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+  .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+  .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .cyan{background:#0891b2;color:#fff;} .rose{background:#be185d;color:#fff;}
+  .tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .fc-wrap{perspective:700px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+  nav a{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:4px 9px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#fff;display:inline-block;}
+  nav a:hover{background:#fff;color:#1a1a1a;}
+  h2{font-size:1.35rem;font-weight:800;margin-bottom:4px;}
+  h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;min-width:3rem;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  ul.dense li{margin-bottom:3px;font-size:13px;}
+  ol.dense li{margin-bottom:3px;font-size:13px;}
+  .bit{display:inline-block;font-family:ui-monospace,monospace;font-size:10px;padding:1px 3px;border:1px solid #aaa;border-radius:2px;margin:1px;}
+  .bit.h{background:#bfdbfe;border-color:#3b82f6;}
+  .bit.n{background:#bbf7d0;border-color:#22c55e;}
+  .bit.x{background:#fde68a;border-color:#f59e0b;}
+  details summary{cursor:pointer;list-style:none;user-select:none;font-weight:700;font-size:13px;}
+  details summary::-webkit-details-marker{display:none;}
+  details[open] summary::after{content:" ▲";}
+  details summary::after{content:" ▼";}
+  details .content{padding-top:8px;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 03 · COMPUTER NETWORKS</div>
+  <div class="font-black text-sm tracking-wide mb-2">NETWORK LAYER — DEVICES, IP ADDRESSING, ROUTING</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Overview</a>
+    <a href="#s2">Devices</a>
+    <a href="#s3">IPv4</a>
+    <a href="#s4">IPv6</a>
+    <a href="#s5">NAT</a>
+    <a href="#s6">ICMP</a>
+    <a href="#s7">Routing</a>
+    <a href="#s8">DVR</a>
+    <a href="#s9">LSR</a>
+    <a href="#s10">Transition</a>
+    <a href="#fc">Flashcards</a>
+    <a href="#cheat">Cheatsheet</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- ═══ S1: NETWORK LAYER OVERVIEW ═══ -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill blue mb-1">Layer 3</div><h2>Network Layer &amp; Packet Switching</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Network Layer (OSI Layer 3)</strong> — end-to-end delivery of packets across <em>multiple</em> networks. Unlike Data Link (same network), Network Layer handles cross-network routing via <strong>IP addresses</strong>.
+  </div>
+
+  <div class="card mb-3">
+    <h3>5 Key Functions</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Function</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Logical Addressing</strong></td><td>Assigns unique IP addresses; identifies host + network</td></tr>
+        <tr><td><strong>Routing</strong></td><td>Finds optimal path using algorithms (Dijkstra, Bellman-Ford)</td></tr>
+        <tr><td><strong>Packet Forwarding</strong></td><td>Moves packet from input interface → correct output interface</td></tr>
+        <tr><td><strong>Fragmentation &amp; Reassembly</strong></td><td>Splits packets to fit MTU; reassembles at destination</td></tr>
+        <tr><td><strong>Error/Congestion Control</strong></td><td>Detects errors, notifies upper layers, prevents congestion</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Packet Switching</h3>
+    <div class="info mb-3">Data is broken into <strong>packets</strong> that travel <em>independently</em> through the network — no dedicated path (unlike circuit switching used in old PSTN).</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+      <div>
+        <div class="font-bold text-xs uppercase tracking-wider mb-1 text-green-700">✔ Advantages</div>
+        <ul class="dense list-disc pl-4">
+          <li>Efficient resource utilization (shared links)</li>
+          <li>Resilient — reroutes around failures</li>
+          <li>Scalable — handles bursty traffic</li>
+          <li>Cost-effective — no dedicated circuit</li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-bold text-xs uppercase tracking-wider mb-1 text-red-700">✘ Disadvantages</div>
+        <ul class="dense list-disc pl-4">
+          <li>Variable delay (jitter)</li>
+          <li>Possible packet loss → retransmission</li>
+          <li>Out-of-order delivery</li>
+        </ul>
+      </div>
+    </div>
+    <h3>Packet Structure</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Part</th><th>Contains</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Header</strong></td><td>Source IP, Dest IP, Sequence #, Protocol type (TCP/UDP), TTL</td></tr>
+        <tr><td><strong>Payload</strong></td><td>Actual data being transmitted</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2"><strong>MTU</strong> (Maximum Transmission Unit) — max packet size a network can carry. Ethernet MTU = 1500 bytes. Packets larger than MTU are fragmented.</div>
+  </div>
+</section>
+
+<!-- ═══ S2: NETWORKING DEVICES ═══ -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill orange mb-1">Devices</div><h2>Networking &amp; Internetworking Devices</h2></div>
+  </div>
+
+  <!-- Quick comparison table -->
+  <div class="card mb-4">
+    <h3>Quick Comparison — All Devices</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Device</th><th>OSI Layer</th><th>Addresses Used</th><th>Broadcast?</th><th>Key Role</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Repeater</strong></td><td>Layer 1 (Physical)</td><td>None</td><td>Yes</td><td>Signal amplification/regeneration</td></tr>
+        <tr><td><strong>Hub</strong></td><td>Layer 1 (Physical)</td><td>None</td><td>Yes (all ports)</td><td>Multi-port repeater</td></tr>
+        <tr><td><strong>Bridge</strong></td><td>Layer 2 (Data Link)</td><td>MAC address</td><td>Selective</td><td>Connects two LAN segments</td></tr>
+        <tr><td><strong>Switch</strong></td><td>Layer 2 (Data Link)</td><td>MAC address</td><td>No (unicast)</td><td>Intelligent multi-port bridge</td></tr>
+        <tr><td><strong>Router</strong></td><td>Layer 3 (Network)</td><td>IP address</td><td>No</td><td>Connects different networks</td></tr>
+        <tr><td><strong>Gateway</strong></td><td>Layer 4–7 (up to App)</td><td>IP + Protocol</td><td>No</td><td>Protocol conversion between hetero networks</td></tr>
+        <tr><td><strong>Firewall</strong></td><td>Layer 3 + 7</td><td>IP, Port, Protocol</td><td>No</td><td>Traffic filtering &amp; security</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Individual device cards -->
+  <div class="space-y-3">
+
+  <div class="card">
+    <details>
+    <summary><span class="pill orange mr-2">L1</span>Repeater</summary>
+    <div class="content">
+      <p class="text-sm mb-2">Operates at <strong>Physical Layer</strong>. Amplifies/regenerates electrical signals to extend network distance.</p>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="good text-xs">Simple, inexpensive, extends cable distance</div>
+        <div class="tip text-xs">No filtering — forwards noise too. No MAC/IP awareness.</div>
+      </div>
+    </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <details>
+    <summary><span class="pill orange mr-2">L1</span>Hub</summary>
+    <div class="content">
+      <div class="info text-sm mb-2"><strong>Multi-port repeater.</strong> Broadcasts every incoming signal to ALL ports. All devices share one collision domain.</div>
+      <ol class="dense list-decimal pl-4 mb-2">
+        <li>Device A sends frame → hub receives on port 1</li>
+        <li>Hub regenerates signal → broadcasts to ALL other ports</li>
+        <li>Only device with matching MAC accepts it; others discard</li>
+      </ol>
+      <div class="scroll-x">
+      <table>
+        <thead><tr><th>✔ Pros</th><th>✘ Cons</th></tr></thead>
+        <tbody>
+          <tr><td>Simple, cheap, plug-and-play</td><td>Broadcasts to all → collisions</td></tr>
+          <tr><td>Signal regeneration</td><td>Shared bandwidth degraded with more devices</td></tr>
+          <tr><td>Star topology support</td><td>No traffic filtering, no security</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="warn mt-2 text-xs"><strong>Largely replaced by Switches</strong> which handle data intelligently at Layer 2.</div>
+    </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <details>
+    <summary><span class="pill gray mr-2">L2</span>Bridge</summary>
+    <div class="content">
+      <div class="info text-sm mb-2">Operates at <strong>Data Link Layer</strong>. Connects two LAN segments. Learns MAC addresses and forwards frames <em>only</em> to the segment where the destination lives.</div>
+      <ul class="dense list-disc pl-4">
+        <li>Maintains a <strong>MAC address table</strong> (learned by observing source addresses)</li>
+        <li>Reduces collision domain (each segment is separate)</li>
+        <li>Filters traffic between segments — less congestion</li>
+      </ul>
+    </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <details>
+    <summary><span class="pill gray mr-2">L2</span>Switch</summary>
+    <div class="content">
+      <div class="info text-sm mb-2">A <strong>multi-port bridge</strong>. Each port = its own collision domain. Uses <strong>MAC address table (CAM table)</strong> to forward frames only to the correct port.</div>
+      <ol class="dense list-decimal pl-4 mb-2">
+        <li>Frame arrives → switch reads source MAC → updates CAM table</li>
+        <li>Looks up destination MAC in table</li>
+        <li>Forwards frame only to destination port (unicast)</li>
+        <li>If unknown destination → floods all ports (like hub)</li>
+      </ol>
+      <div class="good text-xs">Full bandwidth per port, no collisions, intelligent forwarding</div>
+    </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <details open>
+    <summary><span class="pill blue mr-2">L3</span>Router</summary>
+    <div class="content">
+      <div class="info text-sm mb-2">Operates at <strong>Network Layer</strong>. Connects <em>different</em> networks. Uses <strong>IP addresses</strong> and <strong>routing tables</strong> to determine optimal path.</div>
+      <h3 class="mt-2">How a Router Forwards a Packet</h3>
+      <ol class="dense list-decimal pl-4 mb-3">
+        <li>Packet arrives at input interface</li>
+        <li>Router reads <strong>destination IP</strong> from header</li>
+        <li>Searches <strong>routing table</strong> for longest prefix match</li>
+        <li>Selects best path (using routing algorithm)</li>
+        <li>Forwards out appropriate interface → next hop</li>
+        <li>Repeat at each router until destination reached</li>
+      </ol>
+      <div class="card mb-2" style="background:#f8f7f4;">
+        <div class="text-xs font-bold mb-1">Routing Table Entry contains:</div>
+        <code>Dest Network | Subnet Mask | Next-Hop IP | Interface | Metric</code>
+      </div>
+      <div class="card mb-2" style="background:#f8f7f4;">
+        <div class="text-xs font-bold mb-1">Subnet Example:</div>
+        <code>IP: 192.168.1.10 | Mask: 255.255.255.0 → Network: 192.168.1.0 | Host: 10</code>
+      </div>
+      <div class="scroll-x">
+      <table>
+        <thead><tr><th>✔ Pros</th><th>✘ Cons</th></tr></thead>
+        <tbody>
+          <tr><td>Inter-network communication</td><td>Complex config</td></tr>
+          <tr><td>Optimal path selection</td><td>Higher cost than hub/switch</td></tr>
+          <tr><td>Traffic management &amp; filtering</td><td>Processing latency</td></tr>
+          <tr><td>Protocol independence</td><td>Routing table maintenance overhead</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <details>
+    <summary><span class="pill purple mr-2">L7</span>Gateway</summary>
+    <div class="content">
+      <div class="info text-sm mb-2"><strong>Protocol converter</strong> between heterogeneous networks (different architectures/protocols). Operates up to Application Layer.</div>
+      <div class="warn mb-2 text-xs"><strong>Use case:</strong> Connecting a TCP/IP network to a legacy IBM SNA mainframe — Gateway translates HTTP ↔ SNA.</div>
+      <ul class="dense list-disc pl-4 mb-2">
+        <li>Address conversion (IP ↔ SNA address)</li>
+        <li>Protocol conversion (TCP/IP ↔ SNA)</li>
+        <li>Data format/encoding conversion</li>
+        <li>Acts as security checkpoint (proxy)</li>
+      </ul>
+      <div class="tip text-xs"><strong>Con:</strong> Single point of failure — if gateway goes down, inter-network comm stops.</div>
+    </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <details>
+    <summary><span class="pill red mr-2">L3+7</span>Firewall</summary>
+    <div class="content">
+      <div class="info text-sm mb-2">Monitors, filters, and controls traffic based on <strong>predefined security rules</strong>. Barrier between trusted internal ↔ untrusted external networks.</div>
+      <h3>Types of Firewalls</h3>
+      <div class="scroll-x">
+      <table>
+        <thead><tr><th>Type</th><th>How it works</th><th>State-aware?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Packet Filtering</strong> (Stateless)</td><td>Checks each packet header (src IP, dest IP, port, protocol) against rules independently</td><td>No</td></tr>
+          <tr><td><strong>Stateful Inspection</strong></td><td>Tracks active connection state — only allows packets matching established sessions</td><td>Yes</td></tr>
+          <tr><td><strong>Proxy-based</strong></td><td>Intermediary — client ↔ firewall ↔ server; full application-level inspection</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="good mt-2 text-xs">Flexible rules (IP, port, protocol, application), VPN support, data leakage prevention</div>
+      <div class="tip mt-1 text-xs">Cannot protect against internal threats or sophisticated app-layer attacks alone.</div>
+    </div>
+    </details>
+  </div>
+
+  </div><!-- end space-y-3 -->
+</section>
+
+<!-- ═══ S3: IPv4 ═══ -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill blue mb-1">Addressing</div><h2>IPv4 — Logical Addressing</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>IPv4</strong> — 32-bit address, written as 4 octets in dotted-decimal notation. <code>192.168.1.10</code>. Total ~4.3 billion addresses (2³²).
+  </div>
+
+  <!-- IPv4 header diagram SVG -->
+  <div class="card mb-3">
+    <h3>IPv4 Header (20 bytes minimum)</h3>
+    <div class="scroll-x">
+    <svg viewBox="0 0 640 260" class="w-full" style="min-width:340px;font-family:system-ui,sans-serif;">
+      <defs>
+        <style>.hf{fill:#1d4ed8;} .hft{fill:#fff;font-size:9px;font-weight:bold;} .hl{fill:#e0e7ff;} .hlt{fill:#1e3a8a;font-size:9px;} .border{fill:none;stroke:#1d4ed8;stroke-width:1;}</style>
+      </defs>
+      <!-- Row headers -->
+      <text x="2" y="34" fill="#888" font-size="9">Bits→</text>
+      <text x="2" y="22" fill="#888" font-size="8">0</text>
+      <text x="153" y="22" fill="#888" font-size="8">16</text>
+      <text x="308" y="22" fill="#888" font-size="8">32</text>
+
+      <!-- Row 1 -->
+      <rect x="20" y="28" width="39" height="28" class="hf"/><text x="39" y="46" text-anchor="middle" class="hft">Ver(4)</text>
+      <rect x="59" y="28" width="39" height="28" class="hf"/><text x="78" y="46" text-anchor="middle" class="hft">IHL(4)</text>
+      <rect x="98" y="28" width="78" height="28" class="hl"/><text x="137" y="46" text-anchor="middle" class="hlt">Type of Service(8)</text>
+      <rect x="176" y="28" width="156" height="28" class="hl"/><text x="254" y="46" text-anchor="middle" class="hlt">Total Length (16)</text>
+      <rect x="20" y="27" width="312" height="29" class="border"/>
+
+      <!-- Row 2 -->
+      <rect x="20" y="56" width="156" height="28" class="hl"/><text x="98" y="74" text-anchor="middle" class="hlt">Identification (16)</text>
+      <rect x="176" y="56" width="39" height="28" class="hf"/><text x="195" y="74" text-anchor="middle" class="hft">Flags(3)</text>
+      <rect x="215" y="56" width="117" height="28" class="hl"/><text x="273" y="74" text-anchor="middle" class="hlt">Fragment Offset (13)</text>
+      <rect x="20" y="55" width="312" height="29" class="border"/>
+
+      <!-- Row 3 -->
+      <rect x="20" y="84" width="78" height="28" class="hl"/><text x="59" y="102" text-anchor="middle" class="hlt">TTL (8)</text>
+      <rect x="98" y="84" width="78" height="28" class="hf"/><text x="137" y="102" text-anchor="middle" class="hft">Protocol (8)</text>
+      <rect x="176" y="84" width="156" height="28" class="hl"/><text x="254" y="102" text-anchor="middle" class="hlt">Header Checksum (16)</text>
+      <rect x="20" y="83" width="312" height="29" class="border"/>
+
+      <!-- Row 4 -->
+      <rect x="20" y="112" width="312" height="28" fill="#bfdbfe"/><text x="176" y="130" text-anchor="middle" class="hlt" font-weight="bold">Source IP Address (32)</text>
+      <rect x="20" y="111" width="312" height="29" class="border"/>
+
+      <!-- Row 5 -->
+      <rect x="20" y="140" width="312" height="28" fill="#bfdbfe"/><text x="176" y="158" text-anchor="middle" class="hlt" font-weight="bold">Destination IP Address (32)</text>
+      <rect x="20" y="139" width="312" height="29" class="border"/>
+
+      <!-- Row 6 -->
+      <rect x="20" y="168" width="312" height="28" fill="#e0e7ff"/><text x="176" y="186" text-anchor="middle" class="hlt">Options (variable) + Padding</text>
+      <rect x="20" y="167" width="312" height="29" class="border"/>
+
+      <!-- Legend -->
+      <rect x="360" y="50" width="14" height="14" class="hf"/>
+      <text x="378" y="61" font-size="10" fill="#374151">Control Fields</text>
+      <rect x="360" y="72" width="14" height="14" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="1"/>
+      <text x="378" y="83" font-size="10" fill="#374151">Address Fields</text>
+      <rect x="360" y="94" width="14" height="14" fill="#e0e7ff" stroke="#1d4ed8" stroke-width="1"/>
+      <text x="378" y="105" font-size="10" fill="#374151">Other Fields</text>
+
+      <!-- Field notes -->
+      <text x="360" y="135" font-size="9" fill="#374151" font-weight="bold">Key Fields:</text>
+      <text x="360" y="150" font-size="9" fill="#374151">TTL: hop count, decremented at each router</text>
+      <text x="360" y="163" font-size="9" fill="#374151">Protocol: 6=TCP, 17=UDP, 1=ICMP</text>
+      <text x="360" y="176" font-size="9" fill="#374151">IHL: header length in 32-bit words</text>
+      <text x="360" y="189" font-size="9" fill="#374151">Flags: DF (don't fragment), MF (more frags)</text>
+      <text x="360" y="202" font-size="9" fill="#374151">Frag Offset: position of this frag in datagram</text>
+    </svg>
+    </div>
+  </div>
+
+  <!-- Address Classes -->
+  <div class="card mb-3">
+    <h3>IPv4 Address Classes</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Class</th><th>First Octet Range</th><th>Default Subnet Mask</th><th>Networks</th><th>Hosts/Network</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A</strong></td><td>1–126</td><td>255.0.0.0 (/8)</td><td>126</td><td>16,777,214</td><td>Large orgs, ISPs</td></tr>
+        <tr><td><strong>B</strong></td><td>128–191</td><td>255.255.0.0 (/16)</td><td>16,384</td><td>65,534</td><td>Universities, mid-size</td></tr>
+        <tr><td><strong>C</strong></td><td>192–223</td><td>255.255.255.0 (/24)</td><td>2M+</td><td>254</td><td>Small networks, homes</td></tr>
+        <tr><td><strong>D</strong></td><td>224–239</td><td>N/A</td><td>—</td><td>—</td><td>Multicast</td></tr>
+        <tr><td><strong>E</strong></td><td>240–255</td><td>N/A</td><td>—</td><td>—</td><td>Research/Reserved</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn mt-2 text-xs"><strong>127.x.x.x</strong> = Loopback (localhost). <strong>169.254.x.x</strong> = APIPA (no DHCP). <strong>10.x, 172.16–31.x, 192.168.x</strong> = Private ranges (RFC 1918).</div>
+  </div>
+
+  <!-- Subnetting -->
+  <div class="card mb-3">
+    <h3>Subnetting &amp; CIDR</h3>
+    <div class="info mb-2 text-sm"><strong>CIDR</strong> (Classless Inter-Domain Routing) — uses prefix notation <code>/n</code> to define variable-length subnet masks. Replaces classful addressing.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>CIDR</th><th>Subnet Mask</th><th>Hosts</th><th>Example Use</th></tr></thead>
+      <tbody>
+        <tr><td><code>/8</code></td><td>255.0.0.0</td><td>16,777,214</td><td>Class A equiv</td></tr>
+        <tr><td><code>/16</code></td><td>255.255.0.0</td><td>65,534</td><td>Class B equiv</td></tr>
+        <tr><td><code>/24</code></td><td>255.255.255.0</td><td>254</td><td>Class C equiv</td></tr>
+        <tr><td><code>/30</code></td><td>255.255.255.252</td><td>2</td><td>Point-to-point links</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2 text-xs">Hosts = 2<sup>(32-prefix)</sup> − 2 (subtract network &amp; broadcast address)</div>
+  </div>
+
+  <!-- IPv4 Datagram delivery -->
+  <div class="card mb-3">
+    <h3>IPv4 Datagram Delivery</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Type</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Direct Delivery</strong></td><td>Source &amp; destination on same network — no routing needed</td><td>192.168.1.5 → 192.168.1.20</td></tr>
+        <tr><td><strong>Indirect Delivery</strong></td><td>Passes through one or more routers</td><td>192.168.1.5 → 8.8.8.8 via ISP router</td></tr>
+        <tr><td><strong>Unicast</strong></td><td>One source → one destination</td><td>HTTP request to server</td></tr>
+        <tr><td><strong>Broadcast</strong></td><td>One source → all hosts in network</td><td>ARP request: 255.255.255.255</td></tr>
+        <tr><td><strong>Multicast</strong></td><td>One source → group of interested receivers (Class D)</td><td>OSPF routers (224.0.0.5)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4: IPv6 ═══ -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill cyan mb-1">IPv6</div><h2>IPv6 — Next Generation IP</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>IPv6</strong> — 128-bit address. Written as 8 groups of 4 hex digits separated by colons.<br>
+    <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code><br>
+    Total = 2<sup>128</sup> ≈ 3.4 × 10<sup>38</sup> addresses — effectively unlimited.
+  </div>
+
+  <!-- Why IPv6 -->
+  <div class="card mb-3">
+    <h3>Why IPv6? — IPv4 Problems Solved</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>IPv4 Problem</th><th>IPv6 Solution</th></tr></thead>
+      <tbody>
+        <tr><td>Address exhaustion (only ~4.3B)</td><td>128-bit = 340 undecillion addresses</td></tr>
+        <tr><td>Complex header with options overhead</td><td>Fixed 40-byte header, extension headers for options</td></tr>
+        <tr><td>Fragmentation by routers</td><td>Only source fragments; routers drop oversized + send ICMPv6</td></tr>
+        <tr><td>No built-in security</td><td>IPSec mandatory in IPv6 spec</td></tr>
+        <tr><td>Manual / DHCP address config</td><td>SLAAC — Stateless Address Autoconfiguration</td></tr>
+        <tr><td>Checksum in header (redundant)</td><td>No header checksum — upper layers handle it</td></tr>
+        <tr><td>Broadcast (wastes bandwidth)</td><td>No broadcast — uses multicast &amp; anycast instead</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- IPv6 header -->
+  <div class="card mb-3">
+    <h3>IPv6 Header (Fixed 40 bytes)</h3>
+    <div class="scroll-x">
+    <svg viewBox="0 0 640 200" class="w-full" style="min-width:320px;font-family:system-ui,sans-serif;">
+      <defs>
+        <style>.v6f{fill:#0891b2;} .v6ft{fill:#fff;font-size:9px;font-weight:bold;} .v6l{fill:#cffafe;} .v6lt{fill:#164e63;font-size:9px;}</style>
+      </defs>
+      <!-- Row 1 -->
+      <rect x="20" y="25" width="59" height="28" class="v6f"/><text x="49" y="43" text-anchor="middle" class="v6ft">Version(4)</text>
+      <rect x="79" y="25" width="78" height="28" class="v6l"/><text x="118" y="43" text-anchor="middle" class="v6lt">Traffic Class(8)</text>
+      <rect x="157" y="25" width="175" height="28" class="v6l"/><text x="244" y="43" text-anchor="middle" class="v6lt">Flow Label (20)</text>
+      <rect x="20" y="24" width="312" height="29" fill="none" stroke="#0891b2" stroke-width="1"/>
+
+      <!-- Row 2 -->
+      <rect x="20" y="53" width="156" height="28" class="v6l"/><text x="98" y="71" text-anchor="middle" class="v6lt">Payload Length (16)</text>
+      <rect x="176" y="53" width="78" height="28" class="v6f"/><text x="215" y="71" text-anchor="middle" class="v6ft">Next Hdr(8)</text>
+      <rect x="254" y="53" width="78" height="28" class="v6l"/><text x="293" y="71" text-anchor="middle" class="v6lt">Hop Limit (8)</text>
+      <rect x="20" y="52" width="312" height="29" fill="none" stroke="#0891b2" stroke-width="1"/>
+
+      <!-- Row 3 Source -->
+      <rect x="20" y="81" width="312" height="28" fill="#a5f3fc"/><text x="176" y="99" text-anchor="middle" class="v6lt" font-weight="bold">Source IP Address (128 bits)</text>
+      <rect x="20" y="80" width="312" height="29" fill="none" stroke="#0891b2" stroke-width="1"/>
+
+      <!-- Row 4 Dest -->
+      <rect x="20" y="109" width="312" height="28" fill="#a5f3fc"/><text x="176" y="127" text-anchor="middle" class="v6lt" font-weight="bold">Destination IP Address (128 bits)</text>
+      <rect x="20" y="108" width="312" height="29" fill="none" stroke="#0891b2" stroke-width="1"/>
+
+      <!-- vs IPv4 -->
+      <text x="360" y="40" font-size="10" fill="#374151" font-weight="bold">vs IPv4:</text>
+      <text x="360" y="56" font-size="9" fill="#374151">✔ No checksum field</text>
+      <text x="360" y="70" font-size="9" fill="#374151">✔ No fragmentation fields</text>
+      <text x="360" y="84" font-size="9" fill="#374151">✔ Flow Label for QoS</text>
+      <text x="360" y="98" font-size="9" fill="#374151">✔ TTL → Hop Limit</text>
+      <text x="360" y="112" font-size="9" fill="#374151">✔ Options → Extension headers</text>
+      <text x="360" y="126" font-size="9" fill="#374151">✔ Fixed 40B (IPv4 = 20–60B)</text>
+      <text x="360" y="140" font-size="9" fill="#374151">Next Header: like Protocol field</text>
+      <text x="360" y="154" font-size="9" fill="#374151">points to next extension hdr or</text>
+      <text x="360" y="168" font-size="9" fill="#374151">upper layer (6=TCP, 17=UDP)</text>
+    </svg>
+    </div>
+  </div>
+
+  <!-- IPv6 address types -->
+  <div class="card mb-3">
+    <h3>IPv6 Address Types</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Type</th><th>Prefix</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Unicast — Global</strong></td><td><code>2000::/3</code></td><td>Routable on internet (like public IPv4)</td></tr>
+        <tr><td><strong>Unicast — Link-Local</strong></td><td><code>FE80::/10</code></td><td>Auto-configured, same link only (like 169.254.x.x)</td></tr>
+        <tr><td><strong>Unicast — Loopback</strong></td><td><code>::1</code></td><td>Localhost (like 127.0.0.1)</td></tr>
+        <tr><td><strong>Multicast</strong></td><td><code>FF00::/8</code></td><td>One-to-many (replaces broadcast)</td></tr>
+        <tr><td><strong>Anycast</strong></td><td>Same as unicast</td><td>One-to-nearest (routed to closest node in group)</td></tr>
+        <tr><td><strong>Unspecified</strong></td><td><code>::</code></td><td>Source before address assigned (like 0.0.0.0)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="info mt-2 text-xs"><strong>No broadcast in IPv6!</strong> Replaced by multicast (e.g., All-nodes: <code>FF02::1</code>, All-routers: <code>FF02::2</code>)</div>
+  </div>
+
+  <!-- Address shortening -->
+  <div class="card mb-3">
+    <h3>IPv6 Address Shortening Rules</h3>
+    <ol class="dense list-decimal pl-4">
+      <li>Drop leading zeros in each group: <code>0042</code> → <code>42</code></li>
+      <li>Replace one longest run of all-zero groups with <code>::</code> (only once)</li>
+    </ol>
+    <div class="good mt-2 text-xs"><code>2001:0db8:0000:0000:0000:0000:0000:0001</code> → <code>2001:db8::1</code></div>
+  </div>
+
+  <!-- Multicasting section -->
+  <div class="card mb-3">
+    <h3>Multicasting (IPv4 &amp; IPv6)</h3>
+    <div class="info mb-2 text-sm"><strong>Multicast</strong> = one source → multiple interested receivers simultaneously. Efficient — source sends one copy; network replicates at branch points.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Feature</th><th>IPv4 Multicast</th><th>IPv6 Multicast</th></tr></thead>
+      <tbody>
+        <tr><td>Address Range</td><td>224.0.0.0–239.255.255.255 (Class D)</td><td>FF00::/8</td></tr>
+        <tr><td>Group mgmt protocol</td><td>IGMP (Internet Group Management Protocol)</td><td>MLD (Multicast Listener Discovery)</td></tr>
+        <tr><td>Example</td><td>224.0.0.5 — all OSPF routers</td><td>FF02::1 — all nodes on link</td></tr>
+        <tr><td>Well-known groups</td><td>224.0.0.1 all hosts, 224.0.0.2 all routers</td><td>FF02::2 all routers</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2 text-xs"><strong>IGMP</strong> — hosts use IGMP to tell routers which multicast groups they want to join/leave.</div>
+  </div>
+</section>
+
+<!-- ═══ S5: NAT ═══ -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill green mb-1">NAT</div><h2>Network Address Translation</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>NAT</strong> — translates private IP addresses to a public IP (and vice versa) at the router/gateway. Solves IPv4 exhaustion by letting many devices share one public IP.
+  </div>
+
+  <!-- NAT Diagram SVG -->
+  <div class="card mb-3">
+    <h3>How NAT Works</h3>
+    <div class="scroll-x">
+    <svg viewBox="0 0 580 160" class="w-full" style="min-width:320px;font-family:system-ui,sans-serif;font-size:10px;">
+      <!-- LAN side -->
+      <rect x="10" y="20" width="140" height="120" rx="6" fill="#f0fdf4" stroke="#15803d" stroke-width="1.5"/>
+      <text x="80" y="35" text-anchor="middle" fill="#15803d" font-weight="bold" font-size="11">Private LAN</text>
+      <rect x="20" y="45" width="120" height="18" rx="3" fill="#bbf7d0"/><text x="80" y="58" text-anchor="middle" fill="#166534">PC1: 192.168.1.10</text>
+      <rect x="20" y="70" width="120" height="18" rx="3" fill="#bbf7d0"/><text x="80" y="83" text-anchor="middle" fill="#166534">PC2: 192.168.1.11</text>
+      <rect x="20" y="95" width="120" height="18" rx="3" fill="#bbf7d0"/><text x="80" y="108" text-anchor="middle" fill="#166534">PC3: 192.168.1.12</text>
+
+      <!-- NAT Router -->
+      <rect x="195" y="50" width="110" height="60" rx="6" fill="#1d4ed8"/>
+      <text x="250" y="75" text-anchor="middle" fill="#fff" font-weight="bold" font-size="11">NAT Router</text>
+      <text x="250" y="91" text-anchor="middle" fill="#bfdbfe" font-size="9">Public IP:</text>
+      <text x="250" y="103" text-anchor="middle" fill="#fff">203.0.113.5</text>
+
+      <!-- Internet -->
+      <rect x="370" y="40" width="110" height="80" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+      <text x="425" y="60" text-anchor="middle" fill="#1d4ed8" font-weight="bold" font-size="11">Internet</text>
+      <rect x="380" y="70" width="90" height="16" rx="3" fill="#bfdbfe"/><text x="425" y="82" text-anchor="middle" fill="#1e3a8a">Server: 8.8.8.8</text>
+      <rect x="380" y="92" width="90" height="16" rx="3" fill="#bfdbfe"/><text x="425" y="104" text-anchor="middle" fill="#1e3a8a">Web: 142.250.x.x</text>
+
+      <!-- Arrows -->
+      <line x1="150" y1="80" x2="193" y2="80" stroke="#15803d" stroke-width="2" marker-end="url(#arr)"/>
+      <line x1="307" y1="80" x2="368" y2="80" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arr)"/>
+
+      <!-- Labels on arrows -->
+      <text x="165" y="74" fill="#15803d" font-size="8">src: 192.168.1.10</text>
+      <text x="315" y="74" fill="#1d4ed8" font-size="8">src: 203.0.113.5</text>
+
+      <defs>
+        <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#374151"/>
+        </marker>
+      </defs>
+
+      <!-- NAT table box -->
+      <rect x="490" y="20" width="85" height="120" rx="4" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+      <text x="532" y="34" text-anchor="middle" fill="#374151" font-weight="bold" font-size="9">NAT Table</text>
+      <text x="532" y="48" text-anchor="middle" fill="#6b7280" font-size="8">Private → Public</text>
+      <text x="532" y="63" text-anchor="middle" fill="#374151" font-size="8">.10:1234→:5000</text>
+      <text x="532" y="77" text-anchor="middle" fill="#374151" font-size="8">.11:2345→:5001</text>
+      <text x="532" y="91" text-anchor="middle" fill="#374151" font-size="8">.12:3456→:5002</text>
+    </svg>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Types of NAT</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Type</th><th>Mapping</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Static NAT</strong></td><td>1 private IP ↔ 1 public IP (permanent)</td><td>Servers that need fixed public IP</td></tr>
+        <tr><td><strong>Dynamic NAT</strong></td><td>Private IP → any available public IP from pool</td><td>Multiple users sharing a pool</td></tr>
+        <tr><td><strong>PAT / NAT Overload</strong></td><td>Many private IPs → 1 public IP (differentiated by port)</td><td>Home routers (most common)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2 text-xs"><strong>PAT</strong> (Port Address Translation) = most common. Each session gets unique source port. The NAT table maps (private IP:port) ↔ (public IP:port).</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>NAT Pros &amp; Cons</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="good text-sm">
+        <ul class="list-disc pl-4 dense">
+          <li>Conserves IPv4 addresses</li>
+          <li>Hides internal topology (security)</li>
+          <li>Easy to change ISP (only public IP changes)</li>
+        </ul>
+      </div>
+      <div class="tip text-sm">
+        <ul class="list-disc pl-4 dense">
+          <li>Breaks end-to-end connectivity</li>
+          <li>Complicates P2P apps (VoIP, gaming)</li>
+          <li>State table overhead on router</li>
+          <li>Not needed with IPv6 (enough addresses)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S6: ICMP ═══ -->
+<section id="s6">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">06</div>
+    <div><div class="pill red mb-1">Error Reporting</div><h2>ICMP — Internet Control Message Protocol</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>ICMP</strong> — Layer 3 protocol (encapsulated in IP). Used for <strong>error reporting and diagnostics</strong> — NOT for data transfer. Protocol number = <code>1</code>.
+  </div>
+
+  <div class="card mb-3">
+    <h3>ICMP Message Types</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Type</th><th>Code</th><th>Meaning</th><th>Sent by</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Echo Request</strong></td><td>8</td><td>Ping — "are you alive?"</td><td>Source host</td></tr>
+        <tr><td><strong>Echo Reply</strong></td><td>0</td><td>Ping response — "yes, alive"</td><td>Destination host</td></tr>
+        <tr><td><strong>Dest Unreachable</strong></td><td>3</td><td>Packet can't reach destination</td><td>Router/dest host</td></tr>
+        <tr><td><strong>Time Exceeded</strong></td><td>11</td><td>TTL reached 0 (used by traceroute)</td><td>Router</td></tr>
+        <tr><td><strong>Redirect</strong></td><td>5</td><td>Better route available</td><td>Router</td></tr>
+        <tr><td><strong>Source Quench</strong></td><td>4</td><td>Congestion — slow down (deprecated)</td><td>Router</td></tr>
+        <tr><td><strong>Frag Needed</strong></td><td>3/4</td><td>Packet too big, DF bit set</td><td>Router</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="info mt-2 text-xs"><strong>ping</strong> uses Echo Request/Reply. <strong>traceroute</strong> uses TTL Exceeded — sends packets with incrementing TTL to map the path.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>ICMPv6 — New in IPv6</h3>
+    <ul class="dense list-disc pl-4">
+      <li>Combines ICMPv4 + ARP + IGMP functions</li>
+      <li><strong>Neighbor Discovery Protocol (NDP)</strong> — replaces ARP for MAC address resolution</li>
+      <li><strong>Router Solicitation/Advertisement</strong> — for SLAAC autoconfiguration</li>
+      <li><strong>MLD</strong> (Multicast Listener Discovery) — replaces IGMP</li>
+      <li>Path MTU Discovery — finds minimum MTU along path</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ S7: ROUTING ALGORITHMS ═══ -->
+<section id="s7">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">07</div>
+    <div><div class="pill gray mb-1">Routing</div><h2>Forwarding, Delivery &amp; Routing Algorithms</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Routing</strong> = determining the optimal path from source to destination through the network. Routing algorithms populate the <strong>routing table</strong> used for forwarding decisions.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Routing Algorithm Classification</h3>
+    <div class="scroll-x">
+    <svg viewBox="0 0 560 200" class="w-full" style="min-width:320px;font-family:system-ui,sans-serif;">
+      <!-- Root -->
+      <rect x="190" y="10" width="180" height="32" rx="4" fill="#374151"/>
+      <text x="280" y="31" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">Routing Algorithms</text>
+
+      <!-- Branch 1: Non-adaptive -->
+      <rect x="30" y="80" width="160" height="30" rx="4" fill="#0891b2"/>
+      <text x="110" y="100" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold">Non-Adaptive (Static)</text>
+      <line x1="280" y1="42" x2="110" y2="80" stroke="#6b7280" stroke-width="1.5"/>
+
+      <!-- Branch 2: Adaptive -->
+      <rect x="370" y="80" width="160" height="30" rx="4" fill="#1d4ed8"/>
+      <text x="450" y="100" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold">Adaptive (Dynamic)</text>
+      <line x1="280" y1="42" x2="450" y2="80" stroke="#6b7280" stroke-width="1.5"/>
+
+      <!-- Non-adaptive children -->
+      <rect x="10" y="148" width="90" height="28" rx="3" fill="#cffafe"/>
+      <text x="55" y="166" text-anchor="middle" fill="#164e63" font-size="9">Flooding</text>
+      <line x1="110" y1="110" x2="55" y2="148" stroke="#6b7280" stroke-width="1"/>
+
+      <rect x="110" y="148" width="90" height="28" rx="3" fill="#cffafe"/>
+      <text x="155" y="166" text-anchor="middle" fill="#164e63" font-size="9">Random Walk</text>
+      <line x1="110" y1="110" x2="155" y2="148" stroke="#6b7280" stroke-width="1"/>
+
+      <!-- Adaptive children -->
+      <rect x="300" y="148" width="130" height="28" rx="3" fill="#bfdbfe"/>
+      <text x="365" y="166" text-anchor="middle" fill="#1e3a8a" font-size="9" font-weight="bold">Distance Vector (DVR)</text>
+      <line x1="450" y1="110" x2="365" y2="148" stroke="#6b7280" stroke-width="1"/>
+
+      <rect x="440" y="148" width="120" height="28" rx="3" fill="#bfdbfe"/>
+      <text x="500" y="166" text-anchor="middle" fill="#1e3a8a" font-size="9" font-weight="bold">Link State (LSR)</text>
+      <line x1="450" y1="110" x2="500" y2="148" stroke="#6b7280" stroke-width="1"/>
+
+      <!-- Labels -->
+      <text x="110" y="130" text-anchor="middle" fill="#0891b2" font-size="8">Routes fixed at startup</text>
+      <text x="450" y="130" text-anchor="middle" fill="#1d4ed8" font-size="8">Adapts to network changes</text>
+    </svg>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Algorithm Comparison</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Property</th><th>Distance Vector (DVR)</th><th>Link State (LSR)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Algorithm</strong></td><td>Bellman-Ford</td><td>Dijkstra's SPF</td></tr>
+        <tr><td><strong>Information shared</strong></td><td>Distance vector (routing table) with neighbors</td><td>Full topology (LSAs) flooded to all routers</td></tr>
+        <tr><td><strong>Knowledge</strong></td><td>Local — only knows what neighbors say</td><td>Global — each router has complete map</td></tr>
+        <tr><td><strong>Convergence</strong></td><td>Slow — count-to-infinity problem</td><td>Fast — immediate after LSA flood</td></tr>
+        <tr><td><strong>Bandwidth</strong></td><td>Low overhead</td><td>High overhead (flooding LSAs)</td></tr>
+        <tr><td><strong>CPU/Memory</strong></td><td>Low</td><td>High (Dijkstra per router)</td></tr>
+        <tr><td><strong>Protocols</strong></td><td>RIP (max 15 hops)</td><td>OSPF, IS-IS</td></tr>
+        <tr><td><strong>Scale</strong></td><td>Small networks</td><td>Large enterprise networks</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S8: DISTANCE VECTOR ROUTING ═══ -->
+<section id="s8">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">08</div>
+    <div><div class="pill blue mb-1">DVR</div><h2>Distance Vector Routing — Bellman-Ford</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Each router maintains a table</strong>: for every destination, the distance (cost) and the next hop. Routers periodically share this table with <em>direct neighbors</em> and update based on received info.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Bellman-Ford Equation</h3>
+    <div class="card" style="background:#1e1e2e;color:#cdd6f4;font-family:ui-monospace,monospace;font-size:13px;padding:12px;">
+      D<sub style="color:#a6e3a1;">x</sub>(y) = min over all neighbors v { cost(x,v) + D<sub style="color:#a6e3a1;">v</sub>(y) }
+    </div>
+    <p class="text-sm mt-2">D<sub>x</sub>(y) = best known distance from x to y. For each neighbor v, add link cost to v + v's known distance to y. Take the minimum.</p>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DVR Algorithm Steps</h3>
+    <ol class="dense list-decimal pl-4">
+      <li>Each router initializes table: distance to itself = 0, to direct neighbors = link cost, to others = ∞</li>
+      <li>Periodically sends its full distance table to all direct neighbors</li>
+      <li>On receiving a neighbor's table, recalculates distances using Bellman-Ford</li>
+      <li>If a shorter path is found, update table and next-hop entry</li>
+      <li>Repeat until no more updates (convergence)</li>
+    </ol>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DVR Example</h3>
+    <div class="scroll-x">
+    <svg viewBox="0 0 540 170" class="w-full" style="min-width:320px;font-family:system-ui,sans-serif;">
+      <!-- Nodes -->
+      <circle cx="80" cy="80" r="22" fill="#1d4ed8"/><text x="80" y="85" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">A</text>
+      <circle cx="240" cy="40" r="22" fill="#15803d"/><text x="240" y="45" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">B</text>
+      <circle cx="240" cy="130" r="22" fill="#dc2626"/><text x="240" y="135" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">C</text>
+      <circle cx="400" cy="80" r="22" fill="#7c3aed"/><text x="400" y="85" text-anchor="middle" fill="#fff" font-size="13" font-weight="bold">D</text>
+
+      <!-- Edges with costs -->
+      <line x1="102" y1="70" x2="218" y2="48" stroke="#374151" stroke-width="2"/>
+      <text x="155" y="52" text-anchor="middle" fill="#374151" font-size="11" font-weight="bold">2</text>
+      <line x1="102" y1="90" x2="218" y2="122" stroke="#374151" stroke-width="2"/>
+      <text x="155" y="118" text-anchor="middle" fill="#374151" font-size="11" font-weight="bold">5</text>
+      <line x1="262" y1="52" x2="378" y2="70" stroke="#374151" stroke-width="2"/>
+      <text x="325" y="54" text-anchor="middle" fill="#374151" font-size="11" font-weight="bold">3</text>
+      <line x1="262" y1="118" x2="378" y2="90" stroke="#374151" stroke-width="2"/>
+      <text x="325" y="115" text-anchor="middle" fill="#374151" font-size="11" font-weight="bold">1</text>
+      <line x1="240" y1="62" x2="240" y2="108" stroke="#374151" stroke-width="2"/>
+      <text x="252" y="90" fill="#374151" font-size="11" font-weight="bold">4</text>
+
+      <!-- A's distance table -->
+      <rect x="440" y="20" width="90" height="80" rx="4" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1"/>
+      <text x="485" y="36" text-anchor="middle" fill="#1d4ed8" font-size="10" font-weight="bold">A's Table</text>
+      <text x="485" y="50" text-anchor="middle" fill="#374151" font-size="9">Dest | Dist | Next</text>
+      <text x="485" y="64" text-anchor="middle" fill="#374151" font-size="9">A    |  0   |  —</text>
+      <text x="485" y="78" text-anchor="middle" fill="#374151" font-size="9">B    |  2   |  B</text>
+      <text x="485" y="92" text-anchor="middle" fill="#374151" font-size="9">C    |  5   |  C</text>
+      <text x="485" y="106" text-anchor="middle" fill="#1d4ed8" font-size="9" font-weight="bold">D    |  5   |  B</text>
+      <text x="485" y="118" text-anchor="middle" fill="#6b7280" font-size="8">(A→B→D = 2+3)</text>
+    </svg>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Count-to-Infinity Problem</h3>
+    <div class="warn mb-2 text-sm"><strong>Problem:</strong> When a link fails, routers may iteratively and incorrectly increment distance, slowly counting up to infinity (∞ = 16 in RIP) before marking route as unreachable.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Fix</th><th>How</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Split Horizon</strong></td><td>Don't advertise a route back to the neighbor you learned it from</td></tr>
+        <tr><td><strong>Poison Reverse</strong></td><td>Advertise failed routes with ∞ cost back to source neighbor</td></tr>
+        <tr><td><strong>Hold-down timers</strong></td><td>Don't accept updates about a failed route for a fixed period</td></tr>
+        <tr><td><strong>Triggered updates</strong></td><td>Send update immediately when route changes (don't wait for timer)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>RIP — Routing Information Protocol</h3>
+    <ul class="dense list-disc pl-4">
+      <li>DVR protocol, uses hop count as metric</li>
+      <li>Max hop count = <strong>15</strong> (16 = unreachable/∞)</li>
+      <li>Updates every <strong>30 seconds</strong></li>
+      <li>RIPv1 = classful; RIPv2 = classless (CIDR support)</li>
+      <li>Suitable only for small networks</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ S9: LINK STATE ROUTING + DIJKSTRA ═══ -->
+<section id="s9">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">09</div>
+    <div><div class="pill purple mb-1">LSR + Dijkstra</div><h2>Link State Routing &amp; Dijkstra's Algorithm</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Each router builds a complete map of the network topology</strong> using Link State Advertisements (LSAs) flooded to all routers. Then runs <strong>Dijkstra's Shortest Path First (SPF)</strong> to calculate best routes.
+  </div>
+
+  <div class="card mb-3">
+    <h3>LSR Process (5 Steps)</h3>
+    <ol class="dense list-decimal pl-4">
+      <li><strong>Discover neighbors</strong> — send Hello packets to learn directly connected routers and link costs</li>
+      <li><strong>Build LSA</strong> — create Link State Advertisement: {router ID, neighbor list, link costs}</li>
+      <li><strong>Flood LSAs</strong> — broadcast LSA to ALL routers in network (reliable flooding)</li>
+      <li><strong>Build topology map</strong> — each router assembles a Link State Database (LSDB) — complete network graph</li>
+      <li><strong>Run Dijkstra's SPF</strong> — compute shortest path tree from self to every destination</li>
+    </ol>
+    <div class="good mt-2 text-xs"><strong>OSPF</strong> (Open Shortest Path First) is the dominant LSR protocol in enterprise networks.</div>
+  </div>
+
+  <!-- Dijkstra's Algorithm -->
+  <div class="card mb-3">
+    <h3>Dijkstra's Shortest Path Algorithm</h3>
+    <div class="info mb-2 text-sm">Finds shortest path from a <strong>source node</strong> to <em>all other nodes</em> in a weighted graph with non-negative weights.</div>
+
+    <h3>Algorithm</h3>
+    <div style="background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;font-family:ui-monospace,monospace;font-size:12px;overflow-x:auto;line-height:1.6;">
+<span style="color:#89b4fa;">Initialize:</span> dist[src]=0, dist[all others]=∞, visited={}
+<span style="color:#89b4fa;">Repeat</span> until all nodes visited:
+  1. Pick unvisited node u with minimum dist[u]
+  2. Mark u as visited
+  3. <span style="color:#89b4fa;">For each</span> neighbor v of u:
+       <span style="color:#89b4fa;">if</span> dist[u] + cost(u,v) &lt; dist[v]:
+           dist[v] = dist[u] + cost(u,v)
+           prev[v] = u  <span style="color:#585b70;">// track path</span>
+    </div>
+
+    <h3 class="mt-3">Worked Example</h3>
+    <div class="scroll-x">
+    <svg viewBox="0 0 560 200" class="w-full" style="min-width:320px;font-family:system-ui,sans-serif;">
+      <!-- Graph -->
+      <circle cx="80" cy="100" r="20" fill="#1d4ed8"/><text x="80" y="105" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">A</text>
+      <circle cx="210" cy="50" r="20" fill="#374151"/><text x="210" y="55" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">B</text>
+      <circle cx="210" cy="150" r="20" fill="#374151"/><text x="210" y="155" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">C</text>
+      <circle cx="340" cy="50" r="20" fill="#374151"/><text x="340" y="55" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">D</text>
+      <circle cx="340" cy="150" r="20" fill="#374151"/><text x="340" y="155" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">E</text>
+      <circle cx="470" cy="100" r="20" fill="#15803d"/><text x="470" y="105" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">F</text>
+
+      <!-- Edges -->
+      <line x1="100" y1="90" x2="190" y2="60" stroke="#555" stroke-width="2"/><text x="140" y="68" fill="#dc2626" font-size="11" font-weight="bold">4</text>
+      <line x1="100" y1="110" x2="190" y2="140" stroke="#555" stroke-width="2"/><text x="140" y="135" fill="#dc2626" font-size="11" font-weight="bold">2</text>
+      <line x1="230" y1="50" x2="320" y2="50" stroke="#555" stroke-width="2"/><text x="275" y="44" fill="#dc2626" font-size="11" font-weight="bold">3</text>
+      <line x1="230" y1="150" x2="320" y2="150" stroke="#555" stroke-width="2"/><text x="275" y="144" fill="#dc2626" font-size="11" font-weight="bold">5</text>
+      <line x1="210" y1="70" x2="210" y2="130" stroke="#555" stroke-width="2"/><text x="218" y="105" fill="#dc2626" font-size="11" font-weight="bold">6</text>
+      <line x1="340" y1="70" x2="340" y2="130" stroke="#555" stroke-width="2"/><text x="348" y="105" fill="#dc2626" font-size="11" font-weight="bold">1</text>
+      <line x1="360" y1="60" x2="450" y2="90" stroke="#555" stroke-width="2"/><text x="410" y="68" fill="#dc2626" font-size="11" font-weight="bold">2</text>
+      <line x1="360" y1="140" x2="450" y2="110" stroke="#555" stroke-width="2"/><text x="410" y="136" fill="#dc2626" font-size="11" font-weight="bold">4</text>
+    </svg>
+    </div>
+
+    <h3 class="mt-2">Dijkstra Table (Source = A)</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Step</th><th>Visited</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr></thead>
+      <tbody>
+        <tr><td>Init</td><td>—</td><td><strong>0</strong></td><td>∞</td><td>∞</td><td>∞</td><td>∞</td><td>∞</td></tr>
+        <tr><td>1</td><td>A</td><td>—</td><td>4(A)</td><td>2(A)</td><td>∞</td><td>∞</td><td>∞</td></tr>
+        <tr><td>2</td><td>A,C</td><td>—</td><td>4(A)</td><td>—</td><td>∞</td><td>7(C)</td><td>∞</td></tr>
+        <tr><td>3</td><td>A,C,B</td><td>—</td><td>—</td><td>—</td><td>7(B)</td><td>7(C)</td><td>∞</td></tr>
+        <tr><td>4</td><td>A,C,B,D</td><td>—</td><td>—</td><td>—</td><td>—</td><td>8(D)</td><td>9(D)</td></tr>
+        <tr><td>5</td><td>A,C,B,D,E</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>9(D)</td></tr>
+        <tr style="background:#f0fdf4;"><td><strong>Final</strong></td><td>All</td><td>0</td><td>4</td><td>2</td><td>7</td><td>8</td><td>9</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="good mt-2 text-xs">Shortest path A→F = A→C→B→D→E... wait: A→C(2)→B? No. A→B(4)→D(7)→E? D→E=1 → 8. D→F=2 → 9. So A→F = 9 via A→B→D→F. ✓</div>
+    <div class="tip mt-1 text-xs"><strong>Time Complexity:</strong> O(V²) naive, O((V+E) log V) with priority queue. Used in OSPF.</div>
+  </div>
+
+  <div class="card">
+    <h3>OSPF — Open Shortest Path First</h3>
+    <ul class="dense list-disc pl-4">
+      <li>LSR protocol, uses Dijkstra's SPF</li>
+      <li>Metric = <strong>cost</strong> (based on bandwidth: 100Mbps/link bandwidth)</li>
+      <li>Uses <strong>Hello packets</strong> to discover and maintain neighbor relationships</li>
+      <li>Hierarchical: organizes into <strong>Areas</strong> (Area 0 = backbone)</li>
+      <li>Fast convergence, scales to large networks</li>
+      <li>Supports VLSM (Variable Length Subnet Mask) and CIDR</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ S10: IPv4→IPv6 TRANSITION ═══ -->
+<section id="s10">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">10</div>
+    <div><div class="pill cyan mb-1">Transition</div><h2>IPv4 to IPv6 Transition Mechanisms</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    The internet cannot switch from IPv4 to IPv6 overnight. Transition mechanisms allow <strong>coexistence and gradual migration</strong> so IPv4 and IPv6 devices can communicate.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Three Main Transition Strategies</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Strategy</th><th>How it Works</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Dual Stack</strong></td><td>Device runs both IPv4 and IPv6 simultaneously. Uses IPv6 when available, falls back to IPv4.</td><td>Most common today — OS/router level support</td></tr>
+        <tr><td><strong>Tunneling</strong></td><td>IPv6 packets are encapsulated inside IPv4 packets to cross IPv4-only networks. IPv6-in-IPv4 tunnel.</td><td>Connecting IPv6 islands over IPv4 backbone</td></tr>
+        <tr><td><strong>Translation (NAT64)</strong></td><td>Gateway translates between IPv4 and IPv6 headers. IPv6-only device can communicate with IPv4-only server.</td><td>Operators migrating to IPv6-only networks</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Tunneling Types</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>6in4</strong></td><td>Manual tunnel — IPv6 encapsulated in IPv4 protocol 41</td></tr>
+        <tr><td><strong>6to4</strong></td><td>Automatic — uses 2002::/16 prefix. Embeds IPv4 address in IPv6 address</td></tr>
+        <tr><td><strong>Teredo</strong></td><td>Tunnels through NAT using UDP. Last-resort method (Microsoft)</td></tr>
+        <tr><td><strong>ISATAP</strong></td><td>Intra-site — tunnels IPv6 within IPv4 enterprise networks</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Summary comparison -->
+  <div class="card">
+    <h3>IPv4 vs IPv6 — Complete Comparison</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Feature</th><th>IPv4</th><th>IPv6</th></tr></thead>
+      <tbody>
+        <tr><td>Address length</td><td>32 bits (4 bytes)</td><td>128 bits (16 bytes)</td></tr>
+        <tr><td>Address notation</td><td>Dotted decimal: 192.168.1.1</td><td>Hex colon: 2001:db8::1</td></tr>
+        <tr><td>Total addresses</td><td>~4.3 billion</td><td>~340 undecillion</td></tr>
+        <tr><td>Header size</td><td>20–60 bytes (variable)</td><td>40 bytes (fixed)</td></tr>
+        <tr><td>Fragmentation</td><td>Routers &amp; source</td><td>Source only</td></tr>
+        <tr><td>Checksum</td><td>Yes (in header)</td><td>No (removed for efficiency)</td></tr>
+        <tr><td>Broadcast</td><td>Yes</td><td>No (multicast replaces it)</td></tr>
+        <tr><td>Security (IPSec)</td><td>Optional</td><td>Mandatory</td></tr>
+        <tr><td>Config</td><td>Manual / DHCP</td><td>SLAAC / DHCPv6</td></tr>
+        <tr><td>Address classes</td><td>A, B, C, D, E</td><td>Unicast, Multicast, Anycast</td></tr>
+        <tr><td>NAT needed</td><td>Yes (address exhaustion)</td><td>No</td></tr>
+        <tr><td>QoS</td><td>ToS field</td><td>Flow Label (dedicated QoS)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLASHCARDS ═══ -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">FC</div>
+    <div><div class="pill gray mb-1">Study</div><h2>Flashcards</h2><p class="text-sm text-gray-500">Tap card to reveal answer</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ═══ CHEATSHEET ═══ -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Quick Ref</div><h2>Master Cheatsheet</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>All Key Facts — One Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Topic</th><th>Key Fact</th></tr></thead>
+      <tbody>
+        <tr><td>Network Layer</td><td>OSI Layer 3 — end-to-end delivery, IP addressing, routing</td></tr>
+        <tr><td>Packet Switching</td><td>Data split into packets; each routed independently; reassembled at dest</td></tr>
+        <tr><td>MTU</td><td>Max packet size; Ethernet = 1500 bytes; fragmentation if exceeded</td></tr>
+        <tr><td>Hub</td><td>Layer 1, broadcasts to all ports, shared collision domain</td></tr>
+        <tr><td>Switch</td><td>Layer 2, MAC table (CAM), unicast forwarding, separate collision domains</td></tr>
+        <tr><td>Router</td><td>Layer 3, IP addresses, routing table, connects different networks</td></tr>
+        <tr><td>Gateway</td><td>Layer 7, protocol converter, heterogeneous network bridge</td></tr>
+        <tr><td>Firewall types</td><td>Stateless (packet filter) | Stateful | Proxy</td></tr>
+        <tr><td>IPv4 address</td><td>32-bit, dotted-decimal, ~4.3B addresses</td></tr>
+        <tr><td>Class A</td><td>1–126, /8, ~16M hosts</td></tr>
+        <tr><td>Class B</td><td>128–191, /16, ~65K hosts</td></tr>
+        <tr><td>Class C</td><td>192–223, /24, 254 hosts</td></tr>
+        <tr><td>Class D</td><td>224–239, Multicast</td></tr>
+        <tr><td>Private ranges</td><td>10.x, 172.16-31.x, 192.168.x (RFC 1918)</td></tr>
+        <tr><td>IPv6 address</td><td>128-bit, hex colon notation, 2¹²⁸ addresses</td></tr>
+        <tr><td>IPv6 loopback</td><td>::1</td></tr>
+        <tr><td>IPv6 link-local</td><td>FE80::/10</td></tr>
+        <tr><td>IPv6 multicast</td><td>FF00::/8; All-nodes FF02::1; All-routers FF02::2</td></tr>
+        <tr><td>NAT types</td><td>Static (1:1), Dynamic (pool), PAT/Overload (many:1 via port)</td></tr>
+        <tr><td>ICMP Echo</td><td>Type 8 = Request, Type 0 = Reply (ping)</td></tr>
+        <tr><td>ICMP Time Exceeded</td><td>Type 11 — TTL = 0 (used by traceroute)</td></tr>
+        <tr><td>DVR algorithm</td><td>Bellman-Ford; shares routing table with neighbors; slow convergence</td></tr>
+        <tr><td>DVR problem</td><td>Count-to-infinity; fix: split horizon, poison reverse</td></tr>
+        <tr><td>RIP max hops</td><td>15; 16 = unreachable; updates every 30s</td></tr>
+        <tr><td>LSR algorithm</td><td>Dijkstra's SPF; floods LSAs globally; fast convergence</td></tr>
+        <tr><td>OSPF metric</td><td>Cost = 100Mbps / link bandwidth; uses Hello packets</td></tr>
+        <tr><td>Dijkstra complexity</td><td>O(V²) naive; O((V+E)logV) with priority queue</td></tr>
+        <tr><td>IPv4→IPv6 transition</td><td>Dual Stack | Tunneling (6in4, 6to4, Teredo) | NAT64 Translation</td></tr>
+        <tr><td>Multicast (IPv4)</td><td>Class D (224–239), IGMP for group management</td></tr>
+        <tr><td>SLAAC</td><td>IPv6 Stateless Address Autoconfiguration — no DHCP needed</td></tr>
+        <tr><td>ICMPv6 / NDP</td><td>Replaces ARP + IGMP; used for neighbor discovery &amp; SLAAC</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  CN Module 3 Study Guide &nbsp;·&nbsp; Network Layer — Devices, IP Addressing, Routing Algorithms
+</footer>
+
+<script>
+const cards=[
+  {q:"What OSI layer is the Network Layer? What is its primary job?",a:"Layer 3. End-to-end delivery of packets across multiple networks using IP addresses. Unlike Layer 2 (same LAN), Layer 3 routes across different networks."},
+  {q:"5 functions of the Network Layer",a:"1. Logical Addressing (IP)\n2. Routing (find optimal path)\n3. Packet Forwarding (input→output interface)\n4. Fragmentation & Reassembly (MTU handling)\n5. Error/Congestion Control"},
+  {q:"Packet Switching vs Circuit Switching",a:"Packet: data split into packets, each routed independently, shared links, no dedicated path — resilient, efficient.\nCircuit: dedicated path reserved for entire session (old PSTN telephone) — reliable but wasteful."},
+  {q:"Hub vs Switch — key differences",a:"Hub: Layer 1, broadcasts to ALL ports, shared collision domain, no filtering.\nSwitch: Layer 2, unicast via MAC table (CAM), separate collision domain per port, intelligent."},
+  {q:"What layer is a Router? How does it forward?",a:"Layer 3. Reads destination IP → looks up routing table → selects best path → forwards out correct interface. Routing table: {Dest Network, Subnet Mask, Next-Hop, Interface, Metric}."},
+  {q:"Gateway vs Router — key difference",a:"Router: Layer 3, connects networks using same protocol family (IP-to-IP). Gateway: up to Layer 7, protocol converter between heterogeneous networks (TCP/IP ↔ IBM SNA)."},
+  {q:"3 types of Firewalls",a:"1. Packet Filtering (Stateless): each packet checked independently by header rules.\n2. Stateful Inspection: tracks connection state, allows only valid session packets.\n3. Proxy: full intermediary, application-level inspection."},
+  {q:"IPv4 — size, notation, total addresses",a:"32-bit, dotted-decimal (e.g. 192.168.1.10). Total = 2³² ≈ 4.3 billion addresses. Now exhausted — solved by NAT and IPv6."},
+  {q:"IPv4 address classes — ranges and masks",a:"A: 1–126, /8 (255.0.0.0) ~16M hosts\nB: 128–191, /16 ~65K hosts\nC: 192–223, /24, 254 hosts\nD: 224–239, Multicast\nE: 240–255, Reserved\n127.x = Loopback"},
+  {q:"Private IPv4 ranges (RFC 1918)",a:"10.0.0.0/8 (Class A)\n172.16.0.0–172.31.255.255/12 (Class B)\n192.168.0.0/16 (Class C)\nNot routable on internet — used with NAT."},
+  {q:"Key IPv4 header fields (7 important ones)",a:"Version(4), IHL, TOS, Total Length, Identification, Flags(DF/MF), Frag Offset, TTL, Protocol (6=TCP,17=UDP,1=ICMP), Checksum, Source IP, Dest IP"},
+  {q:"What does TTL do? Why important?",a:"Time To Live — decremented by 1 at each router. When TTL=0, router drops packet and sends ICMP Time Exceeded (Type 11). Prevents infinite loops. traceroute exploits this."},
+  {q:"NAT — what is it and 3 types",a:"Network Address Translation — maps private IPs to public IP(s).\nStatic: 1 private ↔ 1 public (fixed)\nDynamic: private → any from public pool\nPAT/Overload: many private → 1 public, differentiated by port number (most common, home routers)"},
+  {q:"ICMP — what is it? Type 0, 3, 8, 11?",a:"Internet Control Message Protocol (Protocol #1). Error reporting + diagnostics, NOT data transfer.\nType 8 = Echo Request (ping)\nType 0 = Echo Reply\nType 3 = Dest Unreachable\nType 11 = Time Exceeded (TTL=0, traceroute)"},
+  {q:"IPv6 — size, notation, why needed",a:"128-bit, hex colon: 2001:db8::1. Total = 2¹²⁸ ≈ 3.4×10³⁸. Needed because IPv4 exhausted (~4.3B). Also: better header, built-in IPSec, no broadcast, SLAAC, flow labels."},
+  {q:"IPv6 shortening rules",a:"1. Drop leading zeros: 0042 → 42\n2. Replace ONE longest consecutive all-zero group with ::\nExample: 2001:0db8:0000:0000:0000:0000:0000:0001 → 2001:db8::1"},
+  {q:"IPv6 address types — 6 kinds",a:"Global Unicast: 2000::/3 (routable)\nLink-Local: FE80::/10 (same link only)\nLoopback: ::1\nMulticast: FF00::/8 (replaces broadcast)\nAnycast: nearest node in group\nUnspecified: :: (before assignment)"},
+  {q:"IPv6 vs IPv4 header — 4 key differences",a:"1. Fixed 40B (IPv4 = 20–60B variable)\n2. No checksum field\n3. No fragmentation fields (source only)\n4. Flow Label for QoS\nOptions via Extension Headers instead of header options."},
+  {q:"DVR vs LSR — algorithm, info shared, convergence",a:"DVR: Bellman-Ford, shares routing table with neighbors, slow convergence, count-to-infinity, low overhead → RIP\nLSR: Dijkstra, floods LSAs globally, fast convergence, high overhead → OSPF"},
+  {q:"Bellman-Ford / DVR — how it works",a:"D_x(y) = min over neighbors v { cost(x,v) + D_v(y) }\nEach router: 1) Init table (self=0, neighbors=link cost, rest=∞) 2) Share table with neighbors 3) Update via Bellman-Ford 4) Repeat until convergence."},
+  {q:"Count-to-infinity — what is it? 2 fixes?",a:"Problem: when link fails, routers iteratively increment cost, slowly counting to ∞.\nFix 1: Split Horizon — don't advertise route back to who you learned it from.\nFix 2: Poison Reverse — advertise failed routes with ∞ back to source."},
+  {q:"RIP — key parameters",a:"DVR protocol. Metric = hop count. Max = 15 hops (16 = ∞/unreachable). Updates every 30 seconds. RIPv1 = classful, RIPv2 = classless (CIDR). Good for small networks only."},
+  {q:"Dijkstra's algorithm — steps",a:"1. dist[src]=0, dist[all others]=∞\n2. Pick unvisited node u with min dist\n3. Mark visited\n4. For each neighbor v: if dist[u]+cost(u,v) < dist[v], update\n5. Repeat until all visited.\nComplexity: O(V²) or O((V+E)logV)"},
+  {q:"OSPF — how it works, metric, features",a:"Link State protocol (Dijkstra). Metric = cost = 100Mbps/bandwidth. Discovers neighbors via Hello packets. Floods LSAs to build LSDB. Hierarchical: Area 0 = backbone. Fast convergence, scales to large networks."},
+  {q:"IPv4→IPv6 transition — 3 methods",a:"1. Dual Stack: device runs both simultaneously, prefers IPv6\n2. Tunneling: IPv6 encapsulated in IPv4 (6in4, 6to4, Teredo) to cross IPv4 backbone\n3. NAT64 Translation: gateway translates IPv4↔IPv6 headers"},
+  {q:"Multicasting — what is it, IPv4 vs IPv6",a:"One source → multiple interested receivers simultaneously (efficient, one copy per link).\nIPv4: Class D 224–239, managed by IGMP\nIPv6: FF00::/8, managed by MLD (Multicast Listener Discovery)\nAll-nodes IPv6: FF02::1"},
+  {q:"ICMPv6 / NDP — what does it replace?",a:"ICMPv6 combines ICMPv4 + ARP + IGMP.\nNDP (Neighbor Discovery Protocol) replaces ARP for MAC resolution.\nMLD replaces IGMP for multicast.\nAlso handles SLAAC (router solicitation/advertisement)."},
+  {q:"SLAAC — what is it?",a:"Stateless Address Autoconfiguration — IPv6 feature. Host auto-generates its own IPv6 address using prefix advertised by router (via ICMPv6 Router Advertisement) + EUI-64 (from MAC). No DHCP needed."},
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h = c.a.length > 180 ? 170 : 145;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>

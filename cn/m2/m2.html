@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CN Module 2 — Data Link Layer & Error Control</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0a0f;--paper:#f5f2eb;--accent:#e63946;--accent2:#457b9d;--accent3:#2d6a4f;--muted:#6b6b6b;--card:#fffef9;--border:#d4c9b0;--heading:'Space Grotesk',sans-serif;}
+body{font-family:'Syne',sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;}
+code,pre,.mono{font-family:'JetBrains Mono',monospace;}
+h1,h2,h3,.heading{font-family:var(--heading);letter-spacing:.01em;}
+.tag{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .5rem;border-radius:2px;}
+.tag-red{background:var(--accent);color:#fff;}
+.tag-blue{background:var(--accent2);color:#fff;}
+.tag-green{background:var(--accent3);color:#fff;}
+.tag-gray{background:#555;color:#fff;}
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:4px;padding:1rem;}
+.fc{cursor:pointer;user-select:none;}
+.fc-inner{transition:transform .4s;transform-style:preserve-3d;position:relative;height:100%;}
+.fc.flipped .fc-inner{transform:rotateY(180deg);}
+.fc-front,.fc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:1rem;text-align:center;}
+.fc-back{transform:rotateY(180deg);}
+.fc-wrap{perspective:800px;}
+details summary{cursor:pointer;list-style:none;}
+details summary::-webkit-details-marker{display:none;}
+.scrollbar-hide::-webkit-scrollbar{display:none;}
+.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none;}
+.section-num{font-size:3rem;font-weight:800;color:var(--border);line-height:1;font-family:'JetBrains Mono',monospace;}
+table{border-collapse:collapse;width:100%;}
+th{background:var(--ink);color:#fff;padding:.4rem .6rem;text-align:left;font-size:.75rem;letter-spacing:.05em;}
+td{padding:.4rem .6rem;font-size:.8rem;border-bottom:1px solid var(--border);}
+tr:nth-child(even) td{background:#f0ebe0;}
+.nav-pill{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px;border:1.5px solid var(--border);cursor:pointer;transition:all .15s;}
+.nav-pill:hover,.nav-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.highlight{border-left:3px solid var(--accent);padding-left:.75rem;background:#fff8f8;}
+.highlight-blue{border-left:3px solid var(--accent2);padding-left:.75rem;background:#f0f7ff;}
+.highlight-green{border-left:3px solid var(--accent3);padding-left:.75rem;background:#f0fff8;}
+section[id]{scroll-margin-top:5.5rem;}
+@media (max-width:640px){body{font-size:15px;}.section-num{font-size:2rem;}.card{padding:.8rem;}.nav-pill{font-size:.62rem;padding:.25rem .55rem;}th{font-size:.68rem;padding:.35rem .45rem;}td{font-size:.76rem;padding:.35rem .45rem;}.fc-wrap{height:180px!important;}.fc-front,.fc-back{align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto;}}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[var(--ink)] text-white px-2 py-2 sm:px-4 sm:py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+  <div class="leading-tight">
+    <div class="mono text-xs text-gray-400">MODULE 02</div>
+    <div class="heading font-bold text-xs sm:text-sm">DATA LINK LAYER & ERROR CONTROL</div>
+  </div>
+  <div class="w-full sm:w-auto flex gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
+    <button onclick="scrollToSection('s1')" class="nav-pill text-white border-gray-600">Overview</button>
+    <button onclick="scrollToSection('s2')" class="nav-pill text-white border-gray-600">Framing</button>
+    <button onclick="scrollToSection('s3')" class="nav-pill text-white border-gray-600">Error Detection</button>
+    <button onclick="scrollToSection('s4')" class="nav-pill text-white border-gray-600">Error Correction</button>
+    <button onclick="scrollToSection('s5')" class="nav-pill text-white border-gray-600">ARQ</button>
+    <button onclick="scrollToSection('s6')" class="nav-pill text-white border-gray-600">MAC</button>
+    <button onclick="scrollToSection('s7')" class="nav-pill text-white border-gray-600">Ethernet</button>
+    <button onclick="scrollToSection('s8')" class="nav-pill text-white border-gray-600">IEEE 802</button>
+    <button onclick="scrollToSection('fc')" class="nav-pill bg-[var(--accent)] border-[var(--accent)] text-white">Flashcards</button>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-3 py-4 sm:py-6 space-y-8 sm:space-y-12">
+
+<!-- UNIT 1: OVERVIEW -->
+<section id="s1">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">01</div>
+    <div>
+      <div class="tag tag-red mb-1">Unit 1 · 2 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Data Link Layer Overview</h2>
+      <p class="text-sm text-[var(--muted)]">OSI Layer 2 · LLC · MAC · Services</p>
+    </div>
+  </div>
+
+  <div class="card highlight mb-4">
+    <div class="tag tag-red mb-1">Definition</div>
+    <p class="font-bold">The Data Link Layer (Layer 2) provides reliable delivery of frames between directly connected nodes, bridging the Physical Layer and Network Layer.</p>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Sublayers (IEEE 802)</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="bg-blue-50 border border-blue-200 p-3 rounded">
+        <div class="font-extrabold text-blue-700">LLC — Logical Link Control</div>
+        <div class="text-xs mt-1">Upper sublayer. Interface between Network Layer (IPv4, IPv6, ARP) and MAC. Handles protocol multiplexing via SAPs, flow control, and error detection.</div>
+      </div>
+      <div class="bg-green-50 border border-green-200 p-3 rounded">
+        <div class="font-extrabold text-green-700">MAC — Media Access Control</div>
+        <div class="text-xs mt-1">Lower sublayer. Handles physical transmission, 48-bit MAC addressing, channel access (CSMA/CD, CSMA/CA), and hardware-level CRC.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">5 Core Services</div>
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
+      <div class="bg-gray-100 p-2 rounded text-xs"><strong>1.</strong> Framing</div>
+      <div class="bg-gray-100 p-2 rounded text-xs"><strong>2.</strong> Physical Addressing</div>
+      <div class="bg-gray-100 p-2 rounded text-xs"><strong>3.</strong> Flow Control</div>
+      <div class="bg-gray-100 p-2 rounded text-xs"><strong>4.</strong> Error Control</div>
+      <div class="bg-gray-100 p-2 rounded text-xs"><strong>5.</strong> Access Control</div>
+    </div>
+  </div>
+
+  <div class="card highlight-blue text-sm">
+    <span class="tag tag-blue">Memory Trick</span>
+    <p class="mt-1"><strong>F</strong>rame · <strong>P</strong>hysical addr · <strong>F</strong>low · <strong>E</strong>rror · <strong>A</strong>ccess = "FPFEA" or remember "Frames Perfectly Flow Error-free with Access control"</p>
+  </div>
+</section>
+
+<!-- UNIT 2: FRAMING -->
+<section id="s2">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">02</div>
+    <div>
+      <div class="tag tag-blue mb-1">Unit 2 · 1.5 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Framing & Synchronization</h2>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Framing Methods Comparison</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Method</th><th>Mechanism</th><th>Problem</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Character Count</td><td>First field = number of chars in frame</td><td class="text-red-600">Count corruption → lost boundaries</td></tr>
+          <tr><td class="font-bold">Character Stuffing</td><td>DLE STX / DLE ETX delimiters; escape DLE in data</td><td class="text-red-600">Byte-oriented only</td></tr>
+          <tr><td class="font-bold text-green-700">Bit Stuffing (HDLC)</td><td>Flag=<code>01111110</code>; insert <code>0</code> after five 1s</td><td class="text-green-700">Most robust — receiver removes stuffed bits</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Bit Stuffing Example (HDLC)</div>
+    <div class="bg-gray-100 p-3 rounded font-mono text-xs space-y-1">
+      <div><strong>Original:</strong> <code>01111110 11111011111 0 01111110</code></div>
+      <div><strong>Stuffed:</strong> <code>01111110 111110<b>0</b> 111110<b>0</b> 01111110</code></div>
+      <div class="text-[var(--muted)]">↓ 0 inserted after five consecutive 1s</div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div class="card" style="border-left:3px solid #457b9d;">
+      <div class="font-bold text-sm" style="color:#457b9d;">Flow Control Techniques</div>
+      <div class="text-xs mt-1 space-y-1">
+        <div><strong>Stop-and-Wait:</strong> Send 1 frame → wait for ACK → send next</div>
+        <div><strong>Sliding Window:</strong> Send N frames before requiring ACK; better efficiency</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid #2d6a4f;">
+      <div class="font-bold text-sm" style="color:#2d6a4f;">MAC Address Format</div>
+      <div class="text-xs mt-1 space-y-1">
+        <div>• 48 bits (6 bytes) in hex: <code>00:1A:2B:3C:4D:5E</code></div>
+        <div>• First 24 bits = OUI (manufacturer)</div>
+        <div>• Last 24 bits = unique device ID</div>
+        <div>• Broadcast: <code>FF:FF:FF:FF:FF:FF</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UNIT 3: ERROR DETECTION -->
+<section id="s3">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">03</div>
+    <div>
+      <div class="tag tag-green mb-1">Unit 3 · 2 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Detection Methods</h2>
+      <p class="text-sm text-[var(--muted)]">VRC · LRC · Checksum · CRC</p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Error Types</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-blue-50 p-2 rounded text-center text-sm">
+        <div class="font-bold text-blue-700">Single-Bit Error</div>
+        <div class="text-xs">Only 1 bit altered. Rare in high-speed networks.</div>
+      </div>
+      <div class="bg-red-50 p-2 rounded text-center text-sm">
+        <div class="font-bold text-red-700">Burst Error</div>
+        <div class="text-xs">2+ consecutive bits altered. More common; requires CRC.</div>
+      </div>
+    </div>
+    <div class="mt-2 text-xs text-[var(--muted)]">
+      <strong>Causes:</strong> Thermal noise (background), Impulse noise (lightning/switching), Cross talk, Attenuation, Jitter
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Error Detection Methods Comparison</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Method</th><th>Detects</th><th>Overhead</th><th>Used In</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">VRC (Parity)</td><td>Odd bit errors only</td><td>1 bit/unit</td><td>Serial links</td></tr>
+          <tr><td class="font-bold">LRC (2-D Parity)</td><td>Burst + single-bit errors</td><td>1 byte/block</td><td>Block protocols</td></tr>
+          <tr><td class="font-bold">Checksum</td><td>Single + many multi-bit</td><td>16 bits</td><td>IP, TCP, UDP</td></tr>
+          <tr><td class="font-bold text-green-700">CRC</td><td>All bursts ≤ r bits</td><td>r bits</td><td>Ethernet, HDLC, USB</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <details class="card mb-2">
+    <summary class="font-bold flex justify-between items-center">
+      CRC (Cyclic Redundancy Check) — Detailed <span class="tag tag-gray">▼ expand</span>
+    </summary>
+    <div class="mt-3 space-y-2 text-sm">
+      <div class="highlight-green p-2"><strong>Concept:</strong> Treat bit sequence as polynomial; divide by generator polynomial G; remainder R appended.</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+        <div class="bg-gray-100 p-2 rounded">
+          <strong>Sender:</strong><br>
+          1. Append r zeros to M<br>
+          2. XOR-divide by G<br>
+          3. R = remainder<br>
+          4. Transmit T = M + R
+        </div>
+        <div class="bg-gray-100 p-2 rounded">
+          <strong>Receiver:</strong><br>
+          Divide T by G<br>
+          Remainder = 0 → OK ✅<br>
+          Remainder ≠ 0 → Error ❌
+        </div>
+      </div>
+      <div class="bg-gray-100 p-2 rounded font-mono text-xs">
+        <strong>Example:</strong> M=<code>1101011011</code>, G=<code>10011</code> (degree 4)<br>
+        Append 4 zeros → <code>11010110110000</code><br>
+        XOR-divide by <code>10011</code> → R=<code>1110</code><br>
+        Transmit T=<code>11010110111110</code>
+      </div>
+    </div>
+  </details>
+
+  <div class="card highlight text-sm">
+    <span class="tag tag-red">Exam Tip</span>
+    <p class="mt-1">CRC detects all burst errors of length ≤ r (where r = degree of generator polynomial). Cannot correct errors — only detect.</p>
+  </div>
+</section>
+
+<!-- UNIT 4: ERROR CORRECTION -->
+<section id="s4">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">04</div>
+    <div>
+      <div class="tag tag-red mb-1">Unit 4 · 2 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Correction</h2>
+      <p class="text-sm text-[var(--muted)]">Hamming Code · FEC · ARQ Overview</p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Two Approaches</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-green-50 border border-green-200 p-3 rounded">
+        <div class="font-extrabold text-green-700">FEC</div>
+        <div class="text-xs">Forward Error Correction — redundant bits allow receiver to self-correct. Good for real-time/satellite (no retransmission delay).</div>
+      </div>
+      <div class="bg-blue-50 border border-blue-200 p-3 rounded">
+        <div class="font-extrabold text-blue-700">ARQ</div>
+        <div class="text-xs">Automatic Repeat reQuest — receiver detects error → requests retransmission. Used in TCP. Reliable but has latency.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Hamming Code</div>
+    <div class="highlight-green p-2 text-sm mb-2">Corrects single-bit errors; detects double-bit errors. Developed by R.W. Hamming (1950).</div>
+    <div class="bg-gray-100 p-2 rounded font-mono text-xs mb-2">
+      <strong>Formula:</strong> 2^r ≥ m + r + 1<br>
+      where r = parity bits, m = data bits
+    </div>
+    <div class="text-xs space-y-1">
+      <div><strong>Parity bit positions:</strong> Powers of 2 → 1, 2, 4, 8, ...</div>
+      <div><strong>Check-Skip Method:</strong> P1 checks 1,3,5,7... (check 1, skip 1); P2 checks 2,3,6,7... (check 2, skip 2); P4 checks 4,5,6,7... (check 4, skip 4)</div>
+    </div>
+    <div class="mt-2 bg-gray-100 p-2 rounded font-mono text-xs">
+      <strong>Example (m=4, data=1011):</strong><br>
+      Position: 1 2 3 4 5 6 7<br>
+      Bit: P1 P2 1 P4 0 1 1<br>
+      P1 = 0 (even parity), P2 = 1, P4 = 0<br>
+      <strong>Codeword: 0 1 1 0 0 1 1</strong>
+    </div>
+  </div>
+
+  <div class="card highlight-blue text-sm">
+    <span class="tag tag-blue">Error Correction Logic</span>
+    <p class="mt-1">Failed parity checks form binary number → error position. Flip that bit. Example: P1 fails (1), P2 passes (0), P4 fails (1) → binary <code>101</code> = position 5.</p>
+  </div>
+</section>
+
+<!-- UNIT 5: ARQ PROTOCOLS -->
+<section id="s5">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">05</div>
+    <div>
+      <div class="tag tag-blue mb-1">Unit 5 · 2 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">ARQ Error Recovery Protocols</h2>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">ARQ Comparison</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Protocol</th><th>Window</th><th>Retransmit</th><th>Buffer</th><th>Efficiency</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Stop-and-Wait</td><td>1</td><td>1 frame</td><td>Not needed</td><td class="text-red-600">Low</td></tr>
+          <tr><td class="font-bold">Go-Back-N</td><td>N</td><td>From error + all subsequent</td><td>Not needed</td><td class="text-yellow-600">Medium</td></tr>
+          <tr><td class="font-bold text-green-700">Selective Repeat</td><td>N</td><td>Only erroneous frame</td><td>Required</td><td class="text-green-700">High</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+    <div class="card" style="border-left:3px solid #e63946;">
+      <div class="font-bold text-sm" style="color:#e63946;">Stop-and-Wait ARQ</div>
+      <div class="text-xs mt-1">Send 1 frame → wait for ACK/NAK/timeout → send next. Simple but inefficient; sender idle during wait.</div>
+    </div>
+    <div class="card" style="border-left:3px solid #457b9d;">
+      <div class="font-bold text-sm" style="color:#457b9d;">Go-Back-N ARQ</div>
+      <div class="text-xs mt-1">Transmit up to N frames. On error in frame k: discard k and ALL subsequent. Retransmit k onwards. Wastes bandwidth.</div>
+    </div>
+    <div class="card" style="border-left:3px solid #2d6a4f;">
+      <div class="font-bold text-sm" style="color:#2d6a4f;">Selective Repeat ARQ</div>
+      <div class="text-xs mt-1">Buffer out-of-order frames; request retransmission of ONLY erroneous frame. Best efficiency but complex.</div>
+    </div>
+  </div>
+
+  <div class="card highlight text-sm">
+    <span class="tag tag-red">Exam Tip</span>
+    <p class="mt-1">Go-Back-N: receiver discards all frames after error (no buffer needed). Selective Repeat: receiver buffers out-of-order frames (buffer required).</p>
+  </div>
+</section>
+
+<!-- UNIT 6: MAC PROTOCOLS -->
+<section id="s6">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">06</div>
+    <div>
+      <div class="tag tag-green mb-1">Unit 6 · 2 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Multiple Access Protocols</h2>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Access Control Techniques</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Technique</th><th>Type</th><th>Used In</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Token Passing</td><td>Controlled</td><td>Token Ring</td></tr>
+          <tr><td class="font-bold text-blue-700">CSMA/CD</td><td>Random</td><td>Wired Ethernet (802.3)</td></tr>
+          <tr><td class="font-bold text-green-700">CSMA/CA</td><td>Random</td><td>Wi-Fi (802.11)</td></tr>
+          <tr><td class="font-bold">FDMA/TDMA/CDMA</td><td>Channelization</td><td>Cellular</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div class="card" style="border-left:3px solid #457b9d;">
+      <div class="font-bold text-sm" style="color:#457b9d;">CSMA/CD — Collision Detection</div>
+      <div class="text-xs mt-1 space-y-1">
+        <div>• Sense channel → transmit if idle</div>
+        <div>• Monitor for collision during transmission</div>
+        <div>• On collision: stop, send jam signal, random backoff, retry</div>
+        <div>• <strong>Used in:</strong> Wired Ethernet</div>
+        <div class="text-red-600">✗ Inefficient under high load; not suitable for wireless</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid #2d6a4f;">
+      <div class="font-bold text-sm" style="color:#2d6a4f;">CSMA/CA — Collision Avoidance</div>
+      <div class="text-xs mt-1 space-y-1">
+        <div>• Sense channel; if idle → transmit; if busy → wait random backoff</div>
+        <div>• Optional RTS/CTS handshake avoids hidden node problem</div>
+        <div>• <strong>Used in:</strong> Wi-Fi (802.11)</div>
+        <div class="text-green-700">✓ Good for wireless</div>
+        <div class="text-red-600">✗ Overhead from backoff/control frames</div>
+      </div>
+    </div>
+  </div>
+
+  <details class="card mb-2">
+    <summary class="font-bold flex justify-between items-center">
+      TDMA / FDD / CDMA Details <span class="tag tag-gray">▼ expand</span>
+    </summary>
+    <div class="mt-3 space-y-2 text-sm">
+      <div class="highlight-blue p-2"><strong>TDMA:</strong> Time divided into slots; each user gets exclusive slot. Used in GSM (8 slots per 4.615 ms frame). ✓ Orderly; ✗ Wasted slots if idle.</div>
+      <div class="highlight-green p-2"><strong>FDD:</strong> Uplink and downlink on separate frequency bands. Used in 3G/4G. ✓ Simultaneous two-way; ✗ Needs wider spectrum.</div>
+      <div class="highlight p-2"><strong>CDMA:</strong> All users share same frequency; distinguished by unique spreading codes. Used in 3G/WCDMA. ✓ High spectral efficiency; ✗ Complex, needs power control.</div>
+    </div>
+  </details>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Polling</div>
+    <div class="text-xs space-y-1">
+      <div><strong>Concept:</strong> Centralized access control — master polls slave devices sequentially.</div>
+      <div><strong>Types:</strong> Roll Call (polls all), Hub/Selective (polls likely-active), Interrupt (devices request permission)</div>
+      <div><strong>Pros:</strong> Orderly, no collisions, predictable scheduling</div>
+      <div><strong>Cons:</strong> Transmission delay, polling overhead, single point of failure</div>
+    </div>
+  </div>
+</section>
+
+<!-- UNIT 7: ETHERNET -->
+<section id="s7">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">07</div>
+    <div>
+      <div class="tag tag-red mb-1">Unit 7 · 1.5 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Ethernet (IEEE 802.3)</h2>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Ethernet Standards</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Standard</th><th>Speed</th><th>Medium</th><th>Max Segment</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">10BASE-T</td><td>10 Mbps</td><td>Twisted-pair</td><td>100 m</td></tr>
+          <tr><td class="font-bold">100BASE-TX</td><td>100 Mbps</td><td>Twisted-pair</td><td>100 m</td></tr>
+          <tr><td class="font-bold">1000BASE-T</td><td>1 Gbps</td><td>Twisted-pair</td><td>100 m</td></tr>
+          <tr><td class="font-bold">10GBASE-T</td><td>10 Gbps</td><td>Twisted-pair</td><td>100 m</td></tr>
+          <tr><td class="font-bold">10GBASE-SR</td><td>10 Gbps</td><td>Multimode fiber</td><td>300 m</td></tr>
+          <tr><td class="font-bold">40GBASE-LR</td><td>40 Gbps</td><td>Single-mode fiber</td><td>10 km</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Ethernet Frame Structure</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Field</th><th>Size (bytes)</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Preamble</td><td>7</td><td>Alternating 1s/0s for sync</td></tr>
+          <tr><td class="font-bold">SFD</td><td>1</td><td>Start Frame Delimiter <code>10101011</code></td></tr>
+          <tr><td class="font-bold">Destination MAC</td><td>6</td><td>Receiver address</td></tr>
+          <tr><td class="font-bold">Source MAC</td><td>6</td><td>Sender address</td></tr>
+          <tr><td class="font-bold">EtherType/Length</td><td>2</td><td>Protocol type (IPv4/IPv6) or payload length</td></tr>
+          <tr><td class="font-bold">Data/Payload</td><td>46–1500</td><td>Actual data</td></tr>
+          <tr><td class="font-bold">FCS</td><td>4</td><td>CRC checksum for error detection</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-2 text-xs text-[var(--muted)]">Min frame: 64 bytes | Max frame: 1518 bytes (1522 with VLAN tag)</div>
+  </div>
+
+  <div class="card highlight-green text-sm">
+    <span class="tag tag-green">Modern Ethernet</span>
+    <p class="mt-1">Full-Duplex Switched: Each device on dedicated switch port. Simultaneous send/receive; no collisions; CSMA/CD not needed.</p>
+  </div>
+</section>
+
+<!-- UNIT 8: IEEE 802 STANDARDS -->
+<section id="s8">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num">08</div>
+    <div>
+      <div class="tag tag-blue mb-1">Unit 8 · 2 hrs</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">IEEE Standards — Wireless LANs & Bluetooth</h2>
+      <p class="text-sm text-[var(--muted)]">802.11 · 802.15</p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">IEEE 802.11 — Wireless LAN (Wi-Fi)</div>
+    <div class="text-xs space-y-1 mb-3">
+      <div>• Covers Physical Layer and Data Link Layer (MAC sublayer)</div>
+      <div>• Operates in 2.4 GHz ISM band (802.11b/g) or 5 GHz UNII band (802.11a)</div>
+      <div>• Uses CSMA/CA for medium access (not CSMA/CD — can't detect collisions in wireless)</div>
+    </div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Standard</th><th>Band</th><th>Max Rate</th><th>Technique</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">802.11 (Legacy)</td><td>2.4 GHz</td><td>2 Mbps</td><td>FHSS/DSSS/IR</td></tr>
+          <tr><td class="font-bold">802.11b</td><td>2.4 GHz</td><td>11 Mbps</td><td>DSSS/CCK</td></tr>
+          <tr><td class="font-bold">802.11a</td><td>5 GHz</td><td>54 Mbps</td><td>OFDM</td></tr>
+          <tr><td class="font-bold">802.11g</td><td>2.4 GHz</td><td>54 Mbps</td><td>OFDM (backward compatible with 802.11b)</td></tr>
+          <tr><td class="font-bold">802.11n</td><td>2.4/5 GHz</td><td>600 Mbps</td><td>MIMO + OFDM</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+    <div class="card" style="border-left:3px solid #457b9d;">
+      <div class="font-bold text-sm" style="color:#457b9d;">802.11 Architecture</div>
+      <div class="text-xs mt-1 space-y-1">
+        <div><strong>BSS (Basic Service Set):</strong> Building block of WLAN. Stations + optional AP.</div>
+        <div><strong>Ad-hoc:</strong> BSS without AP; stand-alone network</div>
+        <div><strong>Infrastructure:</strong> BSS with AP; connects to distribution system</div>
+        <div><strong>ESS (Extended Service Set):</strong> Multiple BSSs connected via distribution system</div>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid #2d6a4f;">
+      <div class="font-bold text-sm" style="color:#2d6a4f;">802.11 MAC Functions</div>
+      <div class="text-xs mt-1 space-y-1">
+        <div><strong>DCF (Distributed Coordination Function):</strong> CSMA/CA — mandatory</div>
+        <div><strong>PCF (Point Coordination Function):</strong> Centralized polling — optional</div>
+        <div><strong>Frame Types:</strong> Management (beacon, probe), Control (RTS/CTS/ACK), Data</div>
+        <div><strong>IFS (Interframe Space):</strong> Priority timing: SIFS < PIFS < DIFS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">IEEE 802.15 — Bluetooth (WPAN)</div>
+    <div class="text-xs space-y-1 mb-3">
+      <div>• Wireless Personal Area Network technology for short-range cable replacement</div>
+      <div>• Operates in 2.4 GHz ISM band (79 channels of 1 MHz each)</div>
+      <div>• Uses Frequency Hopping Spread Spectrum (FHSS) — hops 1600 times/second</div>
+      <div>• Range: 10m (Class 2), up to 100m (Class 1)</div>
+      <div>• Data rate: ~1 Mbps (Basic Rate), up to 3 Mbps (Enhanced Data Rate)</div>
+    </div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Class</th><th>Max Power</th><th>Range</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Class 1</td><td>100 mW</td><td>100 m</td></tr>
+          <tr><td class="font-bold">Class 2</td><td>2.5 mW</td><td>10 m</td></tr>
+          <tr><td class="font-bold">Class 3</td><td>1 mW</td><td>1 m</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Bluetooth Protocol Stack</div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+      <div class="bg-blue-50 p-2 rounded text-center"><strong>Radio</strong><br>Physical layer — 2.4 GHz FHSS</div>
+      <div class="bg-green-50 p-2 rounded text-center"><strong>Baseband</strong><br>MAC layer — packets, error correction</div>
+      <div class="bg-yellow-50 p-2 rounded text-center"><strong>LMP</strong><br>Link management — setup, security</div>
+      <div class="bg-purple-50 p-2 rounded text-center"><strong>L2CAP</strong><br>LLC equivalent — multiplexing, QoS</div>
+    </div>
+    <div class="mt-2 text-xs">
+      <strong>Link Types:</strong> SCO (Synchronous Connection-Oriented) for voice; ACL (Asynchronous Connectionless) for data
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Bluetooth Network Topologies</div>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-blue-50 p-2 rounded text-xs">
+        <strong>Piconet</strong><br>
+        • Up to 8 stations (1 primary + 7 active secondaries)<br>
+        • Additional 8 parked secondaries<br>
+        • 3-bit Active Member address
+      </div>
+      <div class="bg-green-50 p-2 rounded text-xs">
+        <strong>Scatternet</strong><br>
+        • Multiple piconets linked together<br>
+        • A secondary in one piconet can be primary in another<br>
+        • Enables larger network coverage
+      </div>
+    </div>
+  </div>
+
+  <div class="card highlight text-sm">
+    <span class="tag tag-red">Syllabus Note</span>
+    <p class="mt-1">IEEE Standards for Wireless LANs (802.11), Ethernet (802.3), and Bluetooth (802.15) are explicitly listed in the syllabus. 802.11 uses CSMA/CA (not CSMA/CD) because wireless cannot detect collisions while transmitting.</p>
+  </div>
+</section>
+
+<!-- MASTER CHEATSHEET -->
+<section>
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num" style="color:var(--accent2);">∑</div>
+    <div>
+      <div class="tag tag-blue mb-1">Quick Reference</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Master Cheatsheet</h2>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="font-bold mb-2">Everything in One Table</div>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Topic</th><th>Key Formula / Rule</th></tr></thead>
+        <tbody>
+          <tr><td class="font-bold">Hamming Code</td><td>2^r ≥ m + r + 1 (r=parity, m=data)</td></tr>
+          <tr><td class="font-bold">CRC</td><td>Detects all bursts ≤ r bits; cannot correct</td></tr>
+          <tr><td class="font-bold">VRC</td><td>Detects odd bit errors only</td></tr>
+          <tr><td class="font-bold">Checksum</td><td>Ones'-complement sum; used in IP/TCP/UDP</td></tr>
+          <tr><td class="font-bold">Stop-and-Wait</td><td>Window = 1; lowest efficiency</td></tr>
+          <tr><td class="font-bold">Go-Back-N</td><td>Retransmit from error onwards</td></tr>
+          <tr><td class="font-bold">Selective Repeat</td><td>Retransmit only error frame; needs buffer</td></tr>
+          <tr><td class="font-bold">CSMA/CD</td><td>Wired Ethernet; detect collision, jam, backoff</td></tr>
+          <tr><td class="font-bold">CSMA/CA</td><td>Wi-Fi; avoid collision via RTS/CTS + backoff</td></tr>
+          <tr><td class="font-bold">MAC Address</td><td>48 bits; OUI (24) + Device ID (24)</td></tr>
+          <tr><td class="font-bold">Ethernet Min/Max</td><td>64 bytes min / 1518 bytes max</td></tr>
+          <tr><td class="font-bold">802.11 Band</td><td>2.4 GHz (b/g/n) or 5 GHz (a/n)</td></tr>
+          <tr><td class="font-bold">Bluetooth</td><td>802.15; 2.4 GHz; FHSS; 79 channels; 1-3 Mbps</td></tr>
+          <tr><td class="font-bold">Bit Stuffing</td><td>Insert 0 after five consecutive 1s</td></tr>
+          <tr><td class="font-bold">LRC</td><td>2-D parity; detects & corrects single-bit</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FLASHCARDS -->
+<section id="fc">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="section-num" style="color:var(--accent);">FC</div>
+    <div>
+      <div class="tag tag-red mb-1">Study Mode</div>
+      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Flashcards</h2>
+      <p class="text-sm text-[var(--muted)]">Tap to flip • All key exam concepts</p>
+    </div>
+  </div>
+
+  <div id="fc-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+</main>
+
+<footer class="text-center py-6 text-xs text-[var(--muted)] border-t border-[var(--border)] mt-8">
+  CN Module 2 Study Guide &nbsp;·&nbsp; Data Link Layer & Error Control &nbsp;·&nbsp; IEEE 802.3 / 802.11 / 802.15 &nbsp;·&nbsp; 2026
+</footer>
+
+<script>
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+const cards=[
+  {q:"What is the Data Link Layer's position in OSI?",a:"Layer 2 — between Physical (Layer 1) and Network (Layer 3). Provides reliable frame delivery between directly connected nodes."},
+  {q:"Name the two IEEE 802 sublayers.",a:"LLC (Logical Link Control) — upper; MAC (Media Access Control) — lower."},
+  {q:"What is LLC responsible for?",a:"Protocol multiplexing (SAPs), error detection/correction, flow control (sliding window), framing synchronization."},
+  {q:"What is MAC responsible for?",a:"Physical addressing (48-bit MAC), channel access control (CSMA/CD/CA), hardware-level framing and CRC."},
+  {q:"List the 5 Data Link Layer services.",a:"1. Framing 2. Physical Addressing 3. Flow Control 4. Error Control 5. Access Control"},
+  {q:"What is Bit Stuffing?",a:"HDLC technique: flag=01111110; insert 0 after five consecutive 1s. Most robust framing method."},
+  {q:"What is the Hamming Code formula?",a:"2^r ≥ m + r + 1, where r=parity bits, m=data bits. Corrects single-bit errors."},
+  {q:"Where are parity bits placed in Hamming Code?",a:"At positions that are powers of 2: 1, 2, 4, 8, 16..."},
+  {q:"What does CRC stand for and what does it detect?",a:"Cyclic Redundancy Check. Detects all burst errors of length ≤ r (generator polynomial degree)."},
+  {q:"Can CRC correct errors?",a:"No — CRC only detects errors. Correction requires retransmission (ARQ) or FEC."},
+  {q:"What is the difference between Single-Bit and Burst Error?",a:"Single-bit: 1 bit altered. Burst: 2+ consecutive bits altered. Burst errors are more common."},
+  {q:"What is VRC (Parity Check)?",a:"Vertical Redundancy Check — adds 1 parity bit for even/odd parity. Detects only odd number of bit errors."},
+  {q:"What is LRC (2-D Parity)?",a:"Longitudinal Redundancy Check — parity per row AND column. Detects and corrects single-bit errors."},
+  {q:"Where is Checksum used?",a:"IP header, TCP, UDP. Ones'-complement sum of 16-bit words."},
+  {q:"Compare Stop-and-Wait, Go-Back-N, Selective Repeat.",a:"SaW: window=1, lowest efficiency. GBN: retransmit from error onwards. SR: retransmit only error frame, needs buffer, highest efficiency."},
+  {q:"What is CSMA/CD used for?",a:"Wired Ethernet (802.3). Sense, transmit, detect collision, jam, backoff, retry."},
+  {q:"What is CSMA/CA used for?",a:"Wi-Fi (802.11). Collision AVOIDANCE (can't detect in wireless). Uses RTS/CTS and random backoff."},
+  {q:"Why can't wireless use CSMA/CD?",a:"Wireless transceivers can't transmit and receive simultaneously at same frequency, so they can't detect collisions while transmitting."},
+  {q:"What is the difference between TDMA, FDMA, CDMA?",a:"TDMA: time slots. FDMA: frequency bands. CDMA: unique codes, all users share same frequency."},
+  {q:"What is Polling?",a:"Centralized access control — master polls slaves sequentially. Orderly but has overhead and single point of failure."},
+  {q:"What is the format of a MAC address?",a:"48 bits (6 bytes) in hex. First 24 bits = OUI (manufacturer), last 24 = unique device ID."},
+  {q:"What is the Ethernet broadcast address?",a:"FF:FF:FF:FF:FF:FF"},
+  {q:"What are the min and max Ethernet frame sizes?",a:"Min: 64 bytes. Max: 1518 bytes (1522 with VLAN tag)."},
+  {q:"What is FCS in Ethernet?",a:"Frame Check Sequence — 4-byte CRC at end of frame for error detection."},
+  {q:"What is the difference between half-duplex and full-duplex Ethernet?",a:"Half-duplex: uses CSMA/CD, shared medium. Full-duplex: dedicated switch port, no collisions, CSMA/CD not needed."},
+  {q:"What is IEEE 802.11?",a:"Wireless LAN (Wi-Fi) standard. Covers Physical and Data Link (MAC) layers. Uses CSMA/CA."},
+  {q:"What frequency bands does 802.11 use?",a:"2.4 GHz (802.11b/g/n) and 5 GHz (802.11a/n)."},
+  {q:"What is the difference between BSS and ESS?",a:"BSS = Basic Service Set (single cell with/without AP). ESS = Extended Service Set (multiple BSSs connected via distribution system)."},
+  {q:"What is the difference between Ad-hoc and Infrastructure mode?",a:"Ad-hoc: BSS without AP (standalone). Infrastructure: BSS with AP connecting to wired network."},
+  {q:"What is IEEE 802.15?",a:"Wireless Personal Area Networks (WPAN) — includes Bluetooth (802.15.1)."},
+  {q:"What is Bluetooth's frequency and technique?",a:"2.4 GHz ISM band. Uses Frequency Hopping Spread Spectrum (FHSS) — 79 channels, hops 1600 times/sec."},
+  {q:"What are the three Bluetooth classes and their ranges?",a:"Class 1: 100mW, 100m. Class 2: 2.5mW, 10m. Class 3: 1mW, 1m."},
+  {q:"What is a Piconet?",a:"Bluetooth network with 1 primary and up to 7 active secondaries (plus 8 parked)."},
+  {q:"What is a Scatternet?",a:"Multiple piconets linked together. A device can be secondary in one and primary in another."},
+  {q:"What are SCO and ACL links in Bluetooth?",a:"SCO = Synchronous Connection-Oriented (voice, low latency). ACL = Asynchronous Connectionless (data, integrity)."},
+  {q:"What is L2CAP in Bluetooth?",a:"Logical Link Control and Adaptation Protocol — equivalent to LLC. Multiplexing, segmentation/reassembly, QoS."},
+  {q:"What is FEC vs ARQ?",a:"FEC = Forward Error Correction (self-correct, no retransmission). ARQ = Automatic Repeat reQuest (detect and request retransmission)."},
+  {q:"What is the main advantage of Selective Repeat over Go-Back-N?",a:"SR only retransmits the erroneous frame; GBN retransmits that frame AND all subsequent frames."},
+  {q:"What is the 'hidden node problem' in wireless?",a:"Two stations can't hear each other but both can reach the AP. RTS/CTS handshake solves this."},
+];
+
+const grid=document.getElementById('fc-grid');
+cards.forEach((c,i)=>{
+  const h=window.matchMedia('(max-width: 640px)').matches?180:(120+Math.random()*30|0);
+  const w=i%3===0?'sm:col-span-2':'';
+  grid.innerHTML+=`
+  <div class="fc-wrap ${w}" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-inner">
+        <div class="fc-front card" style="background:var(--card);border:1.5px solid var(--border);">
+          <div>
+            <div class="tag tag-gray mb-2">${String(i+1).padStart(2,'0')}</div>
+            <div class="font-bold text-sm">${c.q}</div>
+            <div class="text-xs text-[var(--muted)] mt-2">tap to reveal</div>
+          </div>
+        </div>
+        <div class="fc-back" style="background:var(--ink);color:#fff;">
+          <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>
