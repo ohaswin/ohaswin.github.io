@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -5,38 +7,148 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0a0a0f;--paper:#f5f2eb;--accent:#e63946;--accent2:#457b9d;--accent3:#2d6a4f;--muted:#6b6b6b;--card:#fffef9;--border:#d4c9b0;--heading:'Space Grotesk',sans-serif;}
-body{font-family:'Syne',sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;}
-code,pre,.mono{font-family:'JetBrains Mono',monospace;}
-h1,h2,h3,.heading{font-family:var(--heading);letter-spacing:.01em;}
-.tag{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.15rem .5rem;border-radius:2px;}
-.tag-red{background:var(--accent);color:#fff;}
-.tag-blue{background:var(--accent2);color:#fff;}
-.tag-green{background:var(--accent3);color:#fff;}
-.tag-gray{background:#555;color:#fff;}
-.card{background:var(--card);border:1.5px solid var(--border);border-radius:4px;padding:1rem;}
-.fc{cursor:pointer;user-select:none;}
-.fc-inner{transition:transform .4s;transform-style:preserve-3d;position:relative;height:100%;}
-.fc.flipped .fc-inner{transform:rotateY(180deg);}
-.fc-front,.fc-back{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:1rem;text-align:center;}
-.fc-back{transform:rotateY(180deg);}
-.fc-wrap{perspective:800px;}
-details summary{cursor:pointer;list-style:none;}
-details summary::-webkit-details-marker{display:none;}
-.scrollbar-hide::-webkit-scrollbar{display:none;}
-.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none;}
-.section-num{font-size:3rem;font-weight:800;color:var(--border);line-height:1;font-family:'JetBrains Mono',monospace;}
-table{border-collapse:collapse;width:100%;}
-th{background:var(--ink);color:#fff;padding:.4rem .6rem;text-align:left;font-size:.75rem;letter-spacing:.05em;}
-td{padding:.4rem .6rem;font-size:.8rem;border-bottom:1px solid var(--border);}
-tr:nth-child(even) td{background:#f0ebe0;}
-.nav-pill{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px;border:1.5px solid var(--border);cursor:pointer;transition:all .15s;}
-.nav-pill:hover,.nav-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
-.highlight{border-left:3px solid var(--accent);padding-left:.75rem;background:#fff8f8;}
-.highlight-blue{border-left:3px solid var(--accent2);padding-left:.75rem;background:#f0f7ff;}
-.highlight-green{border-left:3px solid var(--accent3);padding-left:.75rem;background:#f0fff8;}
-section[id]{scroll-margin-top:5.5rem;}
-@media (max-width:640px){body{font-size:15px;}.section-num{font-size:2rem;}.card{padding:.8rem;}.nav-pill{font-size:.62rem;padding:.25rem .55rem;}th{font-size:.68rem;padding:.35rem .45rem;}td{font-size:.76rem;padding:.35rem .45rem;}.fc-wrap{height:180px!important;}.fc-front,.fc-back{align-items:flex-start;justify-content:flex-start;text-align:left;overflow:auto;}}
+:root {
+  --ink: #0a0a0f;
+  --paper: #f5f2eb;
+  --accent: #e63946;
+  --accent2: #457b9d;
+  --accent3: #2d6a4f;
+  --muted: #6b7280;
+  --card: #fffef9;
+  --border: #d4c9b0;
+  --heading: 'Space Grotesk', sans-serif;
+}
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+}
+code, pre, .mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+h1, h2, h3, .heading {
+  font-family: var(--heading);
+  letter-spacing: .01em;
+}
+.tag {
+  display: inline-block;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .15rem .5rem;
+  border-radius: 2px;
+}
+.tag-red { background: var(--accent); color: #fff; }
+.tag-blue { background: var(--accent2); color: #fff; }
+.tag-green { background: var(--accent3); color: #fff; }
+.tag-gray { background: #555; color: #fff; }
+
+.card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem;
+}
+.highlight { border-left: 3px solid var(--accent); padding-left: .75rem; background: #fff8f8; }
+.highlight-blue { border-left: 3px solid var(--accent2); padding-left: .75rem; background: #f0f7ff; }
+.highlight-green { border-left: 3px solid var(--accent3); padding-left: .75rem; background: #f0fff8; }
+
+.fc-wrap { perspective: 800px; }
+.fc { cursor: pointer; user-select: none; position: relative; width: 100%; height: 100%; transition: transform 0.4s; transform-style: preserve-3d; }
+.fc.flipped { transform: rotateY(180deg); }
+.fc-front, .fc-back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+}
+.fc-back { transform: rotateY(180deg); }
+
+.section-num {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--border);
+  line-height: 1;
+  font-family: 'JetBrains Mono', monospace;
+}
+table { border-collapse: collapse; width: 100%; }
+th { background: var(--ink); color: #fff; padding: .4rem .6rem; text-align: left; font-size: .75rem; letter-spacing: .05em; }
+td { padding: .4rem .6rem; font-size: .8rem; border-bottom: 1px solid var(--border); }
+tr:nth-child(even) td { background: #f0ebe0; }
+
+.nav-pill {
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .3rem .7rem;
+  border-radius: 2px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: all .15s;
+}
+.nav-pill:hover, .nav-pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+section[id] { scroll-margin-top: 5.5rem; }
+
+.formula {
+  background: var(--ink);
+  color: #fff;
+  padding: 1rem;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.steps { counter-reset: step; list-style: none; padding: 0; }
+.steps li { counter-increment: step; display: flex; gap: 0.75rem; margin-bottom: 0.5rem; align-items: flex-start; }
+.steps li::before {
+  content: counter(step);
+  min-width: 1.5rem; height: 1.5rem;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.arq-card { background: var(--card); border: 1.5px solid var(--border); padding: 1rem; border-radius: 4px; }
+.arq-card-title { font-family: var(--heading); font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); }
+
+.diagram-wrap { background: #fff; border: 1.5px solid var(--border); padding: 1rem; border-radius: 4px; margin: 1rem 0; overflow-x: auto; text-align: center; }
+.diagram-label { font-size: 0.7rem; color: var(--muted); margin-top: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+
+.hamming-row { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; margin: 1rem 0; }
+.hbit { width: 40px; height: 48px; border: 1.5px solid var(--border); border-radius: 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; }
+.hbit-pos { font-size: 0.6rem; color: var(--muted); }
+.hbit-val { font-size: 1rem; font-weight: 700; }
+.hbit-parity { border-color: var(--accent); color: var(--accent); }
+.hbit-data { border-color: var(--accent2); color: var(--accent2); }
+
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .section-num { font-size: 2rem; }
+  .card { padding: .8rem; }
+  .nav-pill { font-size: .62rem; padding: .25rem .55rem; }
+  th { font-size: .68rem; padding: .35rem .45rem; }
+  td { font-size: .76rem; padding: .35rem .45rem; }
+}
 </style>
 </head>
 <body class="min-h-screen">
@@ -62,235 +174,305 @@ section[id]{scroll-margin-top:5.5rem;}
 
 <main class="max-w-4xl mx-auto px-3 py-4 sm:py-6 space-y-8 sm:space-y-12">
 
-<section id="hero" class="space-y-4">
-  <div class="tag tag-red">Computer Networks · Module II</div>
-  <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight">Data Link Layer & Error Control</h1>
-  <p class="text-lg text-[var(--muted)] max-w-2xl">Comprehensive reference guide covering all lecture topics — error detection, correction, ARQ protocols, MAC, Ethernet, and IEEE standards.</p>
-</section>
+  <!-- HERO -->
+  <section id="hero" class="space-y-4">
+    <div class="tag tag-red">Computer Networks · Module II</div>
+    <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight">Data Link Layer & Error Control</h1>
+    <p class="text-lg text-[var(--muted)] max-w-2xl">Comprehensive reference guide covering all 5 lecture topics — error detection, correction, ARQ protocols, MAC, Ethernet, and IEEE standards. Click any flashcard to reveal the answer.</p>
+  </section>
 
-<!-- UNIT 1: DLL SERVICES & SUBLAYERS -->
-<section id="s1">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">01</div>
-    <div>
-      <div class="tag tag-red mb-1">Unit 1 · L6</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Data Link Layer — Services & Sublayers</h2>
-      <p class="text-sm text-[var(--muted)]">Theory</p>
-    </div>
-  </div>
-
-  <div class="card highlight mb-4">
-    <div class="tag tag-red mb-1">🔑 One-Line Definition</div>
-    <p class="font-bold">Layer 2 of OSI. Sits between Physical (L1) and Network (L3). Packages raw bits into <strong>frames</strong>, adds addressing, does error detection, and controls medium access.</p>
-  </div>
-
-  <div class="card mb-4">
-    <div class="font-bold mb-2">Two Sublayers (IEEE 802)</div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div class="bg-blue-50 border border-blue-200 p-3 rounded">
-        <div class="font-extrabold text-blue-700">LLC — Logical Link Control (Upper)</div>
-        <ul class="text-xs mt-1 list-disc pl-4 space-y-1">
-          <li><strong>Protocol Multiplexing</strong> — identifies which upper-layer protocol (IP, ARP) a frame belongs to using Service Access Points (SAPs)</li>
-          <li><strong>Error Detection & Correction</strong> — CRC, ARQ, checksums; requests retransmission if corrupted</li>
-          <li><strong>Flow Control</strong> — Stop-and-Wait & Sliding Window to prevent fast sender overwhelming slow receiver</li>
-          <li><strong>Framing & Synchronization</strong> — marks start/end of frames so receiver knows boundaries</li>
-        </ul>
-      </div>
-      <div class="bg-green-50 border border-green-200 p-3 rounded">
-        <div class="font-extrabold text-green-700">MAC — Media Access Control (Lower)</div>
-        <ul class="text-xs mt-1 list-disc pl-4 space-y-1">
-          <li><strong>Physical Addressing</strong> — assigns 48-bit MAC addresses (e.g., <code>00:1A:2B:3C:4D:5E</code>)</li>
-          <li><strong>Channel Access Control</strong> — CSMA/CD, CSMA/CA, Token Passing to prevent collisions</li>
-          <li><strong>Framing</strong> — converts data into frames (header + payload + trailer with CRC)</li>
-          <li><strong>Error Detection at Frame Level</strong> — basic CRC at hardware level, quickly discards corrupted frames</li>
-        </ul>
+  <!-- SECTION 1: DLL SERVICES & SUBLAYERS -->
+  <section id="s1">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">01</div>
+      <div>
+        <div class="tag tag-red mb-1">Unit 1 · L6</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Data Link Layer — Services & Sublayers</h2>
+        <p class="text-sm text-[var(--muted)]">Theory</p>
       </div>
     </div>
-  </div>
 
-  <div class="card mb-4">
-    <div class="font-bold mb-2">5 Main Services of the Data Link Layer</div>
-    <div class="overflow-x-auto">
-      <table>
-        <thead><tr><th>Service</th><th>What it does</th><th>Technique</th></tr></thead>
-        <tbody>
-          <tr><td><strong>1. Framing</strong></td><td>Divides bit stream into structured frames with clear boundaries</td><td>Character Count, Bit Stuffing, Char Stuffing</td></tr>
-          <tr><td><strong>2. Physical Addressing</strong></td><td>Adds source & destination MAC address to every frame</td><td>48-bit MAC address</td></tr>
-          <tr><td><strong>3. Flow Control</strong></td><td>Prevents sender overwhelming receiver with different speeds</td><td>Stop-and-Wait, Sliding Window</td></tr>
-          <tr><td><strong>4. Error Control</strong></td><td>Detects / corrects frame corruption during transmission</td><td>Parity, CRC, Hamming; ARQ</td></tr>
-          <tr><td><strong>5. Access Control</strong></td><td>Determines who may use shared medium at any given time</td><td>CSMA/CD, CSMA/CA, Token Passing, FDMA/TDMA/CDMA</td></tr>
-        </tbody>
-      </table>
+    <div class="card highlight mb-4">
+      <div class="tag tag-red mb-1">🔑 One-Line Definition</div>
+      <p class="font-bold">Layer 2 of OSI. Sits between Physical (L1) and Network (L3). Packages raw bits into <strong>frames</strong>, adds addressing, does error detection, and controls medium access.</p>
     </div>
-  </div>
 
-  <div class="card highlight-blue mb-4">
-    <div class="font-bold mb-2">Framing Methods</div>
-    <ul class="text-sm list-disc pl-5 space-y-2">
-      <li><strong>Character Count</strong> — first field specifies number of characters. <em>Problem:</em> if count field corrupted, all boundaries lost.</li>
-      <li><strong>Character Stuffing</strong> — special chars DLE STX (start) and DLE ETX (end). If DLE appears in data, escape it by inserting DLE before it. <br>
-        <code class="text-xs bg-gray-100 p-1 rounded">Data: A DLE B  →  Frame: DLE STX A DLE DLE B DLE ETX</code></li>
-      <li><strong>Bit Stuffing (HDLC)</strong> — frames delimited by flag <code>01111110</code>. After 5 consecutive 1s in data, sender inserts a 0. Receiver removes it.<br>
-        <div class="bg-gray-100 p-2 rounded mt-1 font-mono text-xs">
-          <code>Data: 01111110 11111011111110 01111110</code><br>
-          <code>Sent: 01111110 111110 11111100 01111110</code>
+    <div class="card mb-4">
+      <div class="font-bold mb-2">Two Sublayers (IEEE 802)</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="bg-blue-50 border border-blue-200 p-3 rounded">
+          <div class="font-extrabold text-blue-700">LLC — Logical Link Control (Upper)</div>
+          <ul class="text-xs mt-1 list-disc pl-4 space-y-1">
+            <li><strong>Protocol Multiplexing</strong> — identifies which upper-layer protocol (IP, ARP) a frame belongs to using Service Access Points (SAPs)</li>
+            <li><strong>Error Detection & Correction</strong> — CRC, ARQ, checksums; requests retransmission if corrupted</li>
+            <li><strong>Flow Control</strong> — Stop-and-Wait & Sliding Window to prevent fast sender overwhelming slow receiver</li>
+            <li><strong>Framing & Synchronization</strong> — marks start/end of frames so receiver knows boundaries</li>
+          </ul>
         </div>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- UNIT 2: ERROR TYPES & CAUSES -->
-<section id="s2">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">02</div>
-    <div>
-      <div class="tag tag-blue mb-1">Unit 2 · L6</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Types & Causes</h2>
-      <p class="text-sm text-[var(--muted)]">Theory</p>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="font-bold mb-2">Causes of Errors</div>
-    <div class="overflow-x-auto">
-      <table>
-        <thead><tr><th>Cause</th><th>Description</th><th>Effect</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Thermal Noise</strong></td><td>Random electron motion due to heat</td><td>Continuous background hiss</td></tr>
-          <tr><td><strong>Impulse Noise</strong></td><td>Sudden disturbance — lightning, switching devices</td><td>Short but corrupts multiple bits</td></tr>
-          <tr><td><strong>Cross Talk</strong></td><td>Signal from one channel bleeds into another</td><td>Common in twisted-pair telephone lines</td></tr>
-          <tr><td><strong>Attenuation</strong></td><td>Signal weakens over long distances</td><td>Receiver misinterprets bits</td></tr>
-          <tr><td><strong>Jitter</strong></td><td>Small variations in signal arrival time</td><td>VoIP / video quality degradation</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="font-bold mb-2">Types of Errors</div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div class="highlight-green p-3">
-        <div class="font-extrabold text-[var(--accent3)] mb-1">Single-Bit Error</div>
-        <ul class="text-xs list-disc pl-4 space-y-1">
-          <li>Only <strong>one bit</strong> flipped per data unit</li>
-          <li>Rare in modern high-speed networks</li>
-          <li>Easier to detect with parity bits</li>
-        </ul>
-        <div class="bg-white border border-[var(--border)] p-2 rounded mt-2 text-xs font-mono">
-          <div class="text-[var(--muted)] mb-1 uppercase text-[10px] font-bold">Example</div>
-          Sent: 100<strong>1</strong>101 &nbsp;→&nbsp; Received: 100<strong>1</strong>111<br>Bit 5 flipped: 0 → 1
-        </div>
-      </div>
-      <div class="highlight p-3">
-        <div class="font-extrabold text-[var(--accent)] mb-1">Burst Error</div>
-        <ul class="text-xs list-disc pl-4 space-y-1">
-          <li><strong>Two or more consecutive bits</strong> altered</li>
-          <li>Much more common — channel disturbances hit groups of bits</li>
-          <li>Length = first corrupted bit to last (bits in between may be fine)</li>
-          <li>Requires stronger methods like CRC</li>
-        </ul>
-        <div class="bg-white border border-[var(--border)] p-2 rounded mt-2 text-xs font-mono">
-          <div class="text-[var(--muted)] mb-1 uppercase text-[10px] font-bold">Example</div>
-          Sent: 11010<strong>01111</strong> &nbsp;→&nbsp; Received: 11000<strong>10111</strong><br>Bits 3–7 corrupted (burst length = 5)
+        <div class="bg-green-50 border border-green-200 p-3 rounded">
+          <div class="font-extrabold text-green-700">MAC — Media Access Control (Lower)</div>
+          <ul class="text-xs mt-1 list-disc pl-4 space-y-1">
+            <li><strong>Physical Addressing</strong> — assigns 48-bit MAC addresses (e.g., <code>00:1A:2B:3C:4D:5E</code>)</li>
+            <li><strong>Channel Access Control</strong> — CSMA/CD, CSMA/CA, Token Passing to prevent collisions</li>
+            <li><strong>Framing</strong> — converts data into frames (header + payload + trailer with CRC)</li>
+            <li><strong>Error Detection at Frame Level</strong> — basic CRC at hardware level, quickly discards corrupted frames</li>
+          </ul>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="card highlight-blue text-sm">
-    <span class="tag tag-blue">Key Terms</span>
-    <p class="mt-1"><strong>Dataword</strong> = original data before encoding (e.g., <code>1101</code>)<br>
-    <strong>Codeword</strong> = dataword + redundant bits (e.g., <code>11011</code>)</p>
-  </div>
-</section>
-
-<!-- UNIT 3: ERROR DETECTION METHODS -->
-<section id="s3">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">03</div>
-    <div>
-      <div class="tag tag-green mb-1">Unit 3 · L6</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Detection Methods — VRC, LRC, Checksum, CRC</h2>
-      <p class="text-sm text-[var(--muted)]">Calculation</p>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="font-bold mb-2">① VRC — Vertical Redundancy Check (Parity Bit)</div>
-    <p class="text-sm mb-3">Add <strong>one extra bit</strong> to each data unit so the total number of 1s is even (even parity) or odd (odd parity).</p>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div class="bg-gray-50 p-3 rounded">
-        <div class="font-bold text-xs uppercase text-[var(--muted)] mb-2">Sender Steps</div>
-        <ul class="text-xs space-y-1 list-decimal pl-4">
-          <li>Count the number of 1s in the data unit.</li>
-          <li>Even parity: parity bit = 0 if count is already even; = 1 if odd.</li>
-          <li>Transmit data + parity bit.</li>
-        </ul>
-      </div>
-      <div class="bg-gray-50 p-3 rounded">
-        <div class="font-bold text-xs uppercase text-[var(--muted)] mb-2">Receiver Steps</div>
-        <ul class="text-xs space-y-1 list-decimal pl-4">
-          <li>Count 1s in received data + parity bit.</li>
-          <li>If parity rule violated → error detected; otherwise → assume no error.</li>
-        </ul>
+    <div class="card mb-4">
+      <div class="font-bold mb-2">5 Main Services of the Data Link Layer</div>
+      <div class="overflow-x-auto">
+        <table>
+          <thead><tr><th>Service</th><th>What it does</th><th>Technique</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1. Framing</strong></td><td>Divides bit stream into structured frames with clear boundaries</td><td>Character Count, Bit Stuffing, Char Stuffing</td></tr>
+            <tr><td><strong>2. Physical Addressing</strong></td><td>Adds source & destination MAC address to every frame</td><td>48-bit MAC address</td></tr>
+            <tr><td><strong>3. Flow Control</strong></td><td>Prevents sender overwhelming receiver with different speeds</td><td>Stop-and-Wait, Sliding Window</td></tr>
+            <tr><td><strong>4. Error Control</strong></td><td>Detects / corrects frame corruption during transmission</td><td>Parity, CRC, Hamming; ARQ</td></tr>
+            <tr><td><strong>5. Access Control</strong></td><td>Determines who may use shared medium at any given time</td><td>CSMA/CD, CSMA/CA, Token Passing, FDMA/TDMA/CDMA</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="highlight-blue p-2 mt-4 text-xs font-mono">
-      <strong>Even Parity Example:</strong> Data: 10110010 → four 1s (even) → parity bit = 0<br>
-      Transmitted: 10110010 <strong>0</strong>
-    </div>
-  </div>
 
-  <div class="card mb-4">
-    <div class="font-bold mb-2">② LRC — Longitudinal Redundancy Check (2D Parity)</div>
-    <p class="text-sm mb-3">Arrange data as a block of rows. Compute parity for each <strong>column</strong> → the column parities form an extra <strong>LRC row</strong> appended after the data.</p>
-    <div class="highlight-green p-3 text-xs font-mono mb-3">
-      <div class="font-bold mb-1 uppercase text-[10px] text-[var(--muted)]">Example — 4×8 block, even parity</div>
-      D1 = 11001010<br>D2 = 01011011<br>D3 = 11110000<br>D4 = 00011101<br><br>
-      Column parity row (LRC) = 01111000<br>
-      Transmit D1, D2, D3, D4 + LRC row.
+    <div class="card highlight-blue mb-4">
+      <div class="font-bold mb-2">Framing Methods</div>
+      <ul class="text-sm list-disc pl-5 space-y-2">
+        <li><strong>Character Count</strong> — first field specifies number of characters. <em>Problem:</em> if count field corrupted, all boundaries lost.</li>
+        <li><strong>Character Stuffing</strong> — special chars DLE STX (start) and DLE ETX (end). If DLE appears in data, escape it by inserting DLE before it. <br>
+          <code class="text-xs bg-gray-100 p-1 rounded">Data: A DLE B  →  Frame: DLE STX A DLE DLE B DLE ETX</code></li>
+        <li><strong>Bit Stuffing (HDLC)</strong> — frames delimited by flag <code>01111110</code>. After 5 consecutive 1s in data, sender inserts a 0. Receiver removes it.<br>
+          <div class="bg-gray-100 p-2 rounded mt-1 font-mono text-xs">
+            <code>Data: 01111110 11111011111110 01111110</code><br>
+            <code>Sent: 01111110 111110 11111100 01111110</code>
+          </div>
+        </li>
+      </ul>
     </div>
-    <div class="grid grid-cols-2 gap-2 text-[10px]">
-      <div class="bg-green-50 p-2 rounded">✓ Detects most burst errors & corrects single-bit.</div>
-      <div class="bg-red-50 p-2 rounded">✗ Cannot correct arbitrary multi-bit errors.</div>
-    </div>
-  </div>
+  </section>
 
-  <div class="card mb-4">
-    <div class="font-bold mb-2">③ Checksum (Ones'-Complement Sum)</div>
-    <p class="text-sm mb-3">Divide data into fixed-length words. Sum them using ones'-complement arithmetic. Complement the sum → this is the checksum sent with data.</p>
-    <div class="space-y-3">
-      <div class="bg-blue-50 p-3 rounded text-xs">
-        <div class="font-bold mb-1">Sender Logic (16-bit words)</div>
-        Sum words binary. Wrap carry (add to LSB). Take bitwise NOT → <strong>Checksum</strong>.
+  <!-- SECTION 2: ERROR TYPES -->
+  <section id="s2">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">02</div>
+      <div>
+        <div class="tag tag-blue mb-1">Unit 2 · L6</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Types & Causes</h2>
+        <p class="text-sm text-[var(--muted)]">Theory</p>
       </div>
-      <div class="bg-gray-100 p-3 rounded font-mono text-[11px]">
+    </div>
+
+    <div class="card mb-4">
+      <div class="font-bold mb-2">Causes of Errors</div>
+      <div class="overflow-x-auto">
+        <table>
+          <thead><tr><th>Cause</th><th>Description</th><th>Effect</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Thermal Noise</strong></td><td>Random electron motion due to heat</td><td>Continuous background hiss</td></tr>
+            <tr><td><strong>Impulse Noise</strong></td><td>Sudden disturbance — lightning, switching devices</td><td>Short but corrupts multiple bits</td></tr>
+            <tr><td><strong>Cross Talk</strong></td><td>Signal from one channel bleeds into another</td><td>Common in twisted-pair telephone lines</td></tr>
+            <tr><td><strong>Attenuation</strong></td><td>Signal weakens over long distances</td><td>Receiver misinterprets bits</td></tr>
+            <tr><td><strong>Jitter</strong></td><td>Small variations in signal arrival time</td><td>VoIP / video quality degradation</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="font-bold mb-2">Types of Errors</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="highlight-green p-3">
+          <div class="font-extrabold text-[var(--accent3)] mb-1">Single-Bit Error</div>
+          <ul class="text-xs list-disc pl-4 space-y-1">
+            <li>Only <strong>one bit</strong> flipped per data unit</li>
+            <li>Rare in modern high-speed networks</li>
+            <li>Easier to detect with parity bits</li>
+          </ul>
+          <div class="bg-white border border-[var(--border)] p-2 rounded mt-2 text-xs font-mono">
+            <div class="text-[var(--muted)] mb-1 uppercase text-[10px] font-bold">Example</div>
+            Sent: <code>100<strong>1</strong>101</code> &nbsp;→&nbsp; Received: <code>100<strong>1</strong>111</code><br>Bit 5 flipped: 0 → 1
+          </div>
+        </div>
+        <div class="highlight p-3">
+          <div class="font-extrabold text-[var(--accent)] mb-1">Burst Error</div>
+          <ul class="text-xs list-disc pl-4 space-y-1">
+            <li><strong>Two or more consecutive bits</strong> altered</li>
+            <li>Much more common — channel disturbances hit groups of bits</li>
+            <li>Length = first corrupted bit to last (bits in between may be fine)</li>
+            <li>Requires stronger methods like CRC</li>
+          </ul>
+          <div class="bg-white border border-[var(--border)] p-2 rounded mt-2 text-xs font-mono">
+            <div class="text-[var(--muted)] mb-1 uppercase text-[10px] font-bold">Example</div>
+            Sent: <code>11010<strong>01111</strong></code> &nbsp;→&nbsp; Received: <code>11000<strong>10111</strong></code><br>Bits 3–7 corrupted (burst length = 5)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card highlight-blue text-sm">
+      <div class="tag tag-blue mb-1">Key Terms</div>
+      <p class="mt-1"><strong>Dataword</strong> = original data before encoding (e.g., <code>1101</code>)<br>
+      <strong>Codeword</strong> = dataword + redundant bits (e.g., <code>11011</code>)</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3: ERROR DETECTION -->
+  <section id="s3">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">03</div>
+      <div>
+        <div class="tag tag-green mb-1">Unit 3 · L6</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Detection Methods — VRC, LRC, Checksum, CRC</h2>
+        <p class="text-sm text-[var(--muted)]">Calculation</p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="font-bold mb-2">① VRC — Vertical Redundancy Check (Parity Bit)</div>
+      <p class="text-sm mb-3">Add <strong>one extra bit</strong> to each data unit so the total number of 1s is even (even parity) or odd (odd parity).</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-gray-50 p-3 rounded">
+          <div class="font-bold text-xs uppercase text-[var(--muted)] mb-2">Sender Steps</div>
+          <ol class="steps text-xs">
+            <li>Count the number of 1s in the data unit.</li>
+            <li>Even parity: parity bit = 0 if count is already even; = 1 if odd. (Odd parity: reverse.)</li>
+            <li>Transmit data + parity bit.</li>
+          </ol>
+        </div>
+        <div class="bg-gray-50 p-3 rounded">
+          <div class="font-bold text-xs uppercase text-[var(--muted)] mb-2">Receiver Steps</div>
+          <ol class="steps text-xs">
+            <li>Count 1s in received data + parity bit.</li>
+            <li>If parity rule violated → error detected; otherwise → assume no error.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="highlight-blue p-2 mt-4 text-xs font-mono">
+        <strong>Even Parity Example:</strong> Data: <code>10110010</code> → four 1s (even) → parity bit = <code>0</code><br>
+        Transmitted: <code>10110010 <strong>0</strong></code>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+        <div class="highlight-green p-3 text-xs">
+          <div class="font-bold text-[var(--accent3)] mb-1">✓ Strengths</div>
+          <ul class="list-disc pl-4 space-y-1">
+            <li>Very simple & cheap</li>
+            <li>Detects odd number of bit errors (1, 3, 5…)</li>
+            <li>Common in low-cost serial links</li>
+          </ul>
+        </div>
+        <div class="highlight p-3 text-xs">
+          <div class="font-bold text-[var(--accent)] mb-1">✗ Weaknesses</div>
+          <ul class="list-disc pl-4 space-y-1">
+            <li>Fails on even number of flips (2 bits cancel out)</li>
+            <li>Not reliable for burst errors</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="font-bold mb-2">② LRC — Longitudinal Redundancy Check (2D Parity)</div>
+      <p class="text-sm mb-3">Arrange data as a block of rows. Compute parity for each <strong>column</strong> → the column parities form an extra <strong>LRC row</strong> appended after the data.</p>
+      <div class="highlight-blue p-3 text-xs font-mono mb-3">
+        <div class="font-bold mb-1 uppercase text-[10px] text-[var(--muted)]">Example — 4×8 block, even parity</div>
+        <code>D1 = 11001010<br>D2 = 01011011<br>D3 = 11110000<br>D4 = 00011101</code><br><br>
+        Column parity row (LRC) = <code>01111000</code><br>
+        Transmit D1, D2, D3, D4 + LRC row.
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="highlight-green p-3 text-xs">
+          <div class="font-bold text-[var(--accent3)] mb-1">✓ Strengths</div>
+          <ul class="list-disc pl-4 space-y-1">
+            <li>Detects most burst errors & multiple errors affecting columns/rows</li>
+            <li>Can <strong>locate and correct</strong> a single-bit error (row ∩ column)</li>
+          </ul>
+        </div>
+        <div class="highlight p-3 text-xs">
+          <div class="font-bold text-[var(--accent)] mb-1">✗ Weaknesses</div>
+          <ul class="list-disc pl-4 space-y-1">
+            <li>More overhead than VRC</li>
+            <li>Cannot correct arbitrary multi-bit errors</li>
+            <li>Some pathological patterns escape detection</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="font-bold mb-2">③ Checksum (Ones'-Complement Sum)</div>
+      <p class="text-sm mb-3">Divide data into fixed-length words (16-bit in practice). Sum them using ones'-complement arithmetic. Complement the sum → this is the checksum sent with data.</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-gray-50 p-3 rounded">
+          <div class="font-bold text-xs uppercase text-[var(--muted)] mb-2">Sender (16-bit words)</div>
+          <ol class="steps text-xs">
+            <li>Break data into 16-bit words.</li>
+            <li>Add all words in binary. If carry beyond 16 bits, <strong>wrap it around</strong> (add carry to LSB).</li>
+            <li>Take bitwise NOT of final sum → <strong>Checksum</strong>.</li>
+            <li>Transmit data + checksum.</li>
+          </ol>
+        </div>
+        <div class="bg-gray-50 p-3 rounded">
+          <div class="font-bold text-xs uppercase text-[var(--muted)] mb-2">Receiver</div>
+          <ol class="steps text-xs">
+            <li>Sum all received 16-bit words including checksum using ones'-complement.</li>
+            <li>If result = all 1s (<code>0xFFFF</code>) → <strong>no error</strong>. Otherwise → error detected.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="highlight-blue p-3 mt-4 text-xs font-mono">
         <strong>8-bit Demo:</strong><br>
-        W1 = 01010101, W2 = 01100110<br>
-        Sum = 10111011 &nbsp;→&nbsp; Checksum = 01000100 (bitwise NOT)<br>
-        Receiver Sum: W1 + W2 + Checksum = 11111111 ✓
+        W1 = <code>01010101</code>, W2 = <code>01100110</code><br>
+        Sum = <code>10111011</code> &nbsp;→&nbsp; Checksum = <code>01000100</code> (bitwise NOT)<br>
+        Receiver Sum: W1 + W2 + Checksum = <code>11111111</code> ✓
+      </div>
+      <div class="highlight p-3 mt-3 text-xs">
+        <div class="tag tag-red mb-1">Note on Carries</div>
+        <p>If adding two 16-bit words gives a 17-bit result, <strong>wrap the carry</strong> (add it back into the LSB) before complementing. This is specific to ones'-complement arithmetic used in IP/TCP/UDP headers.</p>
       </div>
     </div>
-  </div>
 
-  <details class="card mb-4">
-    <summary class="font-bold flex justify-between items-center">
-      ④ CRC — Cyclic Redundancy Check (Polynomial Division) <span class="tag tag-gray">▼ details</span>
-    </summary>
-    <div class="mt-3 space-y-4">
-      <div class="highlight-green p-3 text-sm">
-        Treat bit sequence as binary polynomial. Divide by generator G using <strong>mod-2 (XOR) division</strong>. Remainder = CRC.
+    <div class="card mb-4">
+      <div class="font-bold mb-2">④ CRC — Cyclic Redundancy Check (Polynomial Division)</div>
+      <p class="text-sm mb-3">Treat the bit sequence as a binary polynomial. Divide by a fixed <strong>generator polynomial G</strong> (known to both sides). Remainder = CRC bits. Receiver divides received frame by same G; <strong>zero remainder = no error</strong>.</p>
+      <div class="highlight-green p-3 text-sm mb-4">
+        <div class="tag tag-green mb-1">Key Facts</div>
+        <ul class="text-xs list-disc pl-4 space-y-1 mt-1">
+          <li>Generator of degree <em>r</em> yields <em>r</em> CRC bits.</li>
+          <li>Detects all burst errors of length ≤ r.</li>
+          <li>Detects all single-bit errors (if G has ≥ 2 nonzero terms).</li>
+          <li>Implemented efficiently in hardware via linear-feedback shift registers (LFSRs).</li>
+          <li>Used in: <strong>Ethernet, HDLC, PPP, USB, storage devices</strong>.</li>
+        </ul>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="bg-gray-50 p-3 rounded">
-          <strong>Sender:</strong> Append r zeros to M. Divide by G. Append remainder R.
+          <div class="font-bold text-xs uppercase text-[var(--muted)] mb-2">Sender Steps</div>
+          <ol class="steps text-xs">
+            <li>Let M = message bits. Choose generator G of degree r.</li>
+            <li>Multiply M by x^r → append r zeros to M.</li>
+            <li>Divide M·x^r by G using <strong>mod-2 (XOR) division</strong>.</li>
+            <li>Let R = remainder (r bits). Transmit T = M followed by R.</li>
+          </ol>
         </div>
         <div class="bg-gray-50 p-3 rounded">
-          <strong>Receiver:</strong> Divide received frame by G. Remainder 0 = OK.
+          <div class="font-bold text-xs uppercase text-[var(--muted)] mb-2">Receiver Steps</div>
+          <ol class="steps text-xs">
+            <li>Receive T' (may be corrupted).</li>
+            <li>Divide T' by G using mod-2 division.</li>
+            <li>If remainder = 0 → assume no error. If ≠ 0 → error detected.</li>
+          </ol>
         </div>
       </div>
-      <div class="bg-gray-100 p-3 rounded flex flex-col items-center">
+      <div class="highlight-blue p-3 mt-4 text-xs font-mono">
+        <strong>Worked Example:</strong> M = <code>1101011011</code> (10 bits), G = <code>10011</code> (degree 4, so r = 4)<br>
+        Step 1: Append 4 zeros → <code>11010110110000</code><br>
+        Step 2: XOR-divide by <code>10011</code> → remainder R = <code>1110</code><br>
+        Step 3: Transmitted frame T = <code>1101011011<strong>1110</strong></code><br>
+        Receiver divides <code>11010110111110</code> by <code>10011</code> → remainder = <code>0000</code> ✓
+      </div>
+      <div class="diagram-wrap">
         <svg width="460" height="60" viewBox="0 0 460 60" xmlns="http://www.w3.org/2000/svg">
           <rect x="0" y="10" width="320" height="36" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
           <text x="10" y="32" font-family="JetBrains Mono,monospace" font-size="12" fill="#475569">Message M (10 bits)</text>
@@ -299,564 +481,764 @@ section[id]{scroll-margin-top:5.5rem;}
           <text x="335" y="32" font-family="JetBrains Mono,monospace" font-size="12" fill="#e63946">CRC R (4 bits)</text>
           <text x="335" y="46" font-family="JetBrains Mono,monospace" font-size="12" fill="#0f172a">1110</text>
         </svg>
-        <div class="text-[10px] text-[var(--muted)] mt-2 mono">Transmitted Frame T = M + R = 11010110111110</div>
+        <div class="diagram-label">Transmitted Frame T = M + R = 14 bits</div>
       </div>
     </div>
-  </details>
 
-  <div class="card overflow-x-auto">
-    <div class="font-bold mb-2 text-xs uppercase text-[var(--muted)]">Quick Reference: Error Detection</div>
-    <table>
-      <thead><tr><th>Method</th><th>Detects</th><th>Corrects</th><th>Overhead</th><th>Used In</th></tr></thead>
-      <tbody class="text-[10px]">
-        <tr><td><strong>VRC / Parity</strong></td><td>Odd bit errors</td><td>No</td><td>1 bit / unit</td><td>Serial links</td></tr>
-        <tr><td><strong>LRC</strong></td><td>Burst + column errors</td><td>Single-bit</td><td>1 byte / block</td><td>Block protocols</td></tr>
-        <tr><td><strong>Checksum</strong></td><td>Single + many multi-bit</td><td>No</td><td>16 bits</td><td>IP, TCP, UDP</td></tr>
-        <tr><td><strong>CRC</strong></td><td>All bursts ≤ r bits</td><td>No</td><td>r bits</td><td>Ethernet, HDLC, USB</td></tr>
-        <tr><td><strong>Hamming</strong></td><td>Double-bit</td><td>Single-bit</td><td>r bits (2^r≥m+r+1)</td><td>Memory, FEC</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- UNIT 4: HAMMING CODE -->
-<section id="s4">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">04</div>
-    <div>
-      <div class="tag tag-red mb-1">Unit 4 · L6</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Correction — Hamming Code</h2>
-      <p class="text-sm text-[var(--muted)]">Calculation</p>
+    <div class="card overflow-x-auto">
+      <div class="font-bold mb-2 text-xs uppercase text-[var(--muted)]">At a Glance Comparison</div>
+      <table>
+        <thead><tr><th>Method</th><th>Detects Single-bit?</th><th>Detects Burst?</th><th>Corrects?</th><th>Used In</th></tr></thead>
+        <tbody>
+          <tr><td>VRC (Parity)</td><td>✅ (odd count)</td><td>❌</td><td>❌</td><td>Serial links, RAM</td></tr>
+          <tr><td>LRC (2D Parity)</td><td>✅</td><td>Partial</td><td>Single-bit only</td><td>Legacy protocols</td></tr>
+          <tr><td>Checksum</td><td>✅</td><td>Partial</td><td>❌</td><td>IP, TCP, UDP</td></tr>
+          <tr><td><strong>CRC</strong></td><td>✅</td><td>✅ (≤ r bits)</td><td>❌ (detect only)</td><td>Ethernet, USB, HDLC</td></tr>
+        </tbody>
+      </table>
     </div>
-  </div>
+  </section>
 
-  <div class="card mb-4">
-    <div class="font-bold mb-2">Correction Approaches</div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div class="highlight-green p-3">
-        <div class="font-bold text-[var(--accent3)] mb-1">FEC (Forward Error Correction)</div>
-        <p class="text-xs">Sender adds redundant bits so receiver can <strong>self-correct</strong>. Best for satellite/real-time.</p>
-      </div>
-      <div class="highlight-blue p-3">
-        <div class="font-bold text-[var(--accent2)] mb-1">ARQ (Retransmission)</div>
-        <p class="text-xs">Receiver detects error and asks for <strong>retransmit</strong>. Best for file transfers (TCP).</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="font-bold mb-2 text-sm uppercase tracking-wider text-[var(--muted)]">Hamming Code Procedure</div>
-    <div class="space-y-4 text-sm">
+  <!-- SECTION 4: HAMMING CODE -->
+  <section id="s4">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">04</div>
       <div>
-        <strong>1. Number of parity bits:</strong>
-        <div class="bg-gray-100 p-2 rounded font-mono text-center my-2 text-[var(--accent)] font-bold">2<sup>r</sup> ≥ m + r + 1</div>
-        <p class="text-xs italic text-[var(--muted)]">m=data bits, r=parity bits. For m=4, we need r=3 (2³=8 ≥ 4+3+1).</p>
+        <div class="tag tag-red mb-1">Unit 4 · L6</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Correction — Hamming Code & Single-Bit Correction</h2>
+        <p class="text-sm text-[var(--muted)]">Calculation</p>
       </div>
-      <div>
-        <strong>2. Parity bit positions:</strong>
-        <p class="text-xs">Powers of 2: 1, 2, 4, 8, ...</p>
-      </div>
-      <div class="bg-gray-50 p-3 rounded">
-        <strong>3. Check-Skip Pattern:</strong>
-        <div class="text-[10px] mt-2 space-y-1 mono">
-          <div>P1: Check 1, skip 1 (1,3,5,7...)</div>
-          <div>P2: Check 2, skip 2 (2,3,6,7...)</div>
-          <div>P4: Check 4, skip 4 (4,5,6,7...)</div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="font-bold mb-2">Two Approaches to Error Correction</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="highlight-green p-3">
+          <div class="font-bold text-[var(--accent3)] mb-1">FEC — Forward Error Correction</div>
+          <ul class="text-xs list-disc pl-4 space-y-1">
+            <li>Sender adds redundant bits to let receiver <strong>self-correct</strong> without retransmission</li>
+            <li>Examples: Hamming code, Reed-Solomon</li>
+            <li>Used in: real-time video, satellite, memory</li>
+            <li>Drawback: bandwidth overhead</li>
+          </ul>
+        </div>
+        <div class="highlight p-3">
+          <div class="font-bold text-[var(--accent)] mb-1">ARQ — Automatic Repeat Request</div>
+          <ul class="text-xs list-disc pl-4 space-y-1">
+            <li>Receiver detects error and asks sender to <strong>retransmit</strong></li>
+            <li>Examples: Stop-and-Wait, Go-Back-N, Selective Repeat</li>
+            <li>Used in: TCP, file transfers</li>
+            <li>Drawback: latency from retransmission</li>
+          </ul>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="card mb-4">
-    <div class="font-bold mb-3 text-center">Visual Example: Encode 1011</div>
-    <div class="flex flex-wrap gap-2 justify-center mb-4">
-      <div class="w-10 h-12 border-2 border-[var(--accent2)] flex flex-col items-center justify-center rounded">
-        <span class="text-[8px] text-[var(--muted)]">P1</span><span class="font-bold">0</span>
+    <div class="card mb-4">
+      <div class="font-bold mb-2">Hamming Code — Key Principles</div>
+      <p class="text-sm">Developed by Richard W. Hamming (1950). Can <strong>detect and correct single-bit errors</strong> and detect (not correct) double-bit errors.</p>
+      
+      <div class="mt-4">
+        <div class="font-bold text-sm mb-1">Step 1 — How many parity bits do I need?</div>
+        <div class="formula">2<sup>r</sup> ≥ m + r + 1 &nbsp;&nbsp;where m = data bits, r = parity bits needed</div>
+        <div class="bg-gray-50 p-3 rounded text-xs mt-2">
+          <strong>Example: m = 4 data bits</strong><br>
+          Try r = 2: 2² = 4, need 4+2+1 = 7 → 4 ≥ 7? <strong>FALSE</strong><br>
+          Try r = 3: 2³ = 8, need 4+3+1 = 8 → 8 ≥ 8? <strong>TRUE ✓</strong><br>
+          So 3 parity bits, total codeword = 4+3 = <strong>7 bits</strong>
+        </div>
       </div>
-      <div class="w-10 h-12 border-2 border-[var(--accent2)] flex flex-col items-center justify-center rounded">
-        <span class="text-[8px] text-[var(--muted)]">P2</span><span class="font-bold">1</span>
-      </div>
-      <div class="w-10 h-12 border-2 border-[var(--accent3)] flex flex-col items-center justify-center rounded">
-        <span class="text-[8px] text-[var(--muted)]">D1</span><span class="font-bold">1</span>
-      </div>
-      <div class="w-10 h-12 border-2 border-[var(--accent2)] flex flex-col items-center justify-center rounded">
-        <span class="text-[8px] text-[var(--muted)]">P4</span><span class="font-bold">0</span>
-      </div>
-      <div class="w-10 h-12 border-2 border-[var(--accent3)] flex flex-col items-center justify-center rounded">
-        <span class="text-[8px] text-[var(--muted)]">D2</span><span class="font-bold">0</span>
-      </div>
-      <div class="w-10 h-12 border-2 border-[var(--accent3)] flex flex-col items-center justify-center rounded">
-        <span class="text-[8px] text-[var(--muted)]">D3</span><span class="font-bold">1</span>
-      </div>
-      <div class="w-10 h-12 border-2 border-[var(--accent3)] flex flex-col items-center justify-center rounded">
-        <span class="text-[8px] text-[var(--muted)]">D4</span><span class="font-bold">1</span>
-      </div>
-    </div>
-    <div class="highlight-blue p-3 text-xs">
-      <strong>Error Location:</strong> If received 0110<strong>1</strong>11 (bit 5 flipped), parities P1 and P4 fail. Binary (P4 P2 P1) = 101 = <strong>Position 5</strong>. Correct it by flipping.
-    </div>
-  </div>
-</section>
 
-<!-- UNIT 5: ARQ PROTOCOLS -->
-<section id="s5">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">05</div>
-    <div>
-      <div class="tag tag-blue mb-1">Unit 5 · L7</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Recovery Protocols — ARQ</h2>
-      <p class="text-sm text-[var(--muted)]">Protocol</p>
-    </div>
-  </div>
-
-  <div class="card highlight mb-4">
-    <div class="tag tag-red mb-1">Concept</div>
-    <p class="font-bold">Automatic Repeat Request: receiver detects errors in frames & requests retransmission. Uses ACK (positive) and NAK (negative) acknowledgments, plus timeouts.</p>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 text-xs">
-    <div class="bg-red-50 border border-red-100 p-3 rounded">
-      <div class="font-bold text-red-700 mb-1 uppercase tracking-tighter">Stop-and-Wait</div>
-      Window=1. Send → Wait → Send. Simple but low efficiency on high-latency links.
-    </div>
-    <div class="bg-blue-50 border border-blue-100 p-3 rounded">
-      <div class="font-bold text-blue-700 mb-1 uppercase tracking-tighter">Go-Back-N</div>
-      Window=N. On error: retransmit bad frame + all subsequent. Receiver discards out-of-order.
-    </div>
-    <div class="bg-green-50 border border-green-100 p-3 rounded">
-      <div class="font-bold text-green-700 mb-1 uppercase tracking-tighter">Selective Repeat</div>
-      Window=N. Retransmit ONLY bad frame. Receiver buffers out-of-order. Most efficient.
-    </div>
-  </div>
-
-  <div class="card mb-4 overflow-x-auto">
-    <table>
-      <thead><tr><th>Feature</th><th>Stop-and-Wait</th><th>Go-Back-N</th><th>Selective Repeat</th></tr></thead>
-      <tbody class="text-[10px]">
-        <tr><td>Window Size (S/R)</td><td>1 / 1</td><td>N / 1</td><td>N / N</td></tr>
-        <tr><td>Retransmit</td><td>Bad frame only</td><td>Error + all after</td><td>Error frame only</td></tr>
-        <tr><td>Buffering?</td><td>No</td><td>No</td><td>Yes (out-of-order)</td></tr>
-        <tr><td>Efficiency</td><td>Lowest</td><td>Medium</td><td>Highest</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <details class="card mb-4">
-    <summary class="font-bold flex justify-between items-center text-sm">
-      Protocol Visualizations <span class="tag tag-gray">▼ view diagrams</span>
-    </summary>
-    <div class="mt-4 space-y-6">
-      <div class="flex flex-col items-center">
-        <div class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 italic">Stop-and-Wait Visual</div>
-        <svg width="400" height="180" viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
-          <line x1="80" y1="20" x2="80" y2="170" stroke="#cbd5e1" stroke-width="2"/>
-          <line x1="320" y1="20" x2="320" y2="170" stroke="#cbd5e1" stroke-width="2"/>
-          <text x="80" y="14" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" fill="#94a3b8">Sender</text>
-          <text x="320" y="14" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" fill="#94a3b8">Receiver</text>
-          <line x1="80" y1="35" x2="320" y2="70" stroke="#2d6a4f" stroke-width="1.5"/>
-          <text x="175" y="47" font-family="JetBrains Mono,monospace" font-size="10" fill="#2d6a4f">Frame 0</text>
-          <line x1="320" y1="80" x2="80" y2="110" stroke="#457b9d" stroke-width="1.5"/>
-          <text x="175" y="100" font-family="JetBrains Mono,monospace" font-size="10" fill="#457b9d">ACK 0</text>
-          <line x1="80" y1="118" x2="200" y2="140" stroke="#e63946" stroke-width="1.5" stroke-dasharray="5,3"/>
-          <text x="115" y="135" font-family="JetBrains Mono,monospace" font-size="10" fill="#e63946">Frame 1 ✕</text>
-          <text x="80" y="162" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748b">timeout → retransmit</text>
-        </svg>
+      <div class="mt-4">
+        <div class="font-bold text-sm mb-1">Step 2 — Parity Bit Positions</div>
+        <p class="text-xs">Parity bits go at positions that are <strong>powers of 2</strong>: positions 1, 2, 4, 8, 16, …</p>
       </div>
-      <div class="flex flex-col items-center">
-        <div class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 italic">Go-Back-N Visual (N=4)</div>
-        <svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-          <line x1="60" y1="20" x2="60" y2="190" stroke="#cbd5e1" stroke-width="2"/>
-          <line x1="340" y1="20" x2="340" y2="190" stroke="#cbd5e1" stroke-width="2"/>
-          <text x="60" y="14" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" fill="#94a3b8">Sender</text>
-          <text x="340" y="14" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" fill="#94a3b8">Receiver</text>
-          <line x1="60" y1="30" x2="340" y2="55"  stroke="#2d6a4f" stroke-width="1.5"/>
-          <text x="185" y="37" font-family="JetBrains Mono,monospace" font-size="9" fill="#2d6a4f">0 ✓</text>
-          <line x1="60" y1="50" x2="340" y2="75"  stroke="#2d6a4f" stroke-width="1.5"/>
-          <text x="185" y="57" font-family="JetBrains Mono,monospace" font-size="9" fill="#2d6a4f">1 ✓</text>
-          <line x1="60" y1="70" x2="200" y2="95"  stroke="#e63946" stroke-width="1.5" stroke-dasharray="4,3"/>
-          <text x="110" y="77" font-family="JetBrains Mono,monospace" font-size="9" fill="#e63946">2 ✕ (corrupt)</text>
-          <line x1="60" y1="90" x2="340" y2="115" stroke="#2d6a4f" stroke-width="1.5"/>
-          <text x="185" y="97" font-family="JetBrains Mono,monospace" font-size="9" fill="#94a3b8">3 (discarded)</text>
-          <line x1="340" y1="80" x2="60" y2="120" stroke="#457b9d" stroke-width="1.5"/>
-          <text x="215" y="95" font-family="JetBrains Mono,monospace" font-size="9" fill="#457b9d">ACK 1</text>
-          <line x1="60" y1="130" x2="340" y2="155" stroke="#4c1d95" stroke-width="1.5"/>
-          <text x="185" y="137" font-family="JetBrains Mono,monospace" font-size="9" fill="#4c1d95">2 (re-tx)</text>
-        </svg>
+
+      <div class="mt-4">
+        <div class="font-bold text-sm mb-2">Step 3 — Which bits does each parity bit cover? (Check-Skip Method)</div>
+        <div class="overflow-x-auto">
+          <table>
+            <thead><tr><th>Parity Bit</th><th>Position</th><th>Pattern</th><th>Covers positions</th></tr></thead>
+            <tbody>
+              <tr><td>P1</td><td>1</td><td>Check 1, skip 1</td><td>1, 3, 5, 7, 9, 11…</td></tr>
+              <tr><td>P2</td><td>2</td><td>Check 2, skip 2</td><td>2, 3, 6, 7, 10, 11…</td></tr>
+              <tr><td>P4</td><td>4</td><td>Check 4, skip 4</td><td>4, 5, 6, 7, 12, 13…</td></tr>
+              <tr><td>P8</td><td>8</td><td>Check 8, skip 8</td><td>8, 9, 10, 11, 12, 13, 14, 15…</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </details>
-</section>
 
-<!-- UNIT 6: MULTIPLE ACCESS PROTOCOLS -->
-<section id="s6">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">06</div>
-    <div>
-      <div class="tag tag-green mb-1">Unit 6 · L8</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Multiple Access Protocols</h2>
-      <p class="text-sm text-[var(--muted)]">Protocol</p>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div class="card bg-gray-50 border-gray-200">
-      <div class="font-bold mb-1 text-sm">① TDMA (Time Division)</div>
-      <p class="text-xs text-[var(--muted)] mb-2">Discrete time slots; one exclusive slot per frame.</p>
-      <ul class="text-[10px] space-y-1 list-disc pl-4">
-        <li>Orderly & predictable (GSM cellular)</li>
-        <li>Wastes bandwidth if device is idle</li>
-      </ul>
-    </div>
-    <div class="card bg-blue-50 border-blue-200">
-      <div class="font-bold mb-1 text-sm text-blue-800">② CDMA (Code Division)</div>
-      <p class="text-xs text-blue-600 mb-2">All users share same freq; unique spreading codes.</p>
-      <ul class="text-[10px] space-y-1 list-disc pl-4 text-blue-700">
-        <li>High spectral efficiency (3G/WCDMA)</li>
-        <li>Complex; needs precise power control</li>
-      </ul>
-    </div>
-    <div class="card bg-purple-50 border-purple-200">
-      <div class="font-bold mb-1 text-sm text-purple-800">③ FDD (Frequency Division Duplex)</div>
-      <p class="text-xs text-purple-600 mb-2">Uplink and downlink on separate frequency bands.</p>
-      <ul class="text-[10px] space-y-1 list-disc pl-4 text-purple-700">
-        <li>Simultaneous two-way (3G/4G cellular)</li>
-        <li>Needs wider spectrum allocation</li>
-      </ul>
-    </div>
-    <div class="card bg-green-50 border-green-200">
-      <div class="font-bold mb-1 text-sm text-green-800">④ CSMA/CA (Avoidance)</div>
-      <p class="text-xs text-green-600 mb-2">Used in Wi-Fi (802.11). Sense → Wait → RTS/CTS.</p>
-      <ul class="text-[10px] space-y-1 list-disc pl-4 text-green-700">
-        <li>Works where detection is impractical (wireless)</li>
-        <li>Overhead from backoff + control frames</li>
-      </ul>
-    </div>
-    <div class="card bg-red-50 border-red-200">
-      <div class="font-bold mb-1 text-sm text-red-800">⑤ CSMA/CD (Detection)</div>
-      <p class="text-xs text-red-600 mb-2">Used in wired Ethernet (802.3). Sense → Send → Listen.</p>
-      <ul class="text-[10px] space-y-1 list-disc pl-4 text-red-700">
-        <li>Fast resolution for wired collisions</li>
-        <li>Inefficient under high load</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="card mt-4 overflow-x-auto">
-    <div class="font-bold mb-2 text-xs uppercase text-[var(--muted)]">At a Glance Comparison</div>
-    <table>
-      <thead><tr><th>Protocol</th><th>Medium</th><th>Collision?</th><th>Real-World Use</th></tr></thead>
-      <tbody class="text-[10px]">
-        <tr><td>TDMA</td><td>Wireless/Wired</td><td>None (time)</td><td>GSM (2G)</td></tr>
-        <tr><td>CDMA</td><td>Wireless</td><td>None (code)</td><td>3G (WCDMA)</td></tr>
-        <tr><td>FDD</td><td>Wireless</td><td>None (freq)</td><td>3G/4G Cellular</td></tr>
-        <tr><td>CSMA/CA</td><td>Wireless</td><td>Avoided</td><td>Wi-Fi (802.11)</td></tr>
-        <tr><td>CSMA/CD</td><td>Wired</td><td>Detected</td><td>Ethernet (802.3)</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- UNIT 7: MAC ADDRESSING & ETHERNET -->
-<section id="s7">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">07</div>
-    <div>
-      <div class="tag tag-blue mb-1">Unit 7 · L9</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">MAC Addressing & Ethernet</h2>
-      <p class="text-sm text-[var(--muted)]">Network Hardware</p>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="font-bold mb-2">MAC Address (Physical Address)</div>
-    <p class="text-sm mb-3">A 48-bit (6 byte) hardware address burned into every NIC. Expressed in Hexadecimal.</p>
-    <div class="bg-gray-100 p-3 rounded font-mono text-center mb-3">
-      <span class="text-blue-600">00:1A:2B</span> : <span class="text-green-600">3C:4D:5E</span><br>
-      <span class="text-[10px] text-[var(--muted)] uppercase font-sans font-bold">(OUI - Manufacturer) &nbsp; : &nbsp; (NIC Specific)</span>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[10px] font-bold text-center">
-      <div class="p-2 border border-gray-200 rounded">UNICAST<br><span class="text-[var(--muted)] font-normal italic">1 to 1</span></div>
-      <div class="p-2 border border-gray-200 rounded">MULTICAST<br><span class="text-[var(--muted)] font-normal italic">1 to Group</span></div>
-      <div class="p-2 border border-gray-200 rounded text-red-600">BROADCAST<br><span class="font-normal italic">FF:FF:FF:FF:FF:FF</span></div>
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="font-bold mb-3">Ethernet Frame Structure (IEEE 802.3)</div>
-    <div class="flex flex-col items-center">
-      <svg width="100%" height="80" viewBox="0 0 550 80" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="20" width="60" height="40" fill="#f1f5f9" stroke="#cbd5e1"/>
-        <text x="30" y="45" text-anchor="middle" font-size="10" font-family="sans-serif">Preamble</text>
-        <text x="30" y="75" text-anchor="middle" font-size="9" fill="#94a3b8">7B</text>
-        <rect x="60" y="20" width="30" height="40" fill="#f1f5f9" stroke="#cbd5e1"/>
-        <text x="75" y="45" text-anchor="middle" font-size="10" font-family="sans-serif">SFD</text>
-        <text x="75" y="75" text-anchor="middle" font-size="9" fill="#94a3b8">1B</text>
-        <rect x="90" y="20" width="70" height="40" fill="#fee2e2" stroke="#f87171"/>
-        <text x="125" y="45" text-anchor="middle" font-size="10" font-family="sans-serif">Dest MAC</text>
-        <text x="125" y="75" text-anchor="middle" font-size="9" fill="#94a3b8">6B</text>
-        <rect x="160" y="20" width="70" height="40" fill="#fee2e2" stroke="#f87171"/>
-        <text x="195" y="45" text-anchor="middle" font-size="10" font-family="sans-serif">Src MAC</text>
-        <text x="195" y="75" text-anchor="middle" font-size="9" fill="#94a3b8">6B</text>
-        <rect x="230" y="20" width="50" height="40" fill="#dcfce7" stroke="#4ade80"/>
-        <text x="255" y="45" text-anchor="middle" font-size="10" font-family="sans-serif">Type</text>
-        <text x="255" y="75" text-anchor="middle" font-size="9" fill="#94a3b8">2B</text>
-        <rect x="280" y="20" width="180" height="40" fill="#fef9c3" stroke="#facc15"/>
-        <text x="370" y="45" text-anchor="middle" font-size="10" font-family="sans-serif">Data + Padding</text>
-        <text x="370" y="75" text-anchor="middle" font-size="9" fill="#94a3b8">46 - 1500B</text>
-        <rect x="460" y="20" width="60" height="40" fill="#e0e7ff" stroke="#818cf8"/>
-        <text x="490" y="45" text-anchor="middle" font-size="10" font-family="sans-serif">FCS (CRC)</text>
-        <text x="490" y="75" text-anchor="middle" font-size="9" fill="#94a3b8">4B</text>
-      </svg>
-    </div>
-    <ul class="text-[11px] mt-4 space-y-1 list-disc pl-5 text-[var(--muted)]">
-      <li><strong>Min Frame:</strong> 64 bytes (excluding preamble)</li>
-      <li><strong>Max Frame:</strong> 1518 bytes (Standard Ethernet MTU)</li>
-    </ul>
-  </div>
-
-  <div class="card mb-4 overflow-x-auto">
-    <div class="font-bold mb-2 text-sm uppercase tracking-wider text-[var(--muted)]">Ethernet Standards</div>
-    <table>
-      <thead><tr><th>Standard</th><th>Speed</th><th>Medium</th><th>Distance</th></tr></thead>
-      <tbody class="text-[10px]">
-        <tr><td>10BASE-T</td><td>10 Mbps</td><td>Copper TP</td><td>100 m</td></tr>
-        <tr><td>100BASE-TX</td><td>100 Mbps</td><td>Copper TP</td><td>100 m</td></tr>
-        <tr><td>1000BASE-T</td><td>1 Gbps</td><td>Copper TP</td><td>100 m</td></tr>
-        <tr><td>10GBASE-T</td><td>10 Gbps</td><td>Copper TP</td><td>100 m</td></tr>
-        <tr><td>10GBASE-SR</td><td>10 Gbps</td><td>Multimode Fiber</td><td>300 m</td></tr>
-        <tr><td>40GBASE-LR</td><td>40 Gbps</td><td>Single-mode Fiber</td><td>10 km</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="card mb-4">
-    <div class="font-bold mb-3 text-sm uppercase tracking-wider text-[var(--muted)]">Ethernet Operation</div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div class="bg-gray-50 border border-gray-200 p-3 rounded">
-        <div class="font-bold text-gray-800 mb-1 text-sm">Traditional (CSMA/CD)</div>
-        <ol class="text-[11px] space-y-1 list-decimal pl-4 text-[var(--muted)]">
-          <li><strong>Carrier Sense:</strong> listen before transmit</li>
-          <li><strong>Multiple Access:</strong> transmit if idle</li>
-          <li><strong>Collision Detection:</strong> stop + jam signal + random backoff + retry</li>
-        </ol>
+    <div class="card mb-4">
+      <div class="font-bold mb-3 text-center">Full Worked Example — Encode 1011</div>
+      <p class="text-xs text-center mb-4">Data bits: D1=1, D2=0, D3=1, D4=1. Need 3 parity bits → 7-bit codeword.</p>
+      <div class="hamming-row">
+        <div class="hbit hbit-parity"><div class="hbit-pos">P1</div><div class="hbit-val">0</div></div>
+        <div class="hbit hbit-parity"><div class="hbit-pos">P2</div><div class="hbit-val">1</div></div>
+        <div class="hbit hbit-data"><div class="hbit-pos">D1</div><div class="hbit-val">1</div></div>
+        <div class="hbit hbit-parity"><div class="hbit-pos">P4</div><div class="hbit-val">0</div></div>
+        <div class="hbit hbit-data"><div class="hbit-pos">D2</div><div class="hbit-val">0</div></div>
+        <div class="hbit hbit-data"><div class="hbit-pos">D3</div><div class="hbit-val">1</div></div>
+        <div class="hbit hbit-data"><div class="hbit-pos">D4</div><div class="hbit-val">1</div></div>
       </div>
-      <div class="bg-blue-50 border border-blue-200 p-3 rounded">
-        <div class="font-bold text-blue-800 mb-1 text-sm">Modern (Full-Duplex Switched)</div>
-        <ul class="text-[11px] space-y-1 list-disc pl-4 text-blue-700">
-          <li>Each device on a dedicated switch port</li>
-          <li>Simultaneous send and receive</li>
-          <li><strong>No collisions</strong>; CSMA/CD is no longer needed</li>
+      <p class="text-[10px] text-center text-[var(--muted)] mono mb-4">Positions: 1(P1) 2(P2) 3(D1) 4(P4) 5(D2) 6(D3) 7(D4) &nbsp;·&nbsp; Codeword = 0110011</p>
+      <div class="highlight-blue p-3 text-xs">
+        <div class="font-bold mb-1 uppercase tracking-tight text-[10px]">Parity Calculations (Even Parity)</div>
+        <strong>P1</strong> covers pos 1,3,5,7 → values: P1,1,0,1 → sum of known = 1+0+1=2 (even) → P1 = <strong>0</strong><br>
+        <strong>P2</strong> covers pos 2,3,6,7 → values: P2,1,1,1 → sum of known = 1+1+1=3 (odd) → P2 = <strong>1</strong><br>
+        <strong>P4</strong> covers pos 4,5,6,7 → values: P4,0,1,1 → sum of known = 0+1+1=2 (even) → P4 = <strong>0</strong><br>
+        Final codeword: <code>0 1 1 0 0 1 1</code>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="font-bold mb-2">Error Detection & Correction</div>
+      <p class="text-sm mb-3">Suppose bit 5 flips during transmission → received: <code>0 1 1 0 <strong>1</strong> 1 1</code></p>
+      <div class="highlight p-3 text-xs">
+        <div class="font-bold mb-1 uppercase tracking-tight text-[10px]">Recalculate parities at receiver</div>
+        P1 (1,3,5,7): 0+1+1+1 = 3 (odd) → <strong>Error!</strong> → P1 bit = 1<br>
+        P2 (2,3,6,7): 1+1+1+1 = 4 (even) → <strong>OK</strong> → P2 bit = 0<br>
+        P4 (4,5,6,7): 0+1+1+1 = 3 (odd) → <strong>Error!</strong> → P4 bit = 1<br><br>
+        Error location = P4 P2 P1 in binary = <code>1 0 1</code> = <strong>5</strong><br>
+        Flip bit 5 → corrected codeword: <code>0 1 1 0 0 1 1</code> ✓<br>
+        Extract data bits (3,5,6,7): <code>1 0 1 1</code> = original <strong>1011</strong> recovered!
+      </div>
+      <div class="mt-4">
+        <div class="font-bold text-sm mb-1">Summary</div>
+        <ul class="text-xs list-disc pl-4 space-y-1">
+          <li><strong>Detection:</strong> Parity checks identify whether an error exists.</li>
+          <li><strong>Location:</strong> The combination of failed parity bits (in binary) gives the position.</li>
+          <li><strong>Correction:</strong> Flip the bit at that position — original data restored.</li>
         </ul>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- UNIT 8: POLLING -->
-<section id="s8">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">08</div>
-    <div>
-      <div class="tag tag-gray mb-1">Unit 8 · L9</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Polling & Controlled Access</h2>
-      <p class="text-sm text-[var(--muted)]">Theory</p>
+  <!-- SECTION 5: ARQ PROTOCOLS -->
+  <section id="s5">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">05</div>
+      <div>
+        <div class="tag tag-blue mb-1">Unit 5 · L7</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Error Recovery Protocols — ARQ</h2>
+        <p class="text-sm text-[var(--muted)]">Protocol</p>
+      </div>
     </div>
-  </div>
 
-  <div class="card highlight-green mb-4">
-    <p class="text-sm font-bold">Eliminates collisions by centrally managing who transmits. Used in industrial networks and mainframe terminals.</p>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-    <div class="card border-l-4 border-l-blue-500">
-      <div class="font-bold text-sm mb-1 text-blue-800">Select (Primary → Secondary)</div>
-      <p class="text-[11px]">Primary has data for a specific secondary. Asks: "I have data for you, ready?" Secondary ACKs, then data flows.</p>
+    <div class="card highlight mb-4">
+      <div class="tag tag-red mb-1">Concept</div>
+      <p class="font-bold">Automatic Repeat Request: receiver detects errors in frames & requests retransmission. Uses ACK (positive) and NAK (negative) acknowledgments, plus timeouts.</p>
     </div>
-    <div class="card border-l-4 border-l-green-500">
-      <div class="font-bold text-sm mb-1 text-green-800">Poll (Primary ← Secondary)</div>
-      <p class="text-[11px]">Primary asks each secondary: "Do you have anything to send?" If yes, secondary sends. If no, secondary sends NAK.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+      <div class="arq-card border-l-4 border-l-red-500">
+        <div class="arq-card-title text-red-700">① Stop-and-Wait</div>
+        <p class="text-[11px] mb-2 text-gray-600 italic">Window=1. Send → Wait → Send.</p>
+        <ul class="text-[10px] list-disc pl-4 space-y-1">
+          <li>Simplest ARQ</li>
+          <li>Simple to implement</li>
+          <li>Slow on high-latency links</li>
+        </ul>
+      </div>
+      <div class="arq-card border-l-4 border-l-blue-500">
+        <div class="arq-card-title text-blue-700">② Go-Back-N</div>
+        <p class="text-[11px] mb-2 text-gray-600 italic">Window=N. Error → re-tx bad + all after.</p>
+        <ul class="text-[10px] list-disc pl-4 space-y-1">
+          <li>Receiver discards out-of-order</li>
+          <li>Higher throughput than S&W</li>
+          <li>Wastes bandwidth on errors</li>
+        </ul>
+      </div>
+      <div class="arq-card border-l-4 border-l-green-500">
+        <div class="arq-card-title text-green-700">③ Selective Repeat</div>
+        <p class="text-[11px] mb-2 text-gray-600 italic">Window=N. Retransmit ONLY bad frame.</p>
+        <ul class="text-[10px] list-disc pl-4 space-y-1">
+          <li>Receiver buffers out-of-order</li>
+          <li>Most efficient</li>
+          <li>Complex receiver (buffers)</li>
+        </ul>
+      </div>
     </div>
-  </div>
 
-  <div class="card mb-4 overflow-x-auto">
-    <div class="font-bold mb-2 text-[10px] uppercase text-[var(--muted)]">Types of Polling</div>
-    <table class="text-[10px]">
-      <thead><tr><th>Type</th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Roll Call</strong></td><td>Master polls EVERY device in a fixed list. Simple but slow if many idle devices.</td></tr>
-        <tr><td><strong>Hub / Selective</strong></td><td>Devices only polled if likely to have data; or pass permission in a chain.</td></tr>
-        <tr><td><strong>Interrupt</strong></td><td>Devices raise a "flag" when they have data; master only polls those with flags.</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- UNIT 9: IEEE STANDARDS -->
-<section id="s9">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">09</div>
-    <div>
-      <div class="tag tag-red mb-1">Unit 9 · L10</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">IEEE 802 Standards</h2>
-      <p class="text-sm text-[var(--muted)]">Reference</p>
+    <div class="card overflow-x-auto">
+      <div class="font-bold mb-2 text-xs uppercase text-[var(--muted)]">Comparison Table</div>
+      <table>
+        <thead><tr><th>Feature</th><th>Stop-and-Wait</th><th>Go-Back-N</th><th>Selective Repeat</th></tr></thead>
+        <tbody>
+          <tr><td>Window Size (Sender)</td><td>1</td><td>N</td><td>N</td></tr>
+          <tr><td>Window Size (Receiver)</td><td>1</td><td>1</td><td>N</td></tr>
+          <tr><td>On Error: Retransmit</td><td>That frame only</td><td>Error frame + all after</td><td>Error frame only</td></tr>
+          <tr><td>Buffering?</td><td>No</td><td>No (discards)</td><td>Yes (out-of-order)</td></tr>
+          <tr><td>Efficiency</td><td>Lowest</td><td>Medium</td><td>Highest</td></tr>
+        </tbody>
+      </table>
     </div>
-  </div>
 
-  <div class="card mb-4 overflow-x-auto">
-    <table>
-      <thead><tr><th>Standard</th><th>Name</th><th>Freq / Speed</th><th>Access Method</th></tr></thead>
-      <tbody class="text-[10px]">
-        <tr><td><strong>802.3</strong></td><td>Ethernet</td><td>N/A</td><td>CSMA/CD</td></tr>
-        <tr><td><strong>802.11a/g</strong></td><td>Wi-Fi</td><td>2.4 / 5 GHz (54 Mbps)</td><td>CSMA/CA</td></tr>
-        <tr><td><strong>802.11n</strong></td><td>Wi-Fi 4</td><td>Dual Band (600 Mbps)</td><td>CSMA/CA</td></tr>
-        <tr><td><strong>802.11ac</strong></td><td>Wi-Fi 5</td><td>5 GHz (3.5 Gbps)</td><td>CSMA/CA (MU-MIMO)</td></tr>
-        <tr><td><strong>802.11ax</strong></td><td>Wi-Fi 6</td><td>2.4/5/6 GHz (9.6 Gbps)</td><td>OFDMA</td></tr>
-        <tr><td><strong>802.15.1</strong></td><td>Bluetooth</td><td>2.4 GHz (1-3 Mbps)</td><td>FHSS (Piconets)</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="card highlight-blue text-[10px] italic text-center">
-    Note: 802.1 covers Bridging, 802.2 covers LLC. Modern Bluetooth (5.x) reaches 50 Mbps.
-  </div>
-</section>
-
-<!-- UNIT 10: FLASHCARDS -->
-<section id="s10">
-  <div class="flex items-start gap-3 mb-4">
-    <div class="section-num">10</div>
-    <div>
-      <div class="tag tag-gray mb-1">Unit 10 · Review</div>
-      <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Flashcard Bank</h2>
-      <p class="text-sm text-[var(--muted)]">Tap to flip</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+      <div class="diagram-wrap">
+        <div class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 italic">Stop-and-Wait Visual</div>
+        <svg width="340" height="180" viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg">
+          <line x1="60" y1="20" x2="60" y2="170" stroke="#cbd5e1" stroke-width="2"/>
+          <line x1="280" y1="20" x2="280" y2="170" stroke="#cbd5e1" stroke-width="2"/>
+          <text x="60" y="14" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" fill="#94a3b8">Sender</text>
+          <text x="280" y="14" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" fill="#94a3b8">Receiver</text>
+          <line x1="60" y1="35" x2="280" y2="70" stroke="#2d6a4f" stroke-width="1.5"/>
+          <text x="170" y="47" font-family="JetBrains Mono,monospace" font-size="10" fill="#2d6a4f">Frame 0</text>
+          <line x1="280" y1="80" x2="60" y2="110" stroke="#457b9d" stroke-width="1.5"/>
+          <text x="170" y="100" font-family="JetBrains Mono,monospace" font-size="10" fill="#457b9d">ACK 0</text>
+          <line x1="60" y1="118" x2="180" y2="140" stroke="#e63946" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="100" y="135" font-family="JetBrains Mono,monospace" font-size="10" fill="#e63946">Frame 1 ✕</text>
+          <text x="60" y="162" font-family="JetBrains Mono,monospace" font-size="10" fill="#64748b">timeout → retransmit</text>
+        </svg>
+      </div>
+      <div class="diagram-wrap">
+        <div class="text-[10px] font-bold uppercase text-[var(--muted)] mb-2 italic">Go-Back-N Visual (N=4)</div>
+        <svg width="340" height="180" viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg">
+          <line x1="40" y1="20" x2="40" y2="170" stroke="#cbd5e1" stroke-width="2"/>
+          <line x1="300" y1="20" x2="300" y2="170" stroke="#cbd5e1" stroke-width="2"/>
+          <text x="40" y="14" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" fill="#94a3b8">Sender</text>
+          <text x="300" y="14" text-anchor="middle" font-family="Syne,sans-serif" font-size="12" fill="#94a3b8">Receiver</text>
+          <line x1="40" y1="30" x2="300" y2="55"  stroke="#2d6a4f" stroke-width="1.5"/>
+          <text x="170" y="37" font-family="JetBrains Mono,monospace" font-size="9" fill="#2d6a4f">0 ✓</text>
+          <line x1="40" y1="50" x2="200" y2="75"  stroke="#e63946" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="90" y="57" font-family="JetBrains Mono,monospace" font-size="9" fill="#e63946">2 ✕ (corrupt)</text>
+          <line x1="40" y1="70" x2="300" y2="95" stroke="#2d6a4f" stroke-width="1.5"/>
+          <text x="170" y="77" font-family="JetBrains Mono,monospace" font-size="9" fill="#94a3b8">3 (discarded)</text>
+          <line x1="300" y1="80" x2="40" y2="120" stroke="#457b9d" stroke-width="1.5"/>
+          <text x="215" y="95" font-family="JetBrains Mono,monospace" font-size="9" fill="#457b9d">ACK 1</text>
+          <line x1="40" y1="130" x2="300" y2="155" stroke="#e63946" stroke-width="1.5"/>
+          <text x="170" y="137" font-family="JetBrains Mono,monospace" font-size="9" fill="#e63946">2 (re-tx)</text>
+        </svg>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    <!-- Card 1 -->
-    <div class="fc-wrap h-40">
-      <div class="fc h-full w-full" onclick="this.classList.toggle('flipped')">
-        <div class="fc-inner h-full w-full">
-          <div class="fc-front card shadow-sm text-sm font-bold text-center">What are the 2 sublayers of the Data Link Layer?</div>
+  <!-- SECTION 6: MULTIPLE ACCESS PROTOCOLS -->
+  <section id="s6">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">06</div>
+      <div>
+        <div class="tag tag-green mb-1">Unit 6 · L8</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Multiple Access Protocols</h2>
+        <p class="text-sm text-[var(--muted)]">Protocol</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="card bg-gray-50 border-gray-200">
+        <div class="font-bold mb-1 text-sm text-gray-800">① TDMA (Time Division)</div>
+        <p class="text-xs text-[var(--muted)] mb-2">Discrete time slots; one exclusive slot per frame.</p>
+        <ul class="text-[10px] space-y-1 list-disc pl-4 text-gray-700">
+          <li>Predictable, orderly, easy to manage</li>
+          <li>GSM cellular — frame = 4.615 ms, 8 time slots</li>
+          <li>Wasted bandwidth if device is idle</li>
+        </ul>
+      </div>
+      <div class="card bg-blue-50 border-blue-200">
+        <div class="font-bold mb-1 text-sm text-blue-800">② CDMA (Code Division)</div>
+        <p class="text-xs text-blue-600 mb-2">All users share same freq; unique spreading codes.</p>
+        <ul class="text-[10px] space-y-1 list-disc pl-4 text-blue-700">
+          <li>3G (WCDMA) — phones share band, split by codes</li>
+          <li>High spectral efficiency; robust against fading</li>
+          <li>Complex encoding; needs precise power control</li>
+        </ul>
+      </div>
+      <div class="card bg-purple-50 border-purple-200">
+        <div class="font-bold mb-1 text-sm text-purple-800">③ FDD (Frequency Division Duplex)</div>
+        <p class="text-xs text-purple-600 mb-2">Uplink and downlink on separate frequency bands.</p>
+        <ul class="text-[10px] space-y-1 list-disc pl-4 text-purple-700">
+          <li>3G/4G — uplink 1920–1980 MHz, downlink 2110–2170 MHz</li>
+          <li>Simultaneous two-way communication</li>
+          <li>Needs wider spectrum allocation</li>
+        </ul>
+      </div>
+      <div class="card bg-green-50 border-green-200">
+        <div class="font-bold mb-1 text-sm text-green-800">④ CSMA/CA (Avoidance)</div>
+        <p class="text-xs text-green-600 mb-2">Used in Wi-Fi (802.11). Sense → Wait → RTS/CTS.</p>
+        <ul class="text-[10px] space-y-1 list-disc pl-4 text-green-700">
+          <li>Works where detection is impractical (wireless)</li>
+          <li>Sense idle → optionally send RTS → receive CTS</li>
+          <li>Overhead from backoff + control frames</li>
+        </ul>
+      </div>
+      <div class="card bg-red-50 border-red-200 sm:col-span-2">
+        <div class="font-bold mb-1 text-sm text-red-800">⑤ CSMA/CD (Detection)</div>
+        <p class="text-xs text-red-600 mb-2">Used in wired Ethernet (802.3). Sense → Send → Listen.</p>
+        <ul class="text-[10px] space-y-1 list-disc pl-4 text-red-700">
+          <li>Fast resolution for wired collisions</li>
+          <li>Listen before sending → monitor for collision → stop + jam signal → backoff</li>
+          <li>Inefficient under high load</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card mt-6 overflow-x-auto">
+      <div class="font-bold mb-2 text-xs uppercase text-[var(--muted)]">Quick Reference Comparison</div>
+      <table>
+        <thead><tr><th>Protocol</th><th>Medium</th><th>Collision?</th><th>Key Mechanism</th><th>Real-World Use</th></tr></thead>
+        <tbody>
+          <tr><td>TDMA</td><td>Wireless/Wired</td><td>None (time)</td><td>Fixed time slots</td><td>GSM (2G)</td></tr>
+          <tr><td>FDD</td><td>Wireless</td><td>None (freq)</td><td>Separate uplink/downlink bands</td><td>3G, 4G LTE</td></tr>
+          <tr><td>CDMA</td><td>Wireless</td><td>None (code)</td><td>Unique spreading codes</td><td>3G (WCDMA)</td></tr>
+          <tr><td>CSMA/CA</td><td>Wireless</td><td>Avoided</td><td>Listen before send + RTS/CTS backoff</td><td>Wi-Fi (802.11)</td></tr>
+          <tr><td>CSMA/CD</td><td>Wired</td><td>Detected</td><td>Listen while send + jam + backoff</td><td>Ethernet (802.3)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 7: MAC ADDRESSING & ETHERNET -->
+  <section id="s7">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">07</div>
+      <div>
+        <div class="tag tag-blue mb-1">Unit 7 · L9</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">MAC Addressing & Ethernet</h2>
+        <p class="text-sm text-[var(--muted)]">Network Hardware</p>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="font-bold mb-2">MAC Address (Physical Address)</div>
+      <ul class="text-sm list-disc pl-5 space-y-1 mb-4">
+        <li>Unique <strong>48-bit (6-byte)</strong> hardware address assigned to every NIC.</li>
+        <li>Written in hexadecimal: <code>00:1A:2B:3C:4D:5E</code></li>
+        <li><strong>First 24 bits = OUI</strong> — identifies manufacturer</li>
+        <li><strong>Last 24 bits</strong> = unique identifier assigned by manufacturer</li>
+        <li>Operates at Layer 2; used only <em>within</em> a local network segment.</li>
+      </ul>
+      <div class="bg-gray-100 p-3 rounded font-mono text-center mb-4">
+        <span class="text-blue-600 font-bold">00:1A:2B</span> : <span class="text-green-600 font-bold">3C:4D:5E</span><br>
+        <span class="text-[10px] text-[var(--muted)] uppercase font-sans font-bold">(OUI - Manufacturer) &nbsp; : &nbsp; (NIC Specific)</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div class="p-2 border border-gray-200 rounded text-center text-[10px]">
+          <div class="font-bold mb-1">UNICAST</div>
+          <code class="text-blue-700">AA:BB:CC:DD:EE:01</code><br><span class="text-[var(--muted)] italic">1 to 1</span>
+        </div>
+        <div class="p-2 border border-gray-200 rounded text-center text-[10px]">
+          <div class="font-bold mb-1">MULTICAST</div>
+          <code class="text-green-700">01:00:5E:xx:xx:xx</code><br><span class="text-[var(--muted)] italic">1 to Group</span>
+        </div>
+        <div class="p-2 border border-red-200 rounded text-center text-[10px] bg-red-50">
+          <div class="font-bold mb-1 text-red-700">BROADCAST</div>
+          <code class="text-red-700">FF:FF:FF:FF:FF:FF</code><br><span class="text-red-600 italic">1 to ALL in LAN</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="font-bold mb-4">Ethernet Frame Structure (IEEE 802.3)</div>
+      <div class="diagram-wrap border-none p-0">
+        <svg width="100%" height="80" viewBox="0 0 550 80" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="20" width="60" height="40" fill="#f1f5f9" stroke="#cbd5e1"/>
+          <text x="30" y="45" text-anchor="middle" font-size="9" font-family="Space Grotesk,sans-serif">Preamble</text>
+          <text x="30" y="75" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="JetBrains Mono,monospace">7B</text>
+          <rect x="60" y="20" width="30" height="40" fill="#f1f5f9" stroke="#cbd5e1"/>
+          <text x="75" y="45" text-anchor="middle" font-size="9" font-family="Space Grotesk,sans-serif">SFD</text>
+          <text x="75" y="75" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="JetBrains Mono,monospace">1B</text>
+          <rect x="90" y="20" width="70" height="40" fill="#fee2e2" stroke="#f87171"/>
+          <text x="125" y="45" text-anchor="middle" font-size="9" font-family="Space Grotesk,sans-serif">Dest MAC</text>
+          <text x="125" y="75" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="JetBrains Mono,monospace">6B</text>
+          <rect x="160" y="20" width="70" height="40" fill="#fee2e2" stroke="#f87171"/>
+          <text x="195" y="45" text-anchor="middle" font-size="9" font-family="Space Grotesk,sans-serif">Src MAC</text>
+          <text x="195" y="75" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="JetBrains Mono,monospace">6B</text>
+          <rect x="230" y="20" width="50" height="40" fill="#dcfce7" stroke="#4ade80"/>
+          <text x="255" y="45" text-anchor="middle" font-size="9" font-family="Space Grotesk,sans-serif">Type</text>
+          <text x="255" y="75" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="JetBrains Mono,monospace">2B</text>
+          <rect x="280" y="20" width="180" height="40" fill="#fef9c3" stroke="#facc15"/>
+          <text x="370" y="45" text-anchor="middle" font-size="9" font-family="Space Grotesk,sans-serif">Data + Padding</text>
+          <text x="370" y="75" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="JetBrains Mono,monospace">46 - 1500B</text>
+          <rect x="460" y="20" width="60" height="40" fill="#e0e7ff" stroke="#818cf8"/>
+          <text x="490" y="45" text-anchor="middle" font-size="9" font-family="Space Grotesk,sans-serif">FCS (CRC)</text>
+          <text x="490" y="75" text-anchor="middle" font-size="8" fill="#94a3b8" font-family="JetBrains Mono,monospace">4B</text>
+        </svg>
+      </div>
+      <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div class="highlight-blue p-2"><strong>Min Frame:</strong> 64 bytes (excluding preamble)</div>
+        <div class="highlight p-2"><strong>Max Frame:</strong> 1518 bytes (Standard Ethernet MTU)</div>
+      </div>
+      <div class="mt-4">
+        <div class="tag tag-red mb-2">Why minimum 64 bytes?</div>
+        <p class="text-xs text-[var(--muted)]">In CSMA/CD, a device must detect a collision before finishing transmission. The minimum frame size ensures the frame is still on the wire when a collision signal returns.</p>
+      </div>
+    </div>
+
+    <div class="card mb-4 overflow-x-auto">
+      <div class="font-bold mb-3">Ethernet Standards</div>
+      <table>
+        <thead><tr><th>Standard</th><th>Speed</th><th>Medium</th><th>Distance</th></tr></thead>
+        <tbody>
+          <tr><td>10BASE-T</td><td>10 Mbps</td><td>Copper TP</td><td>100 m</td></tr>
+          <tr><td>100BASE-TX</td><td>100 Mbps</td><td>Copper TP</td><td>100 m</td></tr>
+          <tr><td>1000BASE-T</td><td>1 Gbps</td><td>Copper TP</td><td>100 m</td></tr>
+          <tr><td>10GBASE-T</td><td>10 Gbps</td><td>Copper TP</td><td>100 m</td></tr>
+          <tr><td>10GBASE-SR</td><td>10 Gbps</td><td>Multimode Fiber</td><td>300 m</td></tr>
+          <tr><td>40GBASE-LR</td><td>40 Gbps</td><td>Single-mode Fiber</td><td>10 km</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="font-bold mb-3">Ethernet Operation</div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="bg-gray-50 border border-gray-200 p-3 rounded">
+          <div class="font-bold text-gray-800 mb-2 text-sm">Traditional (CSMA/CD)</div>
+          <ol class="steps text-[11px]">
+            <li><strong>Carrier Sense:</strong> listen before transmit</li>
+            <li><strong>Multiple Access:</strong> transmit if idle</li>
+            <li><strong>Collision Detection:</strong> stop + jam signal + random backoff</li>
+          </ol>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 p-3 rounded">
+          <div class="font-bold text-blue-800 mb-2 text-sm">Modern (Switched)</div>
+          <ul class="text-[11px] list-disc pl-4 space-y-1 text-blue-700">
+            <li>Each device on a dedicated switch port</li>
+            <li>Full-Duplex: simultaneous send and receive</li>
+            <li><strong>No collisions</strong>; CSMA/CD is no longer needed</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: POLLING -->
+  <section id="s8">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">08</div>
+      <div>
+        <div class="tag tag-gray mb-1">Unit 8 · L9</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Polling & Controlled Access</h2>
+        <p class="text-sm text-[var(--muted)]">Theory</p>
+      </div>
+    </div>
+
+    <div class="card highlight-green mb-4">
+      <p class="text-sm font-bold">Eliminates collisions by centrally managing who transmits. Used in industrial networks and mainframe terminals. Only the polled device may transmit.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div class="card border-l-4 border-l-blue-500">
+        <div class="font-bold text-sm mb-1 text-blue-800">Select (Primary → Secondary)</div>
+        <p class="text-xs text-blue-600">Primary has data for a specific secondary. Asks: "I have data for you, ready?" Secondary ACKs, then data flows.</p>
+      </div>
+      <div class="card border-l-4 border-l-green-500">
+        <div class="font-bold text-sm mb-1 text-green-800">Poll (Primary ← Secondary)</div>
+        <p class="text-xs text-green-600">Primary asks each secondary: "Do you have anything to send?" If yes, secondary sends. If no, secondary sends NAK.</p>
+      </div>
+    </div>
+
+    <div class="card overflow-x-auto">
+      <div class="font-bold mb-2 text-[10px] uppercase text-[var(--muted)]">Types of Polling</div>
+      <table>
+        <thead><tr><th>Type</th><th>Description</th><th>Efficiency</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Roll Call</strong></td><td>Master polls EVERY device in a fixed sequence.</td><td>Simple but wastes time on idle</td></tr>
+          <tr><td><strong>Hub / Selective</strong></td><td>Master only polls devices likely to have data.</td><td>More efficient; reduces wait</td></tr>
+          <tr><td><strong>Interrupt</strong></td><td>Devices raise a request flag; master responds.</td><td>Most efficient; no unnecessary poll</td></tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+      <div class="highlight-green p-3 text-xs">
+        <div class="font-bold text-[var(--accent3)] mb-1">✓ Advantages</div>
+        <ul class="list-disc pl-4 space-y-1">
+          <li>No collisions — only one device transmits at a time</li>
+          <li>Simplified error handling (master controls access)</li>
+          <li>Predictable behavior & Fairness</li>
+        </ul>
+      </div>
+      <div class="highlight p-3 text-xs">
+        <div class="font-bold text-[var(--accent)] mb-1">✗ Disadvantages</div>
+        <ul class="list-disc pl-4 space-y-1">
+          <li>Polling overhead consumes bandwidth</li>
+          <li>Delay — devices must wait for their turn</li>
+          <li>Single point of failure (Master)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: IEEE STANDARDS -->
+  <section id="s9">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">09</div>
+      <div>
+        <div class="tag tag-red mb-1">Unit 9 · L10</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">IEEE 802 Standards</h2>
+        <p class="text-sm text-[var(--muted)]">Reference</p>
+      </div>
+    </div>
+
+    <div class="card mb-4 overflow-x-auto">
+      <table>
+        <thead><tr><th>Standard</th><th>Name</th><th>Freq / Speed</th><th>Access Method</th></tr></thead>
+        <tbody>
+          <tr><td><strong>802.3</strong></td><td>Ethernet</td><td>N/A</td><td>CSMA/CD</td></tr>
+          <tr><td><strong>802.11a/g</strong></td><td>Wi-Fi</td><td>2.4 / 5 GHz (54 Mbps)</td><td>CSMA/CA</td></tr>
+          <tr><td><strong>802.11n</strong></td><td>Wi-Fi 4</td><td>Dual Band (600 Mbps)</td><td>CSMA/CA</td></tr>
+          <tr><td><strong>802.11ac</strong></td><td>Wi-Fi 5</td><td>5 GHz (3.5 Gbps)</td><td>CSMA/CA (MU-MIMO)</td></tr>
+          <tr><td><strong>802.11ax</strong></td><td>Wi-Fi 6</td><td>2.4/5/6 GHz (9.6 Gbps)</td><td>OFDMA</td></tr>
+          <tr><td><strong>802.15.1</strong></td><td>Bluetooth</td><td>2.4 GHz (1-3 Mbps)</td><td>FHSS (Piconets)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card highlight-blue text-[11px] text-center italic">
+      Note: 802.1 covers Bridging, 802.2 covers LLC. Modern Bluetooth (5.x) reaches 50 Mbps.
+    </div>
+  </section>
+
+  <!-- SECTION 10: FLASHCARDS -->
+  <section id="s10">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="section-num">10</div>
+      <div>
+        <div class="tag tag-gray mb-1">Unit 10 · Review</div>
+        <h2 class="text-xl sm:text-2xl font-extrabold leading-tight">Flashcard Bank</h2>
+        <p class="text-sm text-[var(--muted)]">Tap to flip</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Card 1 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">What are the 2 sublayers of the Data Link Layer?</div>
           <div class="fc-back card shadow-sm text-[10px] bg-red-50 text-red-900 overflow-auto">
             LLC (Logical Link Control) — upper sublayer; handles protocol mux, error/flow control.<br>MAC (Media Access Control) — lower sublayer; handles physical addressing & channel access.
           </div>
         </div>
       </div>
-    </div>
-    <!-- Card 2 -->
-    <div class="fc-wrap h-40">
-      <div class="fc h-full w-full" onclick="this.classList.toggle('flipped')">
-        <div class="fc-inner h-full w-full">
-          <div class="fc-front card shadow-sm text-sm font-bold text-center">What is a Burst Error?</div>
+      <!-- Card 2 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">What is a Burst Error?</div>
           <div class="fc-back card shadow-sm text-[10px] bg-blue-50 text-blue-900 overflow-auto">
             Two or more consecutive bits altered in a data unit. Much more common than single-bit errors. Requires CRC to detect.
           </div>
         </div>
       </div>
-    </div>
-    <!-- Card 3 -->
-    <div class="fc-wrap h-40">
-      <div class="fc h-full w-full" onclick="this.classList.toggle('flipped')">
-        <div class="fc-inner h-full w-full">
-          <div class="fc-front card shadow-sm text-sm font-bold text-center">What is CDMA and how does it separate users?</div>
+      <!-- Card 3 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">VRC parity bit rule for even parity?</div>
           <div class="fc-back card shadow-sm text-[10px] bg-green-50 text-green-900 overflow-auto">
-            Code Division Multiple Access. All users share the same frequency at the same time. Each user's data is multiplied by a unique spreading code.
+            Count the 1s in the data. If count is even → parity bit = 0. If count is odd → parity bit = 1. Total 1s should be even.
           </div>
         </div>
       </div>
-    </div>
-    <!-- Card 4 -->
-    <div class="fc-wrap h-40">
-      <div class="fc h-full w-full" onclick="this.classList.toggle('flipped')">
-        <div class="fc-inner h-full w-full">
-          <div class="fc-front card shadow-sm text-sm font-bold text-center">How does Hamming Code locate an error?</div>
-          <div class="fc-back card shadow-sm text-[10px] bg-gray-50 text-gray-900 overflow-auto">
+      <!-- Card 4 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">What is the Hamming Code formula?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-gray-50 text-gray-900 overflow-auto font-mono">
+            2^r ≥ m + r + 1<br>r = parity bits, m = data bits.
+          </div>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">Where are parity bits placed in Hamming Code?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-red-50 text-red-900 overflow-auto">
+            At positions that are powers of 2: positions 1, 2, 4, 8, 16, … All other positions hold data bits.
+          </div>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">What does P1 (position 1) check in Hamming?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-blue-50 text-blue-900 overflow-auto">
+            Check-Skip Method: Check 1, skip 1 → covers positions 1, 3, 5, 7, 9, 11… (all odd positions)
+          </div>
+        </div>
+      </div>
+      <!-- Card 7 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">How does Hamming Code locate an error?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-green-50 text-green-900 overflow-auto">
             The binary number formed by failing parity checks (P4 P2 P1) gives the bit position. Flip that bit to correct.
           </div>
         </div>
       </div>
-    </div>
-    <!-- Card 5 -->
-    <div class="fc-wrap h-40">
-      <div class="fc h-full w-full" onclick="this.classList.toggle('flipped')">
-        <div class="fc-inner h-full w-full">
-          <div class="fc-front card shadow-sm text-sm font-bold text-center">What is the hidden node problem in Wi-Fi?</div>
+      <!-- Card 8 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">CRC: What happens at the receiver?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-gray-50 text-gray-900 overflow-auto">
+            Divide received frame by same generator G using mod-2 division. Remainder 0 = assume no error.
+          </div>
+        </div>
+      </div>
+      <!-- Card 9 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">Go-Back-N vs Selective Repeat?</div>
           <div class="fc-back card shadow-sm text-[10px] bg-red-50 text-red-900 overflow-auto">
-            Two devices out of range of each other but in range of the same AP. Both sense channel idle → collision at AP. Solved by RTS/CTS.
+            GBN: retransmit bad + all after. SR: retransmit ONLY bad frame. SR requires buffering out-of-order.
           </div>
         </div>
       </div>
-    </div>
-    <!-- Card 6 -->
-    <div class="fc-wrap h-40">
-      <div class="fc h-full w-full" onclick="this.classList.toggle('flipped')">
-        <div class="fc-inner h-full w-full">
-          <div class="fc-front card shadow-sm text-sm font-bold text-center">IEEE 802.11 uses which MAC protocol?</div>
+      <!-- Card 10 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">CSMA/CA vs CSMA/CD — where used?</div>
           <div class="fc-back card shadow-sm text-[10px] bg-blue-50 text-blue-900 overflow-auto">
-            CSMA/CA (Carrier Sense Multiple Access with Collision Avoidance). Collision detection is impractical on wireless.
+            CD → wired Ethernet (802.3). CA → wireless Wi-Fi (802.11). Wireless can't detect collisions while sending.
+          </div>
+        </div>
+      </div>
+      <!-- Card 11 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">MAC address format & size?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-green-50 text-green-900 overflow-auto">
+            48-bit (6-byte) hex. First 24 bits = OUI (manufacturer). Broadcast = FF:FF:FF:FF:FF:FF.
+          </div>
+        </div>
+      </div>
+      <!-- Card 12 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">Ethernet frame: what is the FCS field?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-gray-50 text-gray-900 overflow-auto">
+            Frame Check Sequence — 4 bytes. Contains CRC-32 checksum for hardware-level error detection.
+          </div>
+        </div>
+      </div>
+      <!-- Card 13 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">Ethernet min frame size and why?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-red-50 text-red-900 overflow-auto">
+            64 bytes. Ensures collision signal returns before transmission finishes in CSMA/CD.
+          </div>
+        </div>
+      </div>
+      <!-- Card 14 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">What is Bit Stuffing?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-blue-50 text-blue-900 overflow-auto">
+            Used in HDLC. After 5 consecutive 1s in data, sender inserts a 0 to avoid mimicry of flag (01111110).
+          </div>
+        </div>
+      </div>
+      <!-- Card 15 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">What is CDMA?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-green-50 text-green-900 overflow-auto">
+            Code Division Multiple Access. All share freq/time; split by unique spreading codes. Signal-to-Noise.
+          </div>
+        </div>
+      </div>
+      <!-- Card 16 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">What is Polling?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-gray-50 text-gray-900 overflow-auto">
+            Centralized access where master asks slaves for data. No collisions. Roll Call vs Hub vs Interrupt.
+          </div>
+        </div>
+      </div>
+      <!-- Card 17 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">IEEE 802.11 uses which MAC protocol?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-red-50 text-red-900 overflow-auto">
+            CSMA/CA (Avoidance). Hidden nodes solved by RTS/CTS.
+          </div>
+        </div>
+      </div>
+      <!-- Card 18 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">Bluetooth frequency technique?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-blue-50 text-blue-900 overflow-auto">
+            FHSS — Frequency Hopping Spread Spectrum. Hops between 79 channels at 2.4 GHz, 1600 times/sec.
+          </div>
+        </div>
+      </div>
+      <!-- Card 19 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">LRC can correct which error?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-green-50 text-green-900 overflow-auto">
+            Single-bit errors only. Intersection of bad row/column.
+          </div>
+        </div>
+      </div>
+      <!-- Card 20 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">Checksum sender: final step?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-gray-50 text-gray-900 overflow-auto">
+            Take the bitwise NOT (ones' complement) of the sum.
+          </div>
+        </div>
+      </div>
+      <!-- Card 21 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">What is FEC?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-red-50 text-red-900 overflow-auto">
+            Forward Error Correction. Sender adds redundancy for self-correction. Satellite, real-time, memory.
+          </div>
+        </div>
+      </div>
+      <!-- Card 22 -->
+      <div class="fc-wrap h-40">
+        <div class="fc" onclick="this.classList.toggle('flipped')">
+          <div class="fc-front card shadow-sm text-sm font-bold">Hidden node problem in Wi-Fi?</div>
+          <div class="fc-back card shadow-sm text-[10px] bg-blue-50 text-blue-900 overflow-auto">
+            A & C out of range of each other but in range of AP B. Both send simultaneously → collision. RTS/CTS.
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
 </main>
 
-<footer class="mt-12 py-8 border-t border-[var(--border)] text-center text-[var(--muted)] text-xs mono">
-  <p>Module 2: Data Link Layer & Error Control · Computer Networks Study Guide</p>
-  <p class="mt-1 opacity-60">Hand-crafted for L6–L10 revision</p>
+<footer class="text-center py-10 mt-12 border-t border-[var(--border)] text-[var(--muted)] text-xs mono">
+  Module 2 · Data Link Layer & Error Control &nbsp;·&nbsp; Computer Networks Study Guide &nbsp;·&nbsp; L6–L10
 </footer>
 
 <script>
 function scrollToSection(id) {
   const el = document.getElementById(id);
   if (el) {
-    window.scrollTo({
-      top: el.offsetTop - 80,
-      behavior: 'smooth'
-    });
-    // Update active nav pill
-    document.querySelectorAll('.nav-pill').forEach(btn => {
-      btn.classList.remove('active', 'bg-[var(--ink)]');
-      if (btn.getAttribute('onclick').includes(id)) {
-        btn.classList.add('active');
-        if (!btn.classList.contains('tag-red')) {
-            btn.style.backgroundColor = 'var(--ink)';
-            btn.style.color = 'white';
-        }
-      } else {
-          if (!btn.getAttribute('onclick').includes('s10')) {
-            btn.style.backgroundColor = 'transparent';
-            btn.style.color = 'white';
-          }
-      }
-    });
+    const headerOffset = 80;
+    const elementPosition = el.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
   }
 }
 
-// Simple scroll highlighting for nav
+// Highlight active nav pill based on scroll
 window.addEventListener('scroll', () => {
-  const sections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10'];
-  let current = '';
-  sections.forEach(s => {
-    const el = document.getElementById(s);
-    if (el && window.scrollY >= (el.offsetTop - 120)) {
-      current = s;
+  const sections = document.querySelectorAll('section[id]');
+  const navPills = document.querySelectorAll('.nav-pill');
+  let current = "";
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (pageYOffset >= sectionTop - 100) {
+      current = section.getAttribute('id');
     }
   });
-  if (current) {
-    document.querySelectorAll('.nav-pill').forEach(btn => {
-      if (btn.getAttribute('onclick').includes(current)) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-  }
+  navPills.forEach(pill => {
+    pill.classList.remove('active');
+    if (pill.getAttribute('onclick').includes(current)) {
+      pill.classList.add('active');
+    }
+  });
 });
 </script>
-
 </body>
 </html>
