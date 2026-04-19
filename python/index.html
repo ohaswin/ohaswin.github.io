@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Programming — BSc CS Study Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+.card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+.blue{background:#1d4ed8;color:#fff;} .green{background:#15803d;color:#fff;}
+.red{background:#dc2626;color:#fff;} .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #ccc;cursor:pointer;text-decoration:none;color:inherit;display:inline-block;}
+nav a:hover{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+.secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+.mod-card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:20px;transition:all .2s;}
+.mod-card:hover{border-color:#1a1a1a;box-shadow:4px 4px 0 #1a1a1a;transform:translate(-2px,-2px);}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">BSc CS — PYTHON PROGRAMMING</div>
+  <div class="font-black text-sm tracking-wide">COMPLETE STUDY GUIDE</div>
+</header>
+<main class="max-w-3xl mx-auto px-3 py-8 space-y-8">
+  <div>
+    <div class="secnum">PY</div>
+    <h2 class="text-2xl font-black mt-1">Python Programming</h2>
+    <p class="text-gray-500 text-sm mt-1">4 Modules · 45 Hours · BSc Computer Science</p>
+  </div>
+
+  <div class="card">
+    <table class="w-full text-sm" style="border-collapse:collapse;">
+      <thead><tr style="background:#1a1a1a;color:#fff;"><th class="p-2 text-left">Module</th><th class="p-2 text-left">Title</th><th class="p-2 text-right">Hours</th></tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #e5e0d5;"><td class="p-2 font-bold">I</td><td class="p-2">Fundamentals of Python</td><td class="p-2 text-right">12</td></tr>
+        <tr style="background:#f0ede5;border-bottom:1px solid #e5e0d5;"><td class="p-2 font-bold">II</td><td class="p-2">Functions &amp; Modules</td><td class="p-2 text-right">8</td></tr>
+        <tr style="border-bottom:1px solid #e5e0d5;"><td class="p-2 font-bold">III</td><td class="p-2">Data Structures in Python</td><td class="p-2 text-right">15</td></tr>
+        <tr style="background:#f0ede5;"><td class="p-2 font-bold">IV</td><td class="p-2">Introduction to Scientific Computing</td><td class="p-2 text-right">10</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <a href="/python/m1/" class="mod-card">
+      <div class="pill blue mb-3">Module I · 12 hrs</div>
+      <div class="font-black text-lg mb-2">Fundamentals of Python</div>
+      <div class="text-sm text-gray-500 space-y-1">
+        <div>· Features, Identifiers, Keywords</div>
+        <div>· Variables, Operators, Data Types</div>
+        <div>· Input/Output, Math Functions</div>
+        <div>· Decision Making &amp; Loops</div>
+        <div>· Control Statements</div>
+      </div>
+      <div class="mt-3 text-xs font-bold text-blue-700">Open Guide →</div>
+    </a>
+    <a href="/python/m2/" class="mod-card">
+      <div class="pill green mb-3">Module II · 8 hrs</div>
+      <div class="font-black text-lg mb-2">Functions &amp; Modules</div>
+      <div class="text-sm text-gray-500 space-y-1">
+        <div>· Function Definition &amp; Calling</div>
+        <div>· All Argument Types</div>
+        <div>· Scope &amp; Lifetime</div>
+        <div>· Recursive, Lambda, Void Fns</div>
+        <div>· Built-in &amp; User Modules</div>
+      </div>
+      <div class="mt-3 text-xs font-bold text-green-700">Open Guide →</div>
+    </a>
+    <a href="/python/m3/" class="mod-card">
+      <div class="pill red mb-3">Module III · 15 hrs</div>
+      <div class="font-black text-lg mb-2">Data Structures in Python</div>
+      <div class="text-sm text-gray-500 space-y-1">
+        <div>· Strings — all operations</div>
+        <div>· Lists — all operations</div>
+        <div>· Tuples — indexing &amp; methods</div>
+        <div>· Dictionaries — key-value ops</div>
+        <div>· Sets — creation &amp; operations</div>
+      </div>
+      <div class="mt-3 text-xs font-bold text-red-700">Open Guide →</div>
+    </a>
+    <a href="/python/m4/" class="mod-card">
+      <div class="pill purple mb-3">Module IV · 10 hrs</div>
+      <div class="font-black text-lg mb-2">Scientific Computing</div>
+      <div class="text-sm text-gray-500 space-y-1">
+        <div>· NumPy Arrays &amp; Operations</div>
+        <div>· Universal Functions &amp; Broadcasting</div>
+        <div>· Pandas — Series &amp; DataFrames</div>
+        <div>· Matplotlib — Plots &amp; Charts</div>
+      </div>
+      <div class="mt-3 text-xs font-bold text-purple-700">Open Guide →</div>
+    </a>
+  </div>
+</main>
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">Python Programming Study Guide · BSc CS</footer>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module I — Fundamentals of Python</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+.kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;} .num{color:#fab387;}
+table{border-collapse:collapse;width:100%;}
+th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+tr:nth-child(even) td{background:#f0ede5;}
+.card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+.blue{background:#1d4ed8;color:#fff;} .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+.red{background:#dc2626;color:#fff;} .orange{background:#b45309;color:#fff;}
+.tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.fc-wrap{perspective:700px;}
+.fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+.fc.flipped{transform:rotateY(180deg);}
+.fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+.fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ccc;display:inline-block;}
+nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+.secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 01 · <a href="/python/" class="hover:text-white">← All Modules</a></div>
+  <div class="font-black text-sm tracking-wide mb-1">FUNDAMENTALS OF PYTHON</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Features</a><a href="#s2">Data Types</a><a href="#s3">Operators</a>
+    <a href="#s4">I/O &amp; Math</a><a href="#s5">Decisions</a><a href="#s6">Loops</a><a href="#s7">Control</a>
+    <a href="#fc">Flashcards</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- S1: Features & Identifiers -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill blue mb-1">Unit 1</div><h2>Features, Identifiers &amp; Keywords</h2></div>
+  </div>
+  <div class="card info mb-3">Python is an <strong>interpreted, high-level, dynamically typed, object-oriented</strong> language created by <strong>Guido van Rossum</strong> (1991). Key features: simple syntax, portable, extensible, free/open-source, large standard library.</div>
+  <div class="card mb-3">
+    <h3>Identifier Rules</h3>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Rule</th><th>Valid</th><th>Invalid</th></tr></thead>
+      <tbody>
+        <tr><td>Letters, digits, underscore only</td><td><code>my_var, x1</code></td><td><code>my-var, x@1</code></td></tr>
+        <tr><td>Cannot start with digit</td><td><code>_count, name</code></td><td><code>1count, 2name</code></td></tr>
+        <tr><td>Case sensitive</td><td><code>Age ≠ age</code></td><td>—</td></tr>
+        <tr><td>Cannot be keyword</td><td><code>myif</code></td><td><code>if, for, while</code></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card mb-3">
+    <h3>Python Keywords (35)</h3>
+    <div class="flex flex-wrap gap-1 text-xs font-mono">
+      <span class="bg-gray-100 px-2 py-1 rounded">False</span><span class="bg-gray-100 px-2 py-1 rounded">None</span><span class="bg-gray-100 px-2 py-1 rounded">True</span><span class="bg-gray-100 px-2 py-1 rounded">and</span><span class="bg-gray-100 px-2 py-1 rounded">as</span><span class="bg-gray-100 px-2 py-1 rounded">assert</span><span class="bg-gray-100 px-2 py-1 rounded">async</span><span class="bg-gray-100 px-2 py-1 rounded">await</span><span class="bg-gray-100 px-2 py-1 rounded">break</span><span class="bg-gray-100 px-2 py-1 rounded">class</span><span class="bg-gray-100 px-2 py-1 rounded">continue</span><span class="bg-gray-100 px-2 py-1 rounded">def</span><span class="bg-gray-100 px-2 py-1 rounded">del</span><span class="bg-gray-100 px-2 py-1 rounded">elif</span><span class="bg-gray-100 px-2 py-1 rounded">else</span><span class="bg-gray-100 px-2 py-1 rounded">except</span><span class="bg-gray-100 px-2 py-1 rounded">finally</span><span class="bg-gray-100 px-2 py-1 rounded">for</span><span class="bg-gray-100 px-2 py-1 rounded">from</span><span class="bg-gray-100 px-2 py-1 rounded">global</span><span class="bg-gray-100 px-2 py-1 rounded">if</span><span class="bg-gray-100 px-2 py-1 rounded">import</span><span class="bg-gray-100 px-2 py-1 rounded">in</span><span class="bg-gray-100 px-2 py-1 rounded">is</span><span class="bg-gray-100 px-2 py-1 rounded">lambda</span><span class="bg-gray-100 px-2 py-1 rounded">not</span><span class="bg-gray-100 px-2 py-1 rounded">or</span><span class="bg-gray-100 px-2 py-1 rounded">pass</span><span class="bg-gray-100 px-2 py-1 rounded">raise</span><span class="bg-gray-100 px-2 py-1 rounded">return</span><span class="bg-gray-100 px-2 py-1 rounded">try</span><span class="bg-gray-100 px-2 py-1 rounded">while</span><span class="bg-gray-100 px-2 py-1 rounded">with</span><span class="bg-gray-100 px-2 py-1 rounded">yield</span>
+    </div>
+  </div>
+</section>
+
+<!-- S2: Data Types -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill blue mb-1">Unit 1</div><h2>Variables, Data Types &amp; Type Conversions</h2></div>
+  </div>
+  <div class="card mb-3">
+    <div class="scroll-x"><table>
+      <thead><tr><th>Type</th><th>Example</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>int</code></td><td><code>x = 10</code></td><td>Unlimited precision integers</td></tr>
+        <tr><td><code>float</code></td><td><code>x = 3.14</code></td><td>64-bit IEEE 754</td></tr>
+        <tr><td><code>complex</code></td><td><code>x = 3+4j</code></td><td>Real + imaginary part</td></tr>
+        <tr><td><code>str</code></td><td><code>x = "hello"</code></td><td>Immutable sequence of chars</td></tr>
+        <tr><td><code>bool</code></td><td><code>x = True</code></td><td>Subclass of int; True=1, False=0</td></tr>
+        <tr><td><code>list</code></td><td><code>x = [1,2,3]</code></td><td>Mutable ordered sequence</td></tr>
+        <tr><td><code>tuple</code></td><td><code>x = (1,2,3)</code></td><td>Immutable ordered sequence</td></tr>
+        <tr><td><code>dict</code></td><td><code>x = {'a':1}</code></td><td>Key-value pairs</td></tr>
+        <tr><td><code>set</code></td><td><code>x = {1,2,3}</code></td><td>Unordered, no duplicates</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card mb-3">
+    <h3>Type Conversion Functions</h3>
+    <pre><span class="kw">int</span>(<span class="str">"42"</span>)      <span class="cm"># → 42</span>
+<span class="kw">float</span>(<span class="num">10</span>)      <span class="cm"># → 10.0</span>
+<span class="kw">str</span>(<span class="num">3.14</span>)      <span class="cm"># → "3.14"</span>
+<span class="kw">bool</span>(<span class="num">0</span>)        <span class="cm"># → False  (0, "", [], None → False; everything else → True)</span>
+<span class="kw">list</span>(<span class="str">"abc"</span>)    <span class="cm"># → ['a', 'b', 'c']</span>
+<span class="kw">tuple</span>([<span class="num">1</span>,<span class="num">2</span>])  <span class="cm"># → (1, 2)</span></pre>
+  </div>
+</section>
+
+<!-- S3: Operators -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill blue mb-1">Unit 1–2</div><h2>Operators, Precedence &amp; Associativity</h2></div>
+  </div>
+  <div class="card mb-3">
+    <div class="scroll-x"><table>
+      <thead><tr><th>Category</th><th>Operators</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Arithmetic</td><td><code>+ - * / // % **</code></td><td><code>17//3=5, 17%3=2, 2**3=8</code></td></tr>
+        <tr><td>Comparison</td><td><code>== != &lt; &gt; &lt;= &gt;=</code></td><td><code>5 != 3 → True</code></td></tr>
+        <tr><td>Logical</td><td><code>and or not</code></td><td><code>True and False → False</code></td></tr>
+        <tr><td>Assignment</td><td><code>= += -= *= /= //= %=</code></td><td><code>x += 5</code></td></tr>
+        <tr><td>Bitwise</td><td><code>&amp; | ^ ~ &lt;&lt; &gt;&gt;</code></td><td><code>5 &amp; 3 = 1</code></td></tr>
+        <tr><td>Identity</td><td><code>is, is not</code></td><td><code>x is None</code></td></tr>
+        <tr><td>Membership</td><td><code>in, not in</code></td><td><code>3 in [1,2,3]</code></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card info mb-3">
+    <strong>Precedence (high→low):</strong> <code>**</code> → <code>~ + -</code> (unary) → <code>* / // %</code> → <code>+ -</code> → <code>&lt;&lt; &gt;&gt;</code> → <code>&amp;</code> → <code>^</code> → <code>|</code> → comparison → <code>not</code> → <code>and</code> → <code>or</code><br>
+    <strong>Associativity:</strong> Left-to-right except <code>**</code> (right-to-left)
+  </div>
+</section>
+
+<!-- S4: I/O & Math -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill green mb-1">Unit 3</div><h2>Input, Output, Import &amp; Math Functions</h2></div>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="cm"># input() always returns string</span>
+name = <span class="fn">input</span>(<span class="str">"Enter name: "</span>)
+age  = <span class="kw">int</span>(<span class="fn">input</span>(<span class="str">"Enter age: "</span>))
+
+<span class="cm"># print() with sep and end</span>
+<span class="fn">print</span>(<span class="str">"Hello"</span>, name, sep=<span class="str">", "</span>, end=<span class="str">"!\n"</span>)
+<span class="fn">print</span>(<span class="kw">f</span><span class="str">"Age: {age}"</span>)          <span class="cm"># f-string (preferred)</span>
+<span class="fn">print</span>(<span class="str">"%.2f"</span> % <span class="num">3.14159</span>)     <span class="cm"># → 3.14</span>
+
+<span class="cm"># range(start, stop, step)</span>
+<span class="kw">list</span>(<span class="fn">range</span>(<span class="num">1</span>, <span class="num">10</span>, <span class="num">2</span>))       <span class="cm"># → [1, 3, 5, 7, 9]</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>math module</h3>
+    <pre><span class="kw">import</span> math
+math.<span class="fn">sqrt</span>(<span class="num">16</span>)   <span class="cm"># 4.0</span>
+math.<span class="fn">ceil</span>(<span class="num">4.2</span>)  <span class="cm"># 5</span>
+math.<span class="fn">floor</span>(<span class="num">4.9</span>) <span class="cm"># 4</span>
+math.<span class="fn">pow</span>(<span class="num">2</span>,<span class="num">8</span>)   <span class="cm"># 256.0</span>
+math.<span class="fn">log</span>(<span class="num">100</span>,<span class="num">10</span>)<span class="cm"># 2.0</span>
+math.<span class="fn">factorial</span>(<span class="num">5</span>) <span class="cm"># 120</span>
+math.pi          <span class="cm"># 3.14159...</span>
+math.e           <span class="cm"># 2.71828...</span></pre>
+  </div>
+</section>
+
+<!-- S5: Decisions -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill orange mb-1">Unit 4</div><h2>Decision-Making Structures</h2></div>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="cm"># if / elif / else</span>
+<span class="kw">if</span> x > <span class="num">0</span>:
+    <span class="fn">print</span>(<span class="str">"positive"</span>)
+<span class="kw">elif</span> x == <span class="num">0</span>:
+    <span class="fn">print</span>(<span class="str">"zero"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"negative"</span>)
+
+<span class="cm"># Ternary (conditional expression)</span>
+result = <span class="str">"even"</span> <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span> <span class="kw">else</span> <span class="str">"odd"</span>
+
+<span class="cm"># Nested if</span>
+<span class="kw">if</span> a > <span class="num">0</span>:
+    <span class="kw">if</span> b > <span class="num">0</span>:
+        <span class="fn">print</span>(<span class="str">"both positive"</span>)</pre>
+  </div>
+  <div class="warn">Python has <strong>no switch/case</strong> (pre-3.10). Use <code>if/elif</code> chains or a dict mapping. Python 3.10+ has <code>match/case</code>.</div>
+</section>
+
+<!-- S6: Loops -->
+<section id="s6">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">06</div>
+    <div><div class="pill orange mb-1">Unit 5</div><h2>Looping Structures</h2></div>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="cm"># while loop</span>
+i = <span class="num">1</span>
+<span class="kw">while</span> i <= <span class="num">5</span>:
+    <span class="fn">print</span>(i)
+    i += <span class="num">1</span>
+
+<span class="cm"># for loop with range</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="num">6</span>):
+    <span class="fn">print</span>(i)
+
+<span class="cm"># for loop over iterable</span>
+<span class="kw">for</span> ch <span class="kw">in</span> <span class="str">"hello"</span>:
+    <span class="fn">print</span>(ch)
+
+<span class="cm"># else on loop — runs if loop NOT broken</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):
+    <span class="fn">print</span>(i)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"done"</span>)</pre>
+  </div>
+  <div class="card info">
+    <strong>Nested loops:</strong> Time complexity multiplies. O(n²) for two nested loops each running n times.
+  </div>
+</section>
+
+<!-- S7: Control -->
+<section id="s7">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">07</div>
+    <div><div class="pill red mb-1">Unit 6</div><h2>Control Statements</h2></div>
+  </div>
+  <div class="card mb-3">
+    <div class="scroll-x"><table>
+      <thead><tr><th>Statement</th><th>Effect</th><th>Works In</th></tr></thead>
+      <tbody>
+        <tr><td><code>break</code></td><td>Exit loop immediately</td><td><code>for</code>, <code>while</code></td></tr>
+        <tr><td><code>continue</code></td><td>Skip rest of current iteration</td><td><code>for</code>, <code>while</code></td></tr>
+        <tr><td><code>pass</code></td><td>Do nothing (placeholder)</td><td>Anywhere</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="cm"># break — find first even</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>):
+    <span class="kw">if</span> i % <span class="num">2</span> == <span class="num">0</span>:
+        <span class="fn">print</span>(i); <span class="kw">break</span>
+
+<span class="cm"># continue — skip odd</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):
+    <span class="kw">if</span> i % <span class="num">2</span> != <span class="num">0</span>: <span class="kw">continue</span>
+    <span class="fn">print</span>(i)          <span class="cm"># 0 2 4</span>
+
+<span class="cm"># pass — empty function body</span>
+<span class="kw">def</span> <span class="fn">todo</span>():
+    <span class="kw">pass</span></pre>
+  </div>
+</section>
+
+<!-- Flashcards -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">FC</div>
+    <div><div class="pill blue mb-1">Quick Review</div><h2>Flashcards — Module I</h2><p class="text-sm text-gray-500">Tap to flip</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+</main>
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  Module I — Fundamentals of Python &nbsp;·&nbsp; <a href="index.html" class="hover:underline">← Back to All Modules</a>
+</footer>
+<script>
+const cards=[
+  {q:"5 key features of Python",a:"1. Interpreted (no compilation)\n2. Dynamically typed\n3. Object-oriented\n4. High-level, readable syntax\n5. Extensive standard library"},
+  {q:"Rules for valid Python identifiers",a:"• Letters, digits, underscore only\n• Cannot start with digit\n• Case sensitive (age ≠ Age)\n• Cannot be a keyword\n• No special characters"},
+  {q:"What does // operator do?",a:"Floor division — divides and rounds DOWN to nearest integer.\n17 // 3 = 5\n-17 // 3 = -6 (floors towards -infinity)"},
+  {q:"What does ** operator do?",a:"Exponentiation (power).\n2 ** 3 = 8\nAssociativity: RIGHT to LEFT\n2 ** 3 ** 2 = 2 ** 9 = 512"},
+  {q:"Difference: is vs ==",a:"== checks VALUE equality\nis checks IDENTITY (same object in memory)\n[1,2] == [1,2] → True\n[1,2] is [1,2] → False (different objects)"},
+  {q:"What is range(2, 10, 3)?",a:"Generates: 2, 5, 8\nrange(start, stop, step)\nstop is EXCLUSIVE\nDefault start=0, step=1"},
+  {q:"Truthy vs Falsy values",a:"FALSY: 0, 0.0, '', [], {}, (), None, False\nTRUTHY: everything else\nbool([]) → False\nbool([0]) → True (non-empty list)"},
+  {q:"What happens to loop's else clause on break?",a:"The else clause is SKIPPED if the loop exits via break.\nIt runs only when loop completes normally (exhausts iterator or condition becomes False)."},
+  {q:"Difference: break vs continue vs pass",a:"break: EXIT the loop entirely\ncontinue: SKIP to next iteration\npass: DO NOTHING (syntactic placeholder)\npass doesn't affect loop execution"},
+  {q:"input() return type + how to get int?",a:"input() ALWAYS returns str.\nTo get int: age = int(input('Enter age: '))\nTo get float: x = float(input('Enter x: '))\nMultiple: a,b = map(int, input().split())"},
+];
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.split('\n').length>4?160:140;
+  g.innerHTML+=`<div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')"><div class="fc" style="height:100%;"><div class="fc-f card border cursor-pointer"><div><div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div><div class="font-bold text-sm">${c.q}</div><div class="text-xs text-gray-400 mt-2">tap to flip</div></div></div><div class="fc-b"><div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div></div></div></div>`;
+});
+</script>
+</body>
+</html>

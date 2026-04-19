@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module III — Data Structures in Python</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+code,pre{font-family:ui-monospace,monospace;font-size:13px;}
+pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+.kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;} .num{color:#fab387;}
+table{border-collapse:collapse;width:100%;}
+th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+tr:nth-child(even) td{background:#f0ede5;}
+.card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+.red{background:#dc2626;color:#fff;} .gray{background:#374151;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+.green{background:#15803d;color:#fff;} .orange{background:#b45309;color:#fff;}
+.tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.fc-wrap{perspective:700px;}
+.fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+.fc.flipped{transform:rotateY(180deg);}
+.fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+.fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ccc;display:inline-block;}
+nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+.secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 03 · <a href="/python/" class="hover:text-white">← All Modules</a></div>
+  <div class="font-black text-sm tracking-wide mb-1">DATA STRUCTURES IN PYTHON</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Strings</a><a href="#s2">Lists</a><a href="#s3">Tuples</a>
+    <a href="#s4">Dicts</a><a href="#s5">Sets</a><a href="#fc">Flashcards</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- S1: Strings -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill red mb-1">Unit 13 · 5 hrs</div><h2>Strings</h2><p class="text-sm text-gray-500">Immutable sequence of Unicode characters</p></div>
+  </div>
+  <div class="card mb-3">
+    <h3>Indexing &amp; Slicing</h3>
+    <pre>s = <span class="str">"Python"</span>
+<span class="cm">#    P  y  t  h  o  n</span>
+<span class="cm">#    0  1  2  3  4  5   (positive)</span>
+<span class="cm">#   -6 -5 -4 -3 -2 -1   (negative)</span>
+s[<span class="num">0</span>]      <span class="cm"># 'P'</span>
+s[-<span class="num">1</span>]     <span class="cm"># 'n'</span>
+s[<span class="num">1</span>:<span class="num">4</span>]    <span class="cm"># 'yth'  (start incl, stop excl)</span>
+s[::<span class="num">-1</span>]   <span class="cm"># 'nohtyP'  (reverse)</span>
+s[<span class="num">1</span>::<span class="num">2</span>]   <span class="cm"># 'yhn'  (every 2nd from index 1)</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Key String Methods</h3>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Method</th><th>Returns</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><code>upper() / lower()</code></td><td>str</td><td><code>"hi".upper() → "HI"</code></td></tr>
+        <tr><td><code>strip() / lstrip() / rstrip()</code></td><td>str</td><td><code>" hi ".strip() → "hi"</code></td></tr>
+        <tr><td><code>split(sep)</code></td><td>list</td><td><code>"a,b".split(',') → ['a','b']</code></td></tr>
+        <tr><td><code>join(iterable)</code></td><td>str</td><td><code>','.join(['a','b']) → 'a,b'</code></td></tr>
+        <tr><td><code>replace(old, new)</code></td><td>str</td><td><code>"cat".replace('c','b') → 'bat'</code></td></tr>
+        <tr><td><code>find(sub)</code></td><td>int</td><td><code>"hello".find('l') → 2</code> (−1 if not found)</td></tr>
+        <tr><td><code>count(sub)</code></td><td>int</td><td><code>"abab".count('ab') → 2</code></td></tr>
+        <tr><td><code>startswith() / endswith()</code></td><td>bool</td><td><code>"py".startswith('p') → True</code></td></tr>
+        <tr><td><code>format()</code></td><td>str</td><td><code>"{} {}".format('hi','world')</code></td></tr>
+        <tr><td><code>isdigit() / isalpha()</code></td><td>bool</td><td><code>"123".isdigit() → True</code></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="tip">Strings are <strong>immutable</strong> — methods return NEW strings; original unchanged. <code>s.upper()</code> doesn't modify <code>s</code>.</div>
+</section>
+
+<!-- S2: Lists -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill red mb-1">Unit 14 · 4 hrs</div><h2>Lists</h2><p class="text-sm text-gray-500">Mutable ordered sequence — most versatile data structure</p></div>
+  </div>
+  <div class="card mb-3">
+    <pre>lst = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>]
+lst[<span class="num">0</span>]         <span class="cm"># 10</span>
+lst[<span class="num">1</span>:<span class="num">3</span>]        <span class="cm"># [20, 30]</span>
+lst[-<span class="num">1</span>]        <span class="cm"># 50</span>
+lst[<span class="num">0</span>] = <span class="num">99</span>    <span class="cm"># mutation: [99, 20, 30, 40, 50]</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>List Methods</h3>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Method</th><th>Effect</th><th>Returns</th></tr></thead>
+      <tbody>
+        <tr><td><code>append(x)</code></td><td>Add x to end</td><td>None</td></tr>
+        <tr><td><code>extend(iterable)</code></td><td>Add all items from iterable</td><td>None</td></tr>
+        <tr><td><code>insert(i, x)</code></td><td>Insert x at index i</td><td>None</td></tr>
+        <tr><td><code>remove(x)</code></td><td>Remove first x</td><td>None</td></tr>
+        <tr><td><code>pop(i)</code></td><td>Remove &amp; return item at i (default: -1)</td><td>item</td></tr>
+        <tr><td><code>index(x)</code></td><td>First index of x</td><td>int</td></tr>
+        <tr><td><code>count(x)</code></td><td>Number of occurrences</td><td>int</td></tr>
+        <tr><td><code>sort()</code></td><td>Sort in-place</td><td>None</td></tr>
+        <tr><td><code>reverse()</code></td><td>Reverse in-place</td><td>None</td></tr>
+        <tr><td><code>copy()</code></td><td>Shallow copy</td><td>list</td></tr>
+        <tr><td><code>clear()</code></td><td>Remove all items</td><td>None</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card mb-3">
+    <h3>List Comprehension</h3>
+    <pre><span class="cm"># [expression for item in iterable if condition]</span>
+squares = [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>)]
+evens   = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">20</span>) <span class="kw">if</span> x%<span class="num">2</span>==<span class="num">0</span>]
+flat    = [x <span class="kw">for</span> row <span class="kw">in</span> matrix <span class="kw">for</span> x <span class="kw">in</span> row]</pre>
+  </div>
+</section>
+
+<!-- S3: Tuples -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill red mb-1">Unit 15 · 2 hrs</div><h2>Tuples</h2><p class="text-sm text-gray-500">Immutable ordered sequence</p></div>
+  </div>
+  <div class="card mb-3">
+    <pre>t = (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>)
+t[<span class="num">0</span>]       <span class="cm"># 1</span>
+t[<span class="num">1</span>:<span class="num">3</span>]      <span class="cm"># (2, 3)</span>
+t.count(<span class="num">2</span>) <span class="cm"># 2</span>
+t.index(<span class="num">3</span>) <span class="cm"># 2</span>
+
+<span class="cm"># Single-element tuple NEEDS trailing comma</span>
+x = (<span class="num">5</span>,)   <span class="cm"># tuple</span>
+y = (<span class="num">5</span>)    <span class="cm"># int — NOT a tuple!</span>
+
+<span class="cm"># Unpacking</span>
+a, b, c = (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)
+first, *rest = (<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>)  <span class="cm"># first=1, rest=[2,3,4]</span></pre>
+  </div>
+  <div class="card">
+    <div class="scroll-x"><table>
+      <thead><tr><th>Feature</th><th>Tuple</th><th>List</th></tr></thead>
+      <tbody>
+        <tr><td>Mutable</td><td>❌ No</td><td>✅ Yes</td></tr>
+        <tr><td>Speed</td><td>Faster</td><td>Slower</td></tr>
+        <tr><td>As dict key</td><td>✅ Yes (hashable)</td><td>❌ No</td></tr>
+        <tr><td>Methods</td><td>count, index only</td><td>11+ methods</td></tr>
+        <tr><td>Use when</td><td>Fixed data (coords, RGB)</td><td>Dynamic collections</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- S4: Dictionaries -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill red mb-1">Unit 16 · 3 hrs</div><h2>Dictionaries</h2><p class="text-sm text-gray-500">Mutable mapping of key-value pairs (ordered since Python 3.7)</p></div>
+  </div>
+  <div class="card mb-3">
+    <pre>d = {<span class="str">'name'</span>: <span class="str">'Alice'</span>, <span class="str">'age'</span>: <span class="num">25</span>}
+d[<span class="str">'name'</span>]           <span class="cm"># 'Alice'</span>
+d.get(<span class="str">'phone'</span>, <span class="str">'N/A'</span>)<span class="cm"># 'N/A' (safe, no KeyError)</span>
+d[<span class="str">'city'</span>] = <span class="str">'Kochi'</span>  <span class="cm"># add/update</span>
+<span class="kw">del</span> d[<span class="str">'age'</span>]         <span class="cm"># delete key</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Dict Methods</h3>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Method</th><th>Returns</th></tr></thead>
+      <tbody>
+        <tr><td><code>keys()</code></td><td>dict_keys view of all keys</td></tr>
+        <tr><td><code>values()</code></td><td>dict_values view of all values</td></tr>
+        <tr><td><code>items()</code></td><td>dict_items view of (key,value) tuples</td></tr>
+        <tr><td><code>get(key, default)</code></td><td>value or default (no error)</td></tr>
+        <tr><td><code>pop(key)</code></td><td>Remove and return value</td></tr>
+        <tr><td><code>update(other_dict)</code></td><td>Merge another dict in</td></tr>
+        <tr><td><code>setdefault(k,v)</code></td><td>Return value; set if missing</td></tr>
+        <tr><td><code>clear()</code></td><td>Remove all items</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="cm"># Iterating</span>
+<span class="kw">for</span> k, v <span class="kw">in</span> d.items():
+    <span class="fn">print</span>(<span class="kw">f</span><span class="str">"{k}: {v}"</span>)
+
+<span class="cm"># Dict comprehension</span>
+sq = {x: x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>)}</pre>
+  </div>
+</section>
+
+<!-- S5: Sets -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill red mb-1">Unit 17 · 1 hr</div><h2>Sets</h2><p class="text-sm text-gray-500">Unordered collection of unique elements</p></div>
+  </div>
+  <div class="card mb-3">
+    <pre>s = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>}       <span class="cm"># {1, 2, 3} — duplicates removed</span>
+s.add(<span class="num">4</span>)               <span class="cm"># {1, 2, 3, 4}</span>
+s.discard(<span class="num">10</span>)          <span class="cm"># no error if not found</span>
+s.remove(<span class="num">1</span>)            <span class="cm"># raises KeyError if not found</span>
+
+<span class="cm"># Set operations</span>
+a = {<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>}; b = {<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>}
+a | b   <span class="cm"># union:        {1,2,3,4}</span>
+a &amp; b   <span class="cm"># intersection: {2,3}</span>
+a - b   <span class="cm"># difference:   {1}</span>
+a ^ b   <span class="cm"># symmetric diff:{1,4}</span>
+a &lt;= b  <span class="cm"># is a subset of b?</span></pre>
+  </div>
+  <div class="good">Sets use hash tables — <code>in</code> operator is O(1) vs O(n) for lists. Use sets for fast membership testing and deduplication.</div>
+</section>
+
+<!-- Flashcards -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#dc2626;">FC</div>
+    <div><div class="pill red mb-1">Quick Review</div><h2>Flashcards — Module III</h2><p class="text-sm text-gray-500">Tap to flip</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+</main>
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  Module III — Data Structures &nbsp;·&nbsp; <a href="index.html" class="hover:underline">← Back to All Modules</a>
+</footer>
+<script>
+const cards=[
+  {q:"Why are strings immutable? What does this mean?",a:"Strings cannot be changed after creation.\ns = 'hello'\ns[0] = 'H'  ← TypeError!\ns.upper() returns NEW string; s is unchanged.\nBenefit: hashable (usable as dict keys)"},
+  {q:"Difference: s.find() vs s.index()",a:"Both find first position of substring.\nfind(): returns -1 if not found (safe)\nindex(): raises ValueError if not found\nPrefer find() when you're not sure it exists."},
+  {q:"list.append() vs list.extend()",a:"append(x): adds x as a SINGLE item\n  [1,2].append([3,4]) → [1,2,[3,4]]\nextend(iter): adds each item individually\n  [1,2].extend([3,4]) → [1,2,3,4]"},
+  {q:"list.remove() vs list.pop()",a:"remove(x): removes first OCCURRENCE of value x\npop(i): removes item at INDEX i; returns it\npop() (no arg): removes and returns LAST item\nremove() raises ValueError if x not found"},
+  {q:"How to create single-element tuple?",a:"x = (5,)  ← CORRECT (trailing comma)\nx = (5)   ← WRONG: this is just int 5\nx = 5,    ← also valid tuple\nThe comma makes it a tuple, not the parens."},
+  {q:"Why prefer tuple over list?",a:"• Faster (CPython optimizes tuples)\n• Memory efficient\n• Hashable → usable as dict key or set element\n• Signals 'this data shouldn't change'\nUse for fixed data: coordinates, RGB colors, DB rows"},
+  {q:"Difference: dict[key] vs dict.get(key)",a:"d['key']: raises KeyError if key missing\nd.get('key'): returns None (no error)\nd.get('key', default): returns default if missing\nAlways use .get() when key might not exist"},
+  {q:"Set vs List for membership test",a:"set: O(1) — hash table lookup\nlist: O(n) — scans each element\nFor 'x in container' with large data:\nConvert list → set first if checking many times.\n{} creates set; but {} alone creates empty dict!"},
+  {q:"How to deduplicate a list?",a:"unique = list(set(original))\nWarning: ORDER is NOT preserved!\nTo preserve order (Python 3.7+):\nunique = list(dict.fromkeys(original))\nOr: seen=set(); [x for x in lst if not (seen.add(x) or x in seen)]"},
+];
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.split('\n').length>5?165:145;
+  g.innerHTML+=`<div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')"><div class="fc" style="height:100%;"><div class="fc-f card border cursor-pointer"><div><div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div><div class="font-bold text-sm">${c.q}</div><div class="text-xs text-gray-400 mt-2">tap to flip</div></div></div><div class="fc-b"><div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div></div></div></div>`;
+});
+</script>
+</body>
+</html>

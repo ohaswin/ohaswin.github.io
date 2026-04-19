@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module II — Functions &amp; Modules</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+.kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;} .num{color:#fab387;}
+table{border-collapse:collapse;width:100%;}
+th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+tr:nth-child(even) td{background:#f0ede5;}
+.card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+.green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+.red{background:#dc2626;color:#fff;} .orange{background:#b45309;color:#fff;}
+.tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.fc-wrap{perspective:700px;}
+.fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+.fc.flipped{transform:rotateY(180deg);}
+.fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+.fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ccc;display:inline-block;}
+nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+.secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 02 · <a href="/python/" class="hover:text-white">← All Modules</a></div>
+  <div class="font-black text-sm tracking-wide mb-1">FUNCTIONS &amp; MODULES</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Def &amp; Call</a><a href="#s2">Arguments</a><a href="#s3">Scope</a>
+    <a href="#s4">Special Fns</a><a href="#s5">Modules</a><a href="#fc">Flashcards</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- S1: Def & Call -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill green mb-1">Unit 7</div><h2>Function Definition, Calling &amp; Flow</h2></div>
+  </div>
+  <div class="card info mb-3">A <strong>function</strong> is a named, reusable block of code. Benefits: modularity, code reuse, readability, easier debugging.</div>
+  <div class="card mb-3">
+    <pre><span class="cm"># Definition</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name):          <span class="cm"># name = parameter</span>
+    <span class="str">"""Docstring here"""</span>
+    <span class="kw">return</span> <span class="kw">f</span><span class="str">"Hello, {name}!"</span>
+
+<span class="cm"># Calling</span>
+msg = <span class="fn">greet</span>(<span class="str">"Aswin"</span>)      <span class="cm"># "Aswin" = argument</span>
+<span class="fn">print</span>(msg)               <span class="cm"># Hello, Aswin!</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Flow of Execution</h3>
+    <ol class="text-sm space-y-1 list-decimal list-inside">
+      <li>Python executes top-to-bottom</li>
+      <li>Function definition is <em>registered</em>, not executed</li>
+      <li>At call site: control jumps to function body</li>
+      <li>After <code>return</code> (or end of body): control returns to caller</li>
+      <li>Return value is substituted at call site</li>
+    </ol>
+  </div>
+</section>
+
+<!-- S2: Arguments -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill green mb-1">Unit 8</div><h2>Types of Function Arguments</h2></div>
+  </div>
+  <div class="card mb-3">
+    <div class="scroll-x"><table>
+      <thead><tr><th>Type</th><th>Syntax</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Required (Positional)</strong></td><td>Normal params</td><td><code>def f(a, b)</code> → <code>f(1, 2)</code></td></tr>
+        <tr><td><strong>Keyword</strong></td><td>Name=value at call</td><td><code>f(b=2, a=1)</code></td></tr>
+        <tr><td><strong>Default</strong></td><td>Param with default</td><td><code>def f(a, b=10)</code></td></tr>
+        <tr><td><strong>Variable-length (*args)</strong></td><td><code>*args</code></td><td>Tuple of extra positionals</td></tr>
+        <tr><td><strong>Variable keyword (**kwargs)</strong></td><td><code>**kwargs</code></td><td>Dict of extra keyword args</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="cm"># *args and **kwargs together</span>
+<span class="kw">def</span> <span class="fn">demo</span>(*args, **kwargs):
+    <span class="fn">print</span>(args)    <span class="cm"># tuple: (1, 2, 3)</span>
+    <span class="fn">print</span>(kwargs)  <span class="cm"># dict:  {'x': 10, 'y': 20}</span>
+
+<span class="fn">demo</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, x=<span class="num">10</span>, y=<span class="num">20</span>)
+
+<span class="cm"># Default args — mutable default trap!</span>
+<span class="kw">def</span> <span class="fn">bad</span>(lst=[]):      <span class="cm"># ⚠ shared across calls</span>
+    lst.append(<span class="num">1</span>); <span class="kw">return</span> lst
+<span class="kw">def</span> <span class="fn">good</span>(lst=<span class="kw">None</span>):  <span class="cm"># ✓ correct pattern</span>
+    <span class="kw">if</span> lst <span class="kw">is</span> <span class="kw">None</span>: lst = []
+    lst.append(<span class="num">1</span>); <span class="kw">return</span> lst</pre>
+  </div>
+  <div class="warn">Default argument order: <code>required → default → *args → **kwargs</code></div>
+</section>
+
+<!-- S3: Scope -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill green mb-1">Unit 9</div><h2>Scope &amp; Lifetime of Variables</h2></div>
+  </div>
+  <div class="card mb-3">
+    <div class="scroll-x"><table>
+      <thead><tr><th>Scope</th><th>Where Defined</th><th>Accessible</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Local</strong></td><td>Inside function</td><td>Only inside that function</td></tr>
+        <tr><td><strong>Enclosing</strong></td><td>Outer function (nested)</td><td>Inner function</td></tr>
+        <tr><td><strong>Global</strong></td><td>Module level</td><td>Everywhere in module</td></tr>
+        <tr><td><strong>Built-in</strong></td><td>Python builtins</td><td>Everywhere</td></tr>
+      </tbody>
+    </table></div>
+    <p class="text-xs text-gray-500 mt-2">Lookup order: <strong>LEGB</strong> — Local → Enclosing → Global → Built-in</p>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="cm"># global keyword</span>
+x = <span class="num">10</span>
+<span class="kw">def</span> <span class="fn">modify</span>():
+    <span class="kw">global</span> x
+    x = <span class="num">20</span>   <span class="cm"># modifies global x</span>
+
+<span class="cm"># nonlocal keyword (nested functions)</span>
+<span class="kw">def</span> <span class="fn">outer</span>():
+    y = <span class="num">5</span>
+    <span class="kw">def</span> <span class="fn">inner</span>():
+        <span class="kw">nonlocal</span> y
+        y = <span class="num">10</span>
+    <span class="fn">inner</span>()
+    <span class="fn">print</span>(y)  <span class="cm"># 10</span></pre>
+  </div>
+  <div class="info">Lifetime: Local variables are created when function is called and destroyed when it returns.</div>
+</section>
+
+<!-- S4: Special Functions -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill blue mb-1">Unit 10</div><h2>Recursive, Lambda &amp; Special Functions</h2></div>
+  </div>
+  <div class="card mb-3">
+    <h3>Recursion</h3>
+    <pre><span class="kw">def</span> <span class="fn">factorial</span>(n):
+    <span class="kw">if</span> n == <span class="num">0</span>: <span class="kw">return</span> <span class="num">1</span>       <span class="cm"># base case</span>
+    <span class="kw">return</span> n * <span class="fn">factorial</span>(n-<span class="num">1</span>) <span class="cm"># recursive case</span>
+
+<span class="cm"># Fibonacci</span>
+<span class="kw">def</span> <span class="fn">fib</span>(n):
+    <span class="kw">if</span> n <= <span class="num">1</span>: <span class="kw">return</span> n
+    <span class="kw">return</span> <span class="fn">fib</span>(n-<span class="num">1</span>) + <span class="fn">fib</span>(n-<span class="num">2</span>)</pre>
+    <div class="tip mt-2">Every recursion needs: (1) Base case to stop, (2) Recursive case that moves toward base case. Without base case → infinite recursion → <code>RecursionError</code></div>
+  </div>
+  <div class="card mb-3">
+    <h3>Lambda (Anonymous Function)</h3>
+    <pre><span class="cm"># lambda args: expression</span>
+square = <span class="kw">lambda</span> x: x**<span class="num">2</span>
+add    = <span class="kw">lambda</span> a,b: a+b
+
+<span class="cm"># Useful with higher-order functions</span>
+nums = [<span class="num">3</span>,<span class="num">1</span>,<span class="num">4</span>,<span class="num">1</span>,<span class="num">5</span>,<span class="num">9</span>]
+<span class="fn">sorted</span>(nums, key=<span class="kw">lambda</span> x: -x)   <span class="cm"># descending</span>
+<span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> x: x*<span class="num">2</span>, nums))   <span class="cm"># double each</span>
+<span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> x: x%<span class="num">2</span>==<span class="num">0</span>, nums)) <span class="cm"># evens only</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Multiple Return Values &amp; Void</h3>
+    <pre><span class="cm"># Multiple return — returns a tuple</span>
+<span class="kw">def</span> <span class="fn">min_max</span>(lst):
+    <span class="kw">return</span> <span class="fn">min</span>(lst), <span class="fn">max</span>(lst)
+
+lo, hi = <span class="fn">min_max</span>([<span class="num">3</span>,<span class="num">1</span>,<span class="num">4</span>,<span class="num">5</span>])  <span class="cm"># unpacking</span>
+
+<span class="cm"># Void function — returns None implicitly</span>
+<span class="kw">def</span> <span class="fn">say_hi</span>():
+    <span class="fn">print</span>(<span class="str">"Hi"</span>)           <span class="cm"># no return statement</span></pre>
+  </div>
+</section>
+
+<!-- S5: Modules -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill gray mb-1">Unit 11</div><h2>Built-in Modules &amp; User-Defined Packages</h2></div>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="cm"># Import styles</span>
+<span class="kw">import</span> math
+<span class="kw">from</span> math <span class="kw">import</span> sqrt, pi
+<span class="kw">from</span> math <span class="kw">import</span> * <span class="cm">       # import everything (avoid)</span>
+<span class="kw">import</span> math <span class="kw">as</span> m          <span class="cm"># alias</span>
+
+<span class="cm"># User-defined module (myutils.py)</span>
+<span class="kw">def</span> <span class="fn">add</span>(a, b): <span class="kw">return</span> a+b
+
+<span class="cm"># In another file:</span>
+<span class="kw">import</span> myutils
+myutils.<span class="fn">add</span>(<span class="num">3</span>, <span class="num">4</span>)</pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Package Structure</h3>
+    <pre><span class="cm">mypackage/
+  __init__.py      # makes it a package
+  module1.py
+  module2.py</span>
+
+<span class="kw">from</span> mypackage <span class="kw">import</span> module1
+<span class="kw">from</span> mypackage.module2 <span class="kw">import</span> some_function</pre>
+  </div>
+  <div class="card">
+    <h3>Common Built-in Modules</h3>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Module</th><th>Key Functions</th></tr></thead>
+      <tbody>
+        <tr><td><code>math</code></td><td><code>sqrt, floor, ceil, pow, log, factorial, pi, e</code></td></tr>
+        <tr><td><code>random</code></td><td><code>random(), randint(), choice(), shuffle(), seed()</code></td></tr>
+        <tr><td><code>os</code></td><td><code>getcwd(), listdir(), path.join(), mkdir()</code></td></tr>
+        <tr><td><code>sys</code></td><td><code>argv, path, exit(), version</code></td></tr>
+        <tr><td><code>datetime</code></td><td><code>date.today(), datetime.now(), timedelta</code></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- Flashcards -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#15803d;">FC</div>
+    <div><div class="pill green mb-1">Quick Review</div><h2>Flashcards — Module II</h2><p class="text-sm text-gray-500">Tap to flip</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+</main>
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  Module II — Functions &amp; Modules &nbsp;·&nbsp; <a href="index.html" class="hover:underline">← Back to All Modules</a>
+</footer>
+<script>
+const cards=[
+  {q:"Parameter vs Argument",a:"Parameter: variable in the function DEFINITION\n  def greet(name)  ← 'name' is a parameter\nArgument: actual value passed at CALL\n  greet('Aswin')   ← 'Aswin' is an argument"},
+  {q:"4 types of arguments",a:"1. Required/Positional: must pass, in order\n2. Keyword: pass by name (order flexible)\n3. Default: has fallback value, optional to pass\n4. Variable: *args (tuple), **kwargs (dict)"},
+  {q:"What is LEGB?",a:"Python's variable lookup order:\nL — Local (inside function)\nE — Enclosing (outer function)\nG — Global (module level)\nB — Built-in (Python builtins)\nFirst match wins."},
+  {q:"Two required parts of any recursive function",a:"1. BASE CASE — condition to stop recursion\n2. RECURSIVE CASE — calls itself with a smaller input that moves toward base case.\nMissing base case → RecursionError (stack overflow)"},
+  {q:"Lambda syntax and limitation",a:"lambda args: expression\nLIMITATIONS:\n• Single expression only (no statements)\n• No return keyword\n• No multi-line body\n• Harder to debug (no name)\nUse for short, throwaway functions."},
+  {q:"What does a void function return?",a:"None — implicitly.\nA function with no return statement (or bare return) returns None.\nbool(None) → False\ntype(None) → NoneType"},
+  {q:"global vs nonlocal",a:"global: access/modify a GLOBAL variable from inside a function\nnonlocal: access/modify an ENCLOSING (outer function) variable from a nested function\nNeither needed to just READ; only to WRITE."},
+  {q:"How to make a Python package?",a:"1. Create a directory: mypackage/\n2. Add __init__.py (can be empty)\n3. Add module files: module1.py etc.\n4. Import: from mypackage import module1"},
+];
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.split('\n').length>5?165:145;
+  g.innerHTML+=`<div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')"><div class="fc" style="height:100%;"><div class="fc-f card border cursor-pointer"><div><div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div><div class="font-bold text-sm">${c.q}</div><div class="text-xs text-gray-400 mt-2">tap to flip</div></div></div><div class="fc-b"><div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div></div></div></div>`;
+});
+</script>
+</body>
+</html>

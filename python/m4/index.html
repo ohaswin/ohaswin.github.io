@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module IV — Scientific Computing in Python</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+code,pre{font-family:ui-monospace,monospace;font-size:13px;}
+pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+.kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;} .num{color:#fab387;}
+table{border-collapse:collapse;width:100%;}
+th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+tr:nth-child(even) td{background:#f0ede5;}
+.card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+.purple{background:#7c3aed;color:#fff;} .gray{background:#374151;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+.green{background:#15803d;color:#fff;} .orange{background:#b45309;color:#fff;} .red{background:#dc2626;color:#fff;}
+.tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+.fc-wrap{perspective:700px;}
+.fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+.fc.flipped{transform:rotateY(180deg);}
+.fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+.fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ccc;display:inline-block;}
+nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+.secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+.scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.example-shot{margin-top:10px;border:1px solid #ddd8cc;border-radius:6px;overflow:hidden;background:#fff;}
+.example-shot img{display:block;width:100%;height:auto;}
+.example-shot figcaption{font-size:12px;color:#6b7280;padding:8px 10px;border-top:1px solid #eee;background:#fafafa;}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 04 · <a href="/python/" class="hover:text-white">← All Modules</a></div>
+  <div class="font-black text-sm tracking-wide mb-1">SCIENTIFIC COMPUTING IN PYTHON</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">NumPy Arrays</a><a href="#s2">Ufuncs &amp; Broadcasting</a>
+    <a href="#s3">Pandas</a><a href="#s4">Matplotlib</a><a href="#fc">Flashcards</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- S1: NumPy -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill purple mb-1">Unit 18 · 2 hrs</div><h2>NumPy Arrays</h2><p class="text-sm text-gray-500">Numerical Python — foundation of scientific computing</p></div>
+  </div>
+  <div class="card info mb-3"><strong>Why NumPy?</strong> Python lists are slow for math. NumPy arrays are stored as contiguous memory blocks (C-style), enabling vectorized operations that are 10–100× faster.</div>
+  <div class="card mb-3">
+    <h3>Creating Arrays</h3>
+    <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+np.<span class="fn">array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])           <span class="cm"># from list → 1D array</span>
+np.<span class="fn">array</span>([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]])     <span class="cm"># 2D array (matrix)</span>
+np.<span class="fn">zeros</span>((<span class="num">3</span>,<span class="num">4</span>))              <span class="cm"># 3×4 zeros</span>
+np.<span class="fn">ones</span>((<span class="num">2</span>,<span class="num">3</span>))               <span class="cm"># 2×3 ones</span>
+np.<span class="fn">arange</span>(<span class="num">0</span>, <span class="num">10</span>, <span class="num">2</span>)          <span class="cm"># [0,2,4,6,8]</span>
+np.<span class="fn">linspace</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="num">5</span>)         <span class="cm"># 5 evenly spaced [0..1]</span>
+np.<span class="fn">eye</span>(<span class="num">3</span>)                     <span class="cm"># 3×3 identity matrix</span>
+np.<span class="fn">random.rand</span>(<span class="num">2</span>,<span class="num">3</span>)          <span class="cm"># 2×3 random [0,1)</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Array Attributes &amp; Indexing</h3>
+    <pre>a = np.<span class="fn">array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>],[<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>]])
+a.shape     <span class="cm"># (2, 3)</span>
+a.ndim      <span class="cm"># 2</span>
+a.dtype     <span class="cm"># int64</span>
+a.size      <span class="cm"># 6 (total elements)</span>
+
+a[<span class="num">0</span>, <span class="num">1</span>]     <span class="cm"># 2  (row 0, col 1)</span>
+a[<span class="num">1</span>, :]     <span class="cm"># [4,5,6]  (all of row 1)</span>
+a[:, <span class="num">2</span>]     <span class="cm"># [3,6]    (all of col 2)</span>
+a[<span class="num">0</span>:<span class="num">2</span>, <span class="num">1</span>:<span class="num">3</span>] <span class="cm"># [[2,3],[5,6]]  (submatrix)</span>
+
+<span class="cm"># Boolean indexing</span>
+a[a > <span class="num">3</span>]    <span class="cm"># [4, 5, 6]</span></pre>
+  </div>
+  <div class="card">
+    <h3>Array Operations</h3>
+    <pre>a = np.<span class="fn">array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])
+b = np.<span class="fn">array</span>([<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>])
+
+a + b        <span class="cm"># [5, 7, 9]   element-wise</span>
+a * b        <span class="cm"># [4, 10, 18] element-wise</span>
+a ** <span class="num">2</span>       <span class="cm"># [1, 4, 9]</span>
+np.<span class="fn">dot</span>(a,b)  <span class="cm"># 32  (dot product)</span>
+np.<span class="fn">sum</span>(a)    <span class="cm"># 6</span>
+np.<span class="fn">mean</span>(a)   <span class="cm"># 2.0</span>
+np.<span class="fn">max</span>(a)    <span class="cm"># 3</span>
+a.<span class="fn">reshape</span>(<span class="num">3</span>,<span class="num">1</span>) <span class="cm"># column vector</span></pre>
+  </div>
+</section>
+
+<!-- S2: Ufuncs & Broadcasting -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill purple mb-1">Unit 19 · 3 hrs</div><h2>Universal Functions &amp; Broadcasting</h2></div>
+  </div>
+  <div class="card mb-3">
+    <h3>Universal Functions (ufuncs)</h3>
+    <div class="info mb-3">Ufuncs operate element-wise on arrays. They're implemented in C — much faster than Python loops.</div>
+    <pre><span class="cm"># Math ufuncs</span>
+np.<span class="fn">sqrt</span>([<span class="num">4</span>,<span class="num">9</span>,<span class="num">16</span>])   <span class="cm"># [2., 3., 4.]</span>
+np.<span class="fn">exp</span>([<span class="num">1</span>,<span class="num">2</span>])        <span class="cm"># [e, e²]</span>
+np.<span class="fn">log</span>([<span class="num">1</span>,<span class="num">10</span>,<span class="num">100</span>])  <span class="cm"># natural log</span>
+np.<span class="fn">sin</span>(np.pi/<span class="num">2</span>)     <span class="cm"># 1.0</span>
+np.<span class="fn">abs</span>([-<span class="num">1</span>,-<span class="num">2</span>,<span class="num">3</span>])   <span class="cm"># [1, 2, 3]</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Broadcasting Rules</h3>
+    <div class="info mb-2">Broadcasting lets NumPy operate on arrays of different shapes without copying data.</div>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Rule</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>If arrays differ in ndim, pad smaller shape with 1s on LEFT</td></tr>
+        <tr><td>2</td><td>Dimensions of size 1 are stretched to match the other</td></tr>
+        <tr><td>3</td><td>Sizes must match or be 1 — otherwise ValueError</td></tr>
+      </tbody>
+    </table></div>
+    <pre class="mt-2">a = np.<span class="fn">array</span>([[<span class="num">1</span>],[<span class="num">2</span>],[<span class="num">3</span>]])  <span class="cm"># shape (3,1)</span>
+b = np.<span class="fn">array</span>([<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>])    <span class="cm"># shape (3,)</span>
+a + b  <span class="cm"># shape (3,3) — broadcasts both</span>
+<span class="cm"># [[11,21,31],[12,22,32],[13,23,33]]</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Fancy Indexing</h3>
+    <pre>a = np.<span class="fn">array</span>([<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>,<span class="num">40</span>,<span class="num">50</span>])
+a[[<span class="num">0</span>,<span class="num">2</span>,<span class="num">4</span>]]     <span class="cm"># [10, 30, 50] — index with list</span>
+a[a > <span class="num">25</span>]      <span class="cm"># [30, 40, 50] — boolean mask</span>
+a[a % <span class="num">20</span> == <span class="num">0</span>] <span class="cm"># [20, 40]</span></pre>
+  </div>
+</section>
+
+<!-- S3: Pandas -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill purple mb-1">Unit 20 · 3 hrs</div><h2>Pandas — Series &amp; DataFrames</h2></div>
+  </div>
+  <div class="card info mb-3">
+    <strong>Pandas in simple words:</strong> Pandas helps you work with table-like data (like Excel sheets) in Python.
+    If NumPy is for fast numbers, Pandas is for real-world data with row names, column names, missing values, filtering, and summaries.
+  </div>
+  <div class="card good mb-3">
+    <h3>Series vs DataFrame (for beginners)</h3>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Object</th><th>Think of it as</th><th>Shape</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Series</td><td>One labeled column</td><td>1D</td><td>Ages of students</td></tr>
+        <tr><td>DataFrame</td><td>Full table (many columns)</td><td>2D</td><td>Name + Age + Score table</td></tr>
+      </tbody>
+    </table></div>
+    <p class="text-sm text-gray-600 mt-2"><strong>Memory trick:</strong> Series = single lane. DataFrame = full highway with many lanes.</p>
+  </div>
+  <div class="card mb-3">
+    <h3>Series</h3>
+    <div class="info mb-2">A <strong>Series</strong> is one column of data with labels (index). You can access values by label or by position.</div>
+    <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># From list (default int index)</span>
+s = pd.<span class="fn">Series</span>([<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>])
+
+<span class="cm"># From dict (keys become index)</span>
+s = pd.<span class="fn">Series</span>({<span class="str">'a'</span>:<span class="num">10</span>, <span class="str">'b'</span>:<span class="num">20</span>})
+s[<span class="str">'a'</span>]     <span class="cm"># 10</span>
+s.values   <span class="cm"># numpy array</span>
+s.index    <span class="cm"># Index(['a','b'])</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>DataFrame</h3>
+    <div class="info mb-2">A <strong>DataFrame</strong> is a 2D table made of multiple Series sharing the same row index.</div>
+    <pre>df = pd.<span class="fn">DataFrame</span>({
+    <span class="str">'Name'</span>: [<span class="str">'Alice'</span>,<span class="str">'Bob'</span>,<span class="str">'Carol'</span>],
+    <span class="str">'Age'</span>:  [<span class="num">25</span>, <span class="num">30</span>, <span class="num">22</span>],
+    <span class="str">'Score'</span>:[<span class="num">88</span>, <span class="num">72</span>, <span class="num">95</span>]
+})
+
+df.<span class="fn">head</span>(<span class="num">2</span>)          <span class="cm"># first 2 rows</span>
+df.shape            <span class="cm"># (3, 3)</span>
+df.dtypes           <span class="cm"># column types</span>
+df[<span class="str">'Age'</span>]           <span class="cm"># Series (column)</span>
+df[[<span class="str">'Name'</span>,<span class="str">'Score'</span>]] <span class="cm"># sub-DataFrame</span>
+df.iloc[<span class="num">0</span>]          <span class="cm"># first row by position</span>
+df.loc[<span class="num">0</span>, <span class="str">'Name'</span>]   <span class="cm"># label-based: 'Alice'</span>
+df[df[<span class="str">'Score'</span>] > <span class="num">80</span>]<span class="cm"># filter rows</span></pre>
+  </div>
+  <div class="card mb-3">
+    <h3>Key DataFrame Operations</h3>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Operation</th><th>Code</th></tr></thead>
+      <tbody>
+        <tr><td>Describe stats</td><td><code>df.describe()</code></td></tr>
+        <tr><td>Sort by column</td><td><code>df.sort_values('Age')</code></td></tr>
+        <tr><td>Group &amp; aggregate</td><td><code>df.groupby('Dept')['Score'].mean()</code></td></tr>
+        <tr><td>Drop column</td><td><code>df.drop('Age', axis=1)</code></td></tr>
+        <tr><td>Handle missing</td><td><code>df.fillna(0) / df.dropna()</code></td></tr>
+        <tr><td>From CSV</td><td><code>pd.read_csv('file.csv')</code></td></tr>
+        <tr><td>To CSV</td><td><code>df.to_csv('out.csv', index=False)</code></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="info"><strong>iloc vs loc:</strong> <code>iloc</code> = integer position (0-based). <code>loc</code> = label-based (uses index labels). Mixing them up is a common bug.</div>
+</section>
+
+<!-- S4: Matplotlib -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill purple mb-1">Unit 21 · 2 hrs</div><h2>Matplotlib — Basic Plotting</h2></div>
+  </div>
+  <div class="card mb-3">
+    <pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="cm"># Simple example: heights of students (bar chart)</span>
+students = [<span class="str">'Asha'</span>, <span class="str">'Ben'</span>, <span class="str">'Chen'</span>, <span class="str">'Diya'</span>, <span class="str">'Evan'</span>]
+heights = [<span class="num">152</span>, <span class="num">160</span>, <span class="num">155</span>, <span class="num">167</span>, <span class="num">162</span>]
+
+plt.<span class="fn">bar</span>(students, heights)
+plt.<span class="fn">title</span>(<span class="str">'Heights of Students in a Class'</span>)
+plt.<span class="fn">xlabel</span>(<span class="str">'Student'</span>)
+plt.<span class="fn">ylabel</span>(<span class="str">'Height (cm)'</span>)
+plt.<span class="fn">show</span>()</pre>
+    <figure class="example-shot">
+      <img src="images/matplotlib-line-plot.png" alt="Output of bar chart showing heights of students">
+      <figcaption>Output: Student-height bar chart.</figcaption>
+    </figure>
+  </div>
+  <div class="card mb-3">
+    <h3>Chart Types</h3>
+    <div class="scroll-x"><table>
+      <thead><tr><th>Chart</th><th>Function</th><th>Use For</th></tr></thead>
+      <tbody>
+        <tr><td>Line plot</td><td><code>plt.plot(x, y)</code></td><td>Trends over continuous x</td></tr>
+        <tr><td>Scatter plot</td><td><code>plt.scatter(x, y)</code></td><td>Correlation between two vars</td></tr>
+        <tr><td>Bar chart</td><td><code>plt.bar(categories, values)</code></td><td>Comparing discrete categories</td></tr>
+        <tr><td>Histogram</td><td><code>plt.hist(data, bins=10)</code></td><td>Distribution of a variable</td></tr>
+        <tr><td>Pie chart</td><td><code>plt.pie(sizes, labels=labels)</code></td><td>Proportions of a whole</td></tr>
+      </tbody>
+    </table></div>
+    <figure class="example-shot">
+      <img src="images/matplotlib-chart-types.png" alt="Output showing scatter, bar, histogram, and pie charts">
+      <figcaption>Output: Examples of common chart types.</figcaption>
+    </figure>
+  </div>
+  <div class="card mb-3">
+    <h3>Subplots</h3>
+    <pre><span class="cm"># Compare two class sections side-by-side</span>
+students_a = [<span class="str">'Asha'</span>, <span class="str">'Ben'</span>, <span class="str">'Chen'</span>]
+heights_a = [<span class="num">152</span>, <span class="num">160</span>, <span class="num">155</span>]
+
+students_b = [<span class="str">'Diya'</span>, <span class="str">'Evan'</span>, <span class="str">'Farah'</span>]
+heights_b = [<span class="num">167</span>, <span class="num">162</span>, <span class="num">158</span>]
+
+fig, axes = plt.<span class="fn">subplots</span>(<span class="num">1</span>, <span class="num">2</span>, figsize=(<span class="num">10</span>,<span class="num">4</span>))
+axes[<span class="num">0</span>].<span class="fn">bar</span>(students_a, heights_a); axes[<span class="num">0</span>].<span class="fn">set_title</span>(<span class="str">'Section A Heights'</span>)
+axes[<span class="num">1</span>].<span class="fn">bar</span>(students_b, heights_b); axes[<span class="num">1</span>].<span class="fn">set_title</span>(<span class="str">'Section B Heights'</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()</pre>
+    <figure class="example-shot">
+      <img src="images/matplotlib-subplots.png" alt="Output of two subplots comparing student heights in two sections">
+      <figcaption>Output: 1x2 subplots comparing student heights in Section A and Section B.</figcaption>
+    </figure>
+  </div>
+  <div class="warn">Always call <code>plt.show()</code> last (in scripts). In Jupyter: use <code>%matplotlib inline</code> at the top.</div>
+</section>
+
+<!-- Flashcards -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#7c3aed;">FC</div>
+    <div><div class="pill purple mb-1">Quick Review</div><h2>Flashcards — Module IV</h2><p class="text-sm text-gray-500">Tap to flip</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+</main>
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  Module IV — Scientific Computing &nbsp;·&nbsp; <a href="index.html" class="hover:underline">← Back to All Modules</a>
+</footer>
+<script>
+const cards=[
+  {q:"NumPy array vs Python list — 3 key differences",a:"1. Type: ndarray is homogeneous (one dtype); list is mixed\n2. Speed: ndarray uses contiguous C memory, 10-100× faster\n3. Operations: ndarray supports element-wise math; list doesn't\n   [1,2]+[3,4]=[1,2,3,4] vs np.array([1,2])+[3,4]=[4,6]"},
+  {q:"What are Universal Functions (ufuncs)?",a:"Functions that operate ELEMENT-WISE on ndarrays.\nImplemented in C — no Python loop overhead.\nExamples: np.sqrt, np.sin, np.exp, np.abs\nnp.sqrt([4,9,16]) → [2., 3., 4.]\nFaster than: [math.sqrt(x) for x in lst]"},
+  {q:"Broadcasting Rule — when does it work?",a:"NumPy compares shapes right-to-left.\nDimensions are compatible if:\n• They are equal, OR\n• One of them is 1 (gets stretched)\nExample: (3,1) + (3,) → (3,3)\nIncompatible: (2,3) + (2,4) → ValueError"},
+  {q:"Pandas Series vs DataFrame",a:"Series: 1D labeled array (like a column)\n  index + values\nDataFrame: 2D table of Series\n  rows + columns, each column is a Series\nRelation: df['col'] returns a Series"},
+  {q:"iloc vs loc in Pandas",a:"iloc: Integer LOCation — positional (0-based)\n  df.iloc[0]      ← first row\n  df.iloc[0, 2]   ← row 0, col 2\nloc: Label-based LOCation\n  df.loc[0, 'Name']  ← by label\nWhen index is default (0,1,2...) they look same but aren't!"},
+  {q:"5 matplotlib chart types and when to use",a:"line: trends over continuous data (plt.plot)\nscatter: correlation/relationship (plt.scatter)\nbar: compare discrete categories (plt.bar)\nhist: distribution of values (plt.hist)\npie: part-of-whole proportions (plt.pie)"},
+  {q:"np.arange vs np.linspace",a:"arange(start, stop, step):\n  step is the INCREMENT\n  np.arange(0,1,0.25) → [0, 0.25, 0.5, 0.75]\nlinspace(start, stop, num):\n  num is COUNT of evenly spaced points\n  np.linspace(0,1,5) → [0, 0.25, 0.5, 0.75, 1.0]"},
+  {q:"How to create a Pandas DataFrame from a dict?",a:"df = pd.DataFrame({\n  'Name': ['Alice','Bob'],\n  'Age': [25, 30]\n})\nKeys → column names\nValues (lists) → column data\nAll lists must be same length!"},
+];
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.split('\n').length>5?170:145;
+  g.innerHTML+=`<div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')"><div class="fc" style="height:100%;"><div class="fc-f card border cursor-pointer"><div><div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div><div class="font-bold text-sm">${c.q}</div><div class="text-xs text-gray-400 mt-2">tap to flip</div></div></div><div class="fc-b"><div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div></div></div></div>`;
+});
+</script>
+</body>
+</html>
