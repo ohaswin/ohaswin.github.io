@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+    <title>Pyscan: Python Dependency Vulnerability Scanner with SBOM Support and Reachability Heuristics</title>
+    <meta name="title" content="Pyscan: Python dependency vulnerability scanner with SBOM Support and Reachability Heuristics" />
+    <meta name="description" content="Three years ago I shipped a Python vulnerability scanner written in Rust that took 6 minutes to scan 200 dependencies. Today, v2.1.0 scans 1000+ in 5 seconds and uses less memory than a browser tab." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://ohaswin.github.io/blog/pyscan-v2" />
+    <meta property="og:title" content="Pyscan: Python dependency vulnerability scanner with SBOM Support and Reachability Heuristics" />
+    <meta property="og:description" content="Three years ago I shipped a Python vulnerability scanner written in Rust that took 6 minutes to scan 200 dependencies. Today, v2.1.0 scans 1000+ in 5 seconds and uses less memory than a browser tab." />
+    <meta property="og:image" content="/media/blog/pyscan-v2/hero.png" />
+
+    <!-- X (Twitter) -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://ohaswin.github.io/blog/pyscan-v2" />
+    <meta property="twitter:title" content="Pyscan: Python dependency vulnerability scanner with SBOM Support and Reachability Heuristics" />
+    <meta property="twitter:description" content="Three years ago I shipped a Python vulnerability scanner written in Rust that took 6 minutes to scan 200 dependencies. Today, v2.1.0 scans 1000+ in 5 seconds and uses less memory than a browser tab." />
+    <meta property="twitter:image" content="/media/blog/pyscan-v2/hero.png" />
+
+    <!-- Font loading optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload"
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/blog/style.css">
+    <script src="/blog/js/navbar.js"></script>
+    <script src="/blog/js/callout-box.js"></script>
+    <script>
+        function addElapsedDate() {
+            const timeElements = document.querySelectorAll("time");
+            const now = new Date();
+
+            timeElements.forEach(timeElement => {
+                const date = new Date(timeElement.getAttribute("datetime"));
+                let elapsed = Math.floor((now - date) / 1000); // seconds
+
+                let result = "";
+                if (elapsed < 60) {
+                    result = `${elapsed} seconds ago`;
+                } else if (elapsed < 3600) {
+                    const minutes = Math.floor(elapsed / 60);
+                    result = `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 86400) {
+                    const hours = Math.floor(elapsed / 3600);
+                    result = `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 604800) {
+                    const days = Math.floor(elapsed / 86400);
+                    result = `${days} day${days !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 2592000) {
+                    const weeks = Math.floor(elapsed / 604800);
+                    result = `${weeks} week${weeks !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 31536000) {
+                    const months = Math.floor(elapsed / 2592000);
+                    result = `${months} month${months !== 1 ? "s" : ""} ago`;
+                } else {
+                    const years = Math.floor(elapsed / 31536000);
+                    result = `${years} year${years !== 1 ? "s" : ""} ago`;
+                }
+
+                timeElement.textContent += ` (${result})`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <glassmorphic-navbar 
+        site-name="ohaswin"
+        logo="/android-chrome-512x512.png"
+        bg-url="/media/bg/ai.jpg"
+        bg-pos-y="40"
+        blogs-json="/blog.json">
+    </glassmorphic-navbar>
+    <article>
+        <h1>Pyscan: Python Dependency Vulnerability Scanner with SBOM Support and Reachability Heuristics</h1>
+        <time datetime="2026-04-25T09:00:00+05:30">April 25, 2026</time>
+        <script>addElapsedDate();</script> | <a href="https://github.com/ohaswin/pyscan" target="_blank"> Pyscan v2.1.0: GitHub Repository</a>
+        <hr>
+        <img src="https://raw.githubusercontent.com/ohaswin/pyscan/refs/heads/master/benchmarks/assets/readme_benchmark.svg">
+        
+        <p>Three years ago I shipped a Python vulnerability scanner written in Rust that took 6 minutes 
+        to scan 200 dependencies. Today, v2.1.0 scans 1000+ in 5 seconds and uses less memory than 
+        a browser tab. This is what changed.</p>
+
+        <hr>
+
+        <h2>The problem with vulnerability scanners</h2>
+        <p>
+            Pyscan was engineered to solve the performance and memory bottlenecks of traditional Python-based security tools in production CI/CD pipelines:
+            <ol>
+                <li>Devs get rid of slower tools in favor of getting CI/CD done faster, indirectly leaving them vulnerable</li>
+                <li>Memory constraints do not justify adding a separate tool for security.</li>
+            </ol>
+        </p>
+        <p>What it does: Pyscan automatically traverses your Python project, extracts dependencies across various packaging formats (uv, poetry, filt, pdm, requirements.txt, SBOMs, even source code), and cross-references them against the <a href="https://osv.dev/">Open Source Vulnerabilities (OSV)</a> database</p>
+        <hr>
+
+        <h2>What's new in v2.10</h2>
+
+        <h3>Reachability Heuristics</h3>
+        <img src="/media/blog/pyscan-v2/reach.png" alt="Reachability Heuristics">
+        <p>Pyscan now scans your source code to find where you're actually importing vulnerable packages 
+        and surfaces them directly in the diagnostic output.</p>
+
+        <p>Fair warning: this is regex-based heuristics, not a full call graph. It catches import-level 
+        usage, not deep transitive reachability. I'm not going to call it static analysis because it 
+        isn't. But it's genuinely useful for quick triage; knowing which file is pulling in the 
+        vulnerable package is half the remediation battle.</p>
+
+        <p>Full reachability analysis with DAG traversal is on the roadmap. This is the foundation.</p>
+
+        <h3>SBOM Native Support</h3>
+        <p>Pyscan now natively parses CycloneDX (<code>bom.json</code>) and SPDX (<code>spdx.json</code>) files. If an SBOM 
+        is present, Pyscan treats it as the source of truth and skips everything else.</p>
+
+        <p>The dependency resolution precedence now looks like this:</p>
+        <ol>
+            <li>SBOMs (<code>bom.json</code>, <code>spdx.json</code>)</li>
+            <li><code>uv.lock</code></li>
+            <li><code>requirements.txt</code></li>
+            <li><code>pyproject.toml</code></li>
+            <li>Raw source code (<code>.py</code>)</li>
+        </ol>
+
+        <p>If you're generating SBOMs in your pipeline already (and you should be) Pyscan will 
+        consume them directly.</p>
+
+        <h3>Global Parallel Network Wave</h3>
+        <p>This is the one I'm most proud of architecturally.</p>
+
+        <p>Previous versions handled OSV queries with parallelism, but inefficiently, since multiple 
+        packages shared the same vulnerability IDs, it ended up with redundant network requests 
+        hitting the OSV API. v2.1.0 refactors the fetching logic into a single deduplicated parallel 
+        request wave. One batch, no redundancy, significantly reduced latency.</p>
+
+        <p>This is also why the memory footprint stays flat. There's no accumulation of in-flight 
+        requests or buffered responses, I also removed some string allocation and learnt how to use bufreaders properly when parsing files.</p>
+
+        <hr>
+
+        <h2>The benchmarks</h2>
+        <p>Tested against 88 dependencies. The full reproducible benchmark suite is in the repo.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tool</th>
+                    <th>Execution Time</th>
+                    <th>Peak Memory (RSS)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pyscan</td>
+                    <td>6.9s</td>
+                    <td>53MB</td>
+                </tr>
+                <tr>
+                    <td>Safety</td>
+                    <td>10.4s</td>
+                    <td>320MB</td>
+                </tr>
+                <tr>
+                    <td>pip-audit</td>
+                    <td>62.2s</td>
+                    <td>433MB</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>The memory number is the one worth staring at. pip-audit at 433MB in a memory-constrained 
+        CI environment will cost you a lot of money. Pyscan at 53MB is is kinda chill, relatively.</p>
+
+        <p>Runtime complexity is O(vulns), not O(deps). Scanning a clean project with 10,00 dependencies 
+        takes roughly the same time as scanning one with 15. The bottleneck is vulnerabilities found, 
+        not dependency count since OSV doesn't have a batched endpoint for detailed vulnerability information.</p>
+
+        <hr>
+
+        <callout-box label="One honest thing" imgcorner="/media/icons/eye.png" imgcornerpos="rb" imgcornersize="60px">
+            If you use <code>uv</code>, you don't need Pyscan. <code>uv audit</code> is on-par and sometimes faster. 
+            Pyscan is for everyone else.
+        </callout-box>
+
+        <hr>
+
+        <h2>What's next</h2>
+        <p>The roadmap for upcoming releases:</p>
+        <ul>
+            <li>Better CI/CD QoL: structured output formats, exit codes, GitHub Actions integration</li>
+            <li>Persistent security posture state: track your project's vulnerability history over time</li>
+            <li>Proper DAG-based transitive dependency analysis</li>
+            <li>Trying to close the gap with <code>uv audit</code> on raw speed</li>
+        </ul>
+
+        <hr>
+
+        <h2>Installation</h2>
+
+        <p><b>via pipx (recommended)</b></p>
+        <pre><code>pipx install pyscan-rs</code></pre>
+
+        <p><b>via pip</b></p>
+        <pre><code>pip install pyscan-rs</code></pre>
+
+        <p><b>via cargo</b></p>
+        <pre><code>cargo install pyscan</code></pre>
+
+        <p>40,000+ combined downloads across PyPI and crates.io. Featured on the Real Python Podcast. 
+        Still maintained by one broke college student between classes.</p>
+
+        <p>
+            <a href="https://github.com/ohaswin/pyscan" target="_blank">GitHub repo</a>, PRs and issues warmly welcomed.
+        </p>
+
+    </article>
+</body>
+</html>

@@ -23,7 +23,13 @@
       "title": "The College Website: Part 1",
       "date": "2025-12-31T10:18:00+05:30",
       "url": "/blog/the-college-website-part-1"
+    },
+    {
+      "id": "pyscan-v2",
+      "title": "Pyscan: Python Dependency Vulnerability Scanner with SBOM Support & Reachability Heuristics",
+      "date": "2026-04-25T21:12:44+05:30",
+      "url": "/blog/pyscan-v2"
     }
   ],
-  "totalPosts": 4
+  "totalPosts": 5
 }
