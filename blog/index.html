@@ -45,10 +45,9 @@
         }
 
         .speak-side {
-            position: fixed;
+            position: absolute;
             left: -30px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 250px;
             height: 350px;
             z-index: 0;
             pointer-events: none;
@@ -69,6 +68,98 @@
             height: 200px;
             margin: 0 -20px;
             filter: drop-shadow(-4px 4px 10px rgba(0, 0, 0, 0.1));
+        }
+
+        /* Big Rock Interactive Styling */
+        #bigrock {
+            pointer-events: auto;
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+            transition: transform 3s ease-in-out;
+            transform-origin: bottom center;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .bigrock-wrapper {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            margin: 0 -20px;
+            pointer-events: none;
+        }
+
+        .bigrock-wrapper #bigrock {
+            margin: 0;
+        }
+
+        .secret-button {
+            position: absolute;
+            right: 40px;
+            bottom: 40px;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            color: #333;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .secret-button:hover {
+            background: #1a1a1a;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .secret-button.revealed {
+            opacity: 1;
+            pointer-events: auto;
+            transition-delay: 1.2s;
+        }
+
+        @keyframes shakeRock {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            20% {
+                transform: rotate(5deg);
+            }
+
+            40% {
+                transform: rotate(-5deg);
+            }
+
+            60% {
+                transform: rotate(3deg);
+            }
+
+            80% {
+                transform: rotate(-3deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        .shake {
+            animation: shakeRock 1s ease-in-out;
+        }
+
+        .roll-away {
+            transform: translateX(250px) rotate(180deg) !important;
         }
 
         /* UI Elements */
@@ -242,18 +333,28 @@
             }
 
             .content-wrapper {
-                margin-top: 120px;
-                padding: 2rem 1.5rem;
+                margin-top: 100px;
+                padding: 1.5rem 1rem;
+            }
+
+            .blog-list {
+                gap: 0.6rem;
             }
 
             .blog-item {
                 backdrop-filter: unset;
                 border: unset;
-                padding: 1.2rem 1.5rem;
+                padding: 0.8rem 1rem;
+                pointer-events: none;
             }
 
             .blog-title {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                pointer-events: auto;
+            }
+
+            .blog-date {
+                font-size: 0.75rem;
             }
 
             #back {
@@ -273,7 +374,11 @@
 
     <div class="rocks-container">
         <img src="/assets/landrocks.png" alt="Land Rocks">
-        <img src="/assets/bigrock.png" alt="Big Rock">
+        <div class="bigrock-wrapper">
+            <button class="secret-button" id="secret-btn"
+                onclick="alert('u have found a bug that will give u 33 days of good luck.')">🐞</button>
+            <img src="/assets/bigrock.png" alt="Big Rock" id="bigrock">
+        </div>
     </div>
 
     <button id="back" onclick="window.history.back()">back</button>
@@ -286,6 +391,28 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Big rock interactions
+            const bigrock = document.getElementById('bigrock');
+            const secretBtn = document.getElementById('secret-btn');
+
+            // Erratic delay before shake (between 2 to 5 seconds)
+            const erraticDelay = Math.floor(Math.random() * 3000) + 2000;
+            setTimeout(() => {
+                if (bigrock && !bigrock.classList.contains('roll-away')) {
+                    bigrock.classList.add('shake');
+                    setTimeout(() => bigrock.classList.remove('shake'), 600);
+                }
+            }, erraticDelay);
+
+            if (bigrock) {
+                bigrock.addEventListener('click', () => {
+                    bigrock.classList.add('roll-away');
+                    if (secretBtn) {
+                        secretBtn.classList.add('revealed');
+                    }
+                });
+            }
+
             let currentPage = 1;
             const postsPerPage = 5;
             let allPosts = [];
