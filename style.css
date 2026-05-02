@@ -103,6 +103,7 @@ body {
 }
 
 @keyframes hintFloat {
+
     0%,
     100% {
         transform: translateY(0) scale(1);

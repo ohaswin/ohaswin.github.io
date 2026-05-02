@@ -15,6 +15,7 @@
             height: 100dvh;
             width: 100dvw;
         }
+
         .header {
             position: relative;
             justify-self: center;
@@ -22,6 +23,7 @@
             font-family: 'DM Serif Text', serif;
             font-size: 1.5rem;
         }
+
         body {
             display: grid;
             font-family: 'Lexend Deca', sans-serif;
@@ -29,6 +31,7 @@
             padding: 1rem;
             background-color: #f4f4f4;
         }
+
         hr {
             width: 100%;
             border-radius: 3rem;
@@ -66,27 +69,83 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
+        /* Wrapper that lets pinterest peek from behind infobox */
+        .infobox-stack {
+            position: relative;
+            width: 100%;
+        }
+
         .info {
-            font-family: 'DM Serif Text', math;
-            line-height: 1.5;
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-top: -22px;
-            margin-bottom: 22px;
-            z-index: 1;
-            transition: all 0.3s ease;
+            position: relative;
+            font-family: 'Lexend Deca', sans-serif;
+            background-color: #fff;
+            border: 2px solid #111;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: 4px 4px 0 #111;
+            z-index: 2;
+            transition: box-shadow 0.15s ease, transform 0.15s ease;
+            overflow: hidden;
+        }
+
+        .info ol {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
         .info li {
-            margin: 0.5rem;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid #e8e8e8;
+            margin: 0;
+        }
+
+        .info li:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #fff;
+            background: #111;
+            padding: 2px 6px;
+            border-radius: 2px;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .info-value {
+            font-size: 0.9rem;
+            color: #111;
+            font-weight: 400;
+        }
+
+        .info-value a {
+            color: #111;
+            text-decoration: none;
+            border-bottom: 1.5px solid #111;
+            padding-bottom: 1px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .info-value a:hover {
+            background: #111;
+            color: #fff;
         }
 
         .poster {
             display: flex;
             align-items: center;
         }
+
         .poster hr {
             height: min-content;
             width: 100%;
@@ -99,6 +158,7 @@
             border-radius: 0.5rem;
             transition: filter 0.3s ease-in-out;
         }
+
         #cd {
             filter: grayscale(100%);
             border-radius: 0.5rem;
@@ -109,6 +169,7 @@
             display: flex;
             margin: 1rem;
         }
+
         footer {
             position: absolute;
             bottom: 0;
@@ -124,6 +185,30 @@
             padding: 4px;
             border-radius: 2px;
             background-color: #413b3b28;
+        }
+
+        /* Pinterest peeks from behind the infobox */
+        #pinterest {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(0px);
+            white-space: nowrap;
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            background: #fff;
+            border-radius: 0.5rem 0.5rem 0 0;
+            box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+        }
+
+        #pinterest.pinterest-open {
+            transform: translateX(-50%) translateY(-100%);
+            opacity: 1;
+            pointer-events: auto;
         }
 
 
@@ -160,7 +245,8 @@
                 background: linear-gradient(90deg, transparent, #3b3434, transparent);
             }
 
-            #boy, #cd {
+            #boy,
+            #cd {
                 height: 120px;
                 width: auto;
                 cursor: pointer;
@@ -168,46 +254,39 @@
                 border-radius: 0.8rem;
             }
 
-            #boy:hover, #cd:hover {
+            #boy:hover,
+            #cd:hover {
                 transform: scale(1.05);
             }
 
             #pinterest {
-                position: fixed;
-                top: 32vh;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                font-size: 0.95rem;
+            }
+
+            .infobox-stack {
+                max-width: 500px;
             }
 
             .info {
-                font-size: 1.1rem;
-                padding: 2.5rem;
-                max-width: 500px;
                 width: 100%;
                 margin: 0;
-                font-family: 'Lexend Deca', sans-serif;
-                background: white;
-                border-radius: 1rem;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                transition: all 0.3s ease;
             }
 
             .info:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+                box-shadow: 6px 6px 0 #111;
+                transform: translate(-2px, -2px);
             }
 
             .info li {
-                margin: 1rem 0;
-                font-size: 1rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0.5rem 0;
-                border-bottom: 1px solid #f0f0f0;
+                padding: 0.85rem 1.5rem;
             }
 
-            .info li:last-child {
-                border-bottom: none;
+            .info-label {
+                font-size: 0.7rem;
+            }
+
+            .info-value {
+                font-size: 0.95rem;
             }
 
             #spotify {
@@ -263,6 +342,7 @@
                 color: #333;
                 font-weight: 500;
             }
+
             #back:hover {
                 background: #333;
                 color: white;
@@ -289,18 +369,24 @@
     <script>
         function flip(obj) {
             const object = document.getElementById(obj);
-            const info = document.getElementById('infobox');
             const spotify = document.getElementById('spotify');
             object.style.filter = object.style.filter === 'grayscale(100%)' ? 'grayscale(0%)' : 'grayscale(100%)';
-            switch(obj) {
+            switch (obj) {
                 case 'boy':
-                    info.style.marginTop = info.style.marginTop === '-22px' ? '8px' : '-22px';
+                    togglePinterest();
                     break;
                 case 'cd':
-                    // object.style.marginLeft = object.style.marginLeft === '0px' ? '3rem' : '0px';
                     spotify.style.display = spotify.style.display === 'none' ? 'inline' : 'none';
                     break;
             }
+        }
+
+        function togglePinterest() {
+            const pinterest = document.getElementById('pinterest');
+            const infobox = document.getElementById('infobox');
+            const isOpen = pinterest.classList.toggle('pinterest-open');
+            // Shift infobox up slightly when pinterest peeks out
+            infobox.style.transform = isOpen ? 'translateY(-6px)' : '';
         }
 
         function copytoclipboard(text) {
@@ -315,34 +401,58 @@
         }
     </script>
 </head>
+
 <body>
     <button id="back" onclick="window.history.back()">back</button>
     <div class="header">contact</div>
     <section class="poster">
         <hr> <img id="boy" src="/assets/boy.avif" height="100" onclick="flip('boy')">
     </section>
-    <br>
-    <code id="pinterest">| <a href="https://pinterest.com/ohaswin" target="_blank" >pinterest</a> | <a href="https://www.instagram.com/ohaswin/" target="_blank" >instagram</a> |</code>
     <script>document.getElementById('boy').style.filter = 'grayscale(100%)'</script>
-    <div class="info" id="infobox" onclick="flip('boy')">
-    <ol style="list-style-type: none; padding-left: 0;">
-        <li>Email <a href="mailto:aswindebug@gmail.com">aswindebug@gmail.com</a></li>
-        <li>GitHub <a href="https://github.com/ohaswin" target="_blank">ohaswin</a></li>
-        <li>LinkedIn <a href="https://www.linkedin.com/in/ohaswin/" target="_blank">ohaswin</a></li>
-        <li>Discord <code id="discord" onclick="copytoclipboard('aswinturing')">aswinturing 📋</code></li>
-        <li>Twitter <a href="https://x.com/ohaswin" target="_blank">ohaswin</a></li>
-    </ol>
-    </div><script>document.getElementById('infobox').style.marginTop = '-22px';</script>
+    <!-- Stack wrapper: infobox on top, pinterest tucked behind it -->
+    <div class="infobox-stack">
+        <code
+            id="pinterest">| <a href="https://pinterest.com/ohaswin" target="_blank">pinterest</a> | <a href="https://www.instagram.com/ohaswin/" target="_blank">instagram</a> |</code>
+        <div class="info" id="infobox" onclick="flip('boy')">
+            <ol>
+                <li>
+                    <span class="info-label">mail</span>
+                    <span class="info-value"><a href="mailto:aswin@ohaswin.com">aswin@ohaswin.com</a></span>
+                </li>
+                <li>
+                    <span class="info-label">gh</span>
+                    <span class="info-value"><a href="https://github.com/ohaswin" target="_blank">ohaswin</a></span>
+                </li>
+                <li>
+                    <span class="info-label">li</span>
+                    <span class="info-value"><a href="https://www.linkedin.com/in/ohaswin/" target="_blank">ohaswin</a></span>
+                </li>
+                <li>
+                    <span class="info-label">dc</span>
+                    <span class="info-value"><code id="discord" onclick="copytoclipboard('aswinturing')">aswinturing 📋</code></span>
+                </li>
+                <li>
+                    <span class="info-label">tw</span>
+                    <span class="info-value"><a href="https://x.com/ohaswin" target="_blank">ohaswin</a></span>
+                </li>
+            </ol>
+        </div>
+    </div>
     <br>
     <section class="poster">
-        <a href="https://www.last.fm/user/goldenharmony" id="spotify" target="_blank" style="display: none; margin-right: 12px;transition: all 1s ease-in-out;">last.fm<br></a><img id="cd" src="/assets/cd.avif" height="100" onclick="flip('cd')"><hr>
-    </section> <script>document.getElementById('cd').style.marginLeft = '0px';</script>
+        <a href="https://www.last.fm/user/goldenharmony" id="spotify" target="_blank"
+            style="display: none; margin-right: 12px;transition: all 1s ease-in-out;">last.fm<br></a><img id="cd"
+            src="/assets/cd.avif" height="100" onclick="flip('cd')">
+        <hr>
+    </section>
+    <script>document.getElementById('cd').style.marginLeft = '0px';</script>
     <script>document.getElementById('cd').style.filter = 'grayscale(100%)'</script>
     <div>
     </div>
     </div>
     <footer>
-    <pre>tap the images for sumn extra.</pre>
+        <pre>tap the images for sumn extra.</pre>
     </footer>
 </body>
+
 </html>

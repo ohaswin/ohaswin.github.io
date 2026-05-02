@@ -201,8 +201,7 @@
         h1.page-title {
             font-family: 'DM Serif Text', serif;
             position: absolute;
-            top: -18px;
-            left: 7px;
+            top: 12vh;
             height: auto;
             width: 100%;
             font-size: 3.5rem;
@@ -281,7 +280,7 @@
             object-fit: cover;
             border-radius: 6px;
             flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .blog-preview p {
@@ -344,6 +343,11 @@
 
         /* Responsive */
         @media screen and (max-width: 768px) {
+
+            h1.page-title {
+                top: 6rem;
+                left: unset;
+            }
 
             .vine-header {
                 position: absolute;
@@ -409,6 +413,7 @@
     <img src="/assets/vine.png" class="vine-header" alt="Vine Header">
     <img src="/assets/speak.avif" class="speak-side" alt="Speak Side">
 
+    <h1 class="page-title">blog.</h1>
     <div class="rocks-container">
         <img src="/assets/landrocks.png" alt="Land Rocks">
         <div class="bigrock-wrapper">
@@ -493,8 +498,8 @@
                                 const image = doc.querySelector('meta[property="og:image"]')?.content || doc.querySelector('meta[name="twitter:image"]')?.content || '';
 
                                 const previewContainer = document.getElementById(`preview-${post.id}`);
-                                if(previewContainer) {
-                                    if(image) {
+                                if (previewContainer) {
+                                    if (image) {
                                         previewContainer.innerHTML += `<img src="${image}" alt="Thumbnail">`;
                                     }
                                     previewContainer.innerHTML += `<p>${description}</p>`;
@@ -502,7 +507,7 @@
                             })
                             .catch(err => {
                                 const previewContainer = document.getElementById(`preview-${post.id}`);
-                                if(previewContainer) {
+                                if (previewContainer) {
                                     previewContainer.innerHTML = '<p>No description available.</p>';
                                 }
                             });
