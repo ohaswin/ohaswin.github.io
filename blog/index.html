@@ -1,120 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ohaswin | blog</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Lexend Deca', sans-serif;
-            line-height: 1.6;
-            padding: 1rem;
-            background-color: #f4f4f4;
-        }
-        h1, h2, h3 {
-            color: #333;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
+            background-color: #f8f9fa;
+            color: #2b2b2b;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        p {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        /* Decorative Images */
+        .vine-header {
+            position: absolute;
+            top: -100px;
+            left: 50vw;
+            width: 30%;
+            height: auto;
+            object-fit: cover;
+            object-position: top;
+            z-index: 0;
+            pointer-events: none;
+            transform: translateX(-50%);
         }
+
+        .speak-side {
+            position: fixed;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 350px;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.8;
+            filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.05));
+        }
+
+        .rocks-container {
+            position: absolute;
+            bottom: -20px;
+            display: flex;
+            align-items: flex-end;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .rocks-container img {
+            height: 200px;
+            margin: 0 -20px;
+            filter: drop-shadow(-4px 4px 10px rgba(0, 0, 0, 0.1));
+        }
+
+        /* UI Elements */
         #back {
             position: absolute;
-            top: 1rem;
-            left: 1rem;
-            /* box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1); */
-            background-color: #f0f0f0;
-            border: none;
-            font-size: 0.8rem;
-            border: 1px solid #000000;
+            top: 2rem;
+            left: 2rem;
+            background: transparent;
+            border: 1px solid #2b2b2b;
+            padding: 0.5rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #2b2b2b;
             cursor: pointer;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            z-index: 10;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: lowercase;
         }
 
-        @media screen and (min-width: 768px) {
-            body {
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 2rem;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                min-height: 100vh;
-                justify-content: center;
-            }
-
-            h1, h2, h3 {
-                font-size: 2rem;
-            }
-
-            p {
-                font-size: 1.2rem;
-                text-align: center;
-            }
-
-            img {
-                height: 400px;
-                transform: none;
-                margin-bottom: 2rem;
-            }
-
-            #back {
-                font-size: 1rem;
-                padding: 0.5rem 1rem;
-                top: 2rem;
-                left: 2rem;
-                transition: all 0.3s ease;
-                text-decoration: none;
-                color: #333;
-                font-weight: 500;
-            }
-            #back:hover {
-                background: #333;
-                color: white;
-                transform: translateY(-2px);
-            }
-
+        #back:hover {
+            background: #2b2b2b;
+            color: #f8f9fa;
         }
 
+        /* Blog List Container */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 700px;
+            padding: 4rem 2rem;
+            margin-top: 180px;
+            margin-bottom: 100px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1.page-title {
+            font-family: 'DM Serif Text', serif;
+            position: absolute;
+            top: -18px;
+            left: 7px;
+            height: auto;
+            width: 100%;
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+            font-weight: normal;
+        }
+
+        .blog-list {
+            position: relative;
+            top: 67px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-item {
+            /* background: rgba(255, 255, 255, 0.7); */
+            padding: 1.5rem 2rem;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            backdrop-filter: blur(12px);
+        }
+
+        .blog-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: #2b2b2b;
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .blog-item:hover {
+            /* transform: translateY(-4px); */
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .blog-item:hover::before {
+            transform: scaleY(1);
+            transform-origin: top;
+        }
+
+        .blog-title {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #1a1a1a;
+            transition: color 0.3s ease;
+        }
+
+        .blog-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .page-btn {
+            background: transparent;
+            border: 1px solid #2b2b2b;
+            padding: 0.4rem 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #2b2b2b;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: lowercase;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: #2b2b2b;
+            color: #f8f9fa;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #aaa;
+        }
+
+        /* Responsive */
         @media screen and (max-width: 768px) {
-            body {
-                padding: 1rem;
+
+            .vine-header {
+                position: absolute;
+                top: -18px;
+                left: 200px;
+                height: auto;
+                width: 100%;
+                object-fit: cover;
+                object-position: top;
+                z-index: 0;
+                pointer-events: none;
+                max-height: 325px;
             }
 
-            h1, h2, h3 {
-                font-size: 1.5rem;
+            .speak-side {
+                height: 200px;
+                opacity: 0.2;
+                /* Less intrusive on mobile */
+                left: -40px;
             }
 
-            p {
+            .rocks-container img {
+                height: 142px;
+            }
+
+            .content-wrapper {
+                margin-top: 120px;
+                padding: 2rem 1.5rem;
+            }
+
+            .blog-item {
+                backdrop-filter: unset;
+                border: unset;
+                padding: 1.2rem 1.5rem;
+            }
+
+            .blog-title {
                 font-size: 1rem;
             }
 
-            img {
-                height: 300px;
-                transform: translate(50%, 50%);
-            }
             #back {
-                font-size: 1rem;
-                padding: 0.5rem 1rem;
-                top: 2rem;
-                left: 2rem;
+                top: 1rem;
+                left: 1rem;
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
+
 <body>
+
+    <img src="/assets/vine.png" class="vine-header" alt="Vine Header">
+    <img src="/assets/speak.avif" class="speak-side" alt="Speak Side">
+
+    <div class="rocks-container">
+        <img src="/assets/landrocks.png" alt="Land Rocks">
+        <img src="/assets/bigrock.png" alt="Big Rock">
+    </div>
+
     <button id="back" onclick="window.history.back()">back</button>
-    <img src="/assets/speak.avif" height="300">
-    <p>under construction.</p>
+
+    <div class="content-wrapper">
+        <div class="blog-list" id="blog-list">
+            <!-- Blog posts will be loaded here via JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentPage = 1;
+            const postsPerPage = 5;
+            let allPosts = [];
+
+            function renderPosts() {
+                const blogList = document.getElementById('blog-list');
+                blogList.innerHTML = '';
+
+                const startIndex = (currentPage - 1) * postsPerPage;
+                const endIndex = startIndex + postsPerPage;
+                const postsToRender = allPosts.slice(startIndex, endIndex);
+
+                if (postsToRender.length > 0) {
+                    postsToRender.forEach(post => {
+                        const dateObj = new Date(post.date);
+                        const formattedDate = dateObj.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                        });
+
+                        const a = document.createElement('a');
+                        a.href = post.url;
+                        a.className = 'blog-item';
+
+                        a.innerHTML = `
+                            <div class="blog-date">${formattedDate}</div>
+                            <div class="blog-title">${post.title}</div>
+                        `;
+
+                        blogList.appendChild(a);
+                    });
+                } else {
+                    blogList.innerHTML = '<p style="text-align: center; color: #888; font-family: \'JetBrains Mono\', monospace;">No posts found.</p>';
+                }
+
+                renderPaginationControls();
+            }
+
+            function renderPaginationControls() {
+                let paginationContainer = document.getElementById('pagination');
+                if (!paginationContainer) {
+                    paginationContainer = document.createElement('div');
+                    paginationContainer.id = 'pagination';
+                    paginationContainer.className = 'pagination';
+                    document.querySelector('.content-wrapper').appendChild(paginationContainer);
+                }
+
+                const totalPages = Math.ceil(allPosts.length / postsPerPage);
+
+                if (totalPages > 1) {
+                    paginationContainer.innerHTML = `
+                        <button class="page-btn" id="prev-btn" ${currentPage === 1 ? 'disabled' : ''}>&lt; prev</button>
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #888;">${currentPage} / ${totalPages}</span>
+                        <button class="page-btn" id="next-btn" ${currentPage === totalPages ? 'disabled' : ''}>next &gt;</button>
+                    `;
+
+                    const prevBtn = document.getElementById('prev-btn');
+                    const nextBtn = document.getElementById('next-btn');
+
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', () => {
+                            if (currentPage > 1) {
+                                currentPage--;
+                                renderPosts();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                        });
+                    }
+
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', () => {
+                            if (currentPage < totalPages) {
+                                currentPage++;
+                                renderPosts();
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                        });
+                    }
+                } else {
+                    paginationContainer.innerHTML = '';
+                }
+            }
+
+            fetch('/blog.json')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.posts && data.posts.length > 0) {
+                        allPosts = data.posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    }
+                    renderPosts();
+                })
+                .catch(error => {
+                    console.error('Error fetching blog posts:', error);
+                    document.getElementById('blog-list').innerHTML = '<p style="text-align: center; color: #888; font-family: \'JetBrains Mono\', monospace;">Failed to load posts.</p>';
+                });
+        });
+    </script>
 </body>
+
 </html>
