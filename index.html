@@ -4,32 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ohaswin.</title>
+    <title>Aswin | Developer, Researcher & Open Source</title>
     <meta name="description" content="Aswin. developer, researcher, artist.">
     <meta name="title" content="ohaswin." />
+    <link rel="canonical" href="https://ohaswin.com/" />
+    <meta name="author" content="Aswin">
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ohsawin.com/" />
+    <meta property="og:url" content="https://ohaswin.com/" />
     <meta property="og:title" content="ohaswin." />
     <meta property="og:description" content="Aswin. developer, researcher, artist." />
-    <meta property="og:image" content="https://i.pinimg.com/736x/4f/ab/04/4fab043a00cb089676600e5d788cfd71.jpg" />
+    <meta property="og:image" content="https://ohaswin.com/assets/thumb.jpeg" />
 
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://ohaswin.com/" />
     <meta property="twitter:title" content="ohaswin." />
     <meta property="twitter:description" content="Aswin. developer, researcher, artist." />
-    <meta property="twitter:image" content="https://i.pinimg.com/736x/4f/ab/04/4fab043a00cb089676600e5d788cfd71.jpg" />
+    <meta property="twitter:image" content="https://ohaswin.com/assets/thumb.jpeg" />
+    <meta property="twitter:site" content="@ohaswin">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="geo.region" content="IN-KL">
+    <meta name="geo.placename" content="Palakkad, Kerala">
 
 
     <link rel="preload" href="/preloader.js" as="script">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload"
-        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=optional"
         as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
-        rel="stylesheet">
+    <noscript>
+        <link
+            href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=optional"
+            rel="stylesheet">
+    </noscript>
     <link rel="dns-prefetch" href="https://github.com">
 
 
@@ -38,8 +46,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
 
-    <link rel="prefetch" href="/assets/me.avif" as="image">
-    <link rel="prefetch" href="/assets/outp.webp" as="image">
+    <!-- LCP image — preload with high priority -->
+    <link rel="preload" href="/assets/me.avif" as="image" type="image/avif">
     <link rel="prefetch" href="/assets/cd.avif" as="image">
     <link rel="prefetch" href="/assets/boy.avif" as="image">
     <link rel="prefetch" href="/assets/speak.avif" as="image">
@@ -51,11 +59,99 @@
 
     <script src="preloader.js" defer></script>
 
-    <!-- External Styles -->
-    <link rel="stylesheet" href="style.css">
+    <!-- Non-blocking stylesheet -->
+    <link rel="preload" href="style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="style.css">
+    </noscript>
 
     <!-- External Scripts -->
     <script src="script.js" defer></script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ohaswin.com/#aswin",
+      "name": "Aswin",
+      "alternateName": "ohaswin",
+      "url": "https://ohaswin.com",
+      "image": {
+        "@type": "ImageObject",
+        "url": "https://ohaswin.com/assets/thumb.jpeg",
+        "width": 260,
+        "height": 260
+      },
+      "description": "Computer science student, open source developer, and aspiring researcher based in Palakkad, Kerala.",
+      "jobTitle": "Open Source Developer",
+      "email": "aswin@ohaswin.com",
+      "nationality": "Indian",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Palakkad",
+        "addressRegion": "Kerala",
+        "addressCountry": "IN"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "College of Applied Science, Vadakkencherry",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Vadakkencherry",
+          "addressRegion": "Kerala",
+          "addressCountry": "IN"
+        }
+      },
+      "knowsAbout": [
+        "Rust", "Python", "Computer Networks",
+        "Open Source Software", "Systems Programming",
+        "Vulnerability Scanning", "Discord Bots"
+      ],
+      "hasOccupation": {
+        "@type": "Occupation",
+        "name": "Software Developer",
+        "occupationLocation": {
+          "@type": "Country",
+          "name": "India"
+        }
+      },
+      "sameAs": [
+        "https://github.com/ohaswin",
+        "https://pypi.org/user/aswinnnn/",
+        "https://www.linkedin.com/in/ohaswin"
+      ],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ohaswin.com"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ohaswin.com/#website",
+      "url": "https://ohaswin.com",
+      "name": "ohaswin.",
+      "description": "Personal site of Aswin, developer, researcher, and artist.",
+      "publisher": {
+        "@id": "https://ohaswin.com/#aswin"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Pyscan",
+      "url": "https://github.com/ohaswin/pyscan",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Linux, Windows",
+      "description": "Python dependency vulnerability scanner written in Rust.",
+      "author": {
+        "@id": "https://ohaswin.com/#aswin"
+      },
+      "downloadUrl": "https://pypi.org/project/pyscan-rs/"
+    }
+  ]
+}
+</script>
 </head>
 
 <body>
@@ -66,7 +162,8 @@
         <input type="color" id="bgColor" name="bgColor" value="#8ff0a4">
     </div>
     <div tabindex="0" class="img" onclick="flip()">
-        <img src="/assets/me.avif" alt="Aswin's Image (click to flip)" draggable="false">
+        <img src="/assets/me.avif" alt="Aswin's Image (click to flip)" draggable="false" width="260" height="260"
+            fetchpriority="high">
         <span class="tap-hint" aria-hidden="true">click me</span>
     </div>
     <div class="header">ohaswin, n.</div>
@@ -101,6 +198,7 @@
     <div class="last-commit">
         <hr>
         <div class="commit">
+            <small>Last commit: <a href="https://github.com/ohaswin">loading…</a></small>
         </div>
     </div>
     <div class="footer">

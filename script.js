@@ -2,7 +2,7 @@ function deltadate(date) {
     const now = new Date();
     const diff = now - new Date(date);
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    return days > 0 ? `${days} days ago` : 'today';
+    return days > 0 ? `${days} day${days === 1 ? '' : 's'} ago` : 'today';
 }
 
 function elapsedTime(date) {
@@ -88,28 +88,70 @@ async function fetchBlogPosts() {
     }
 }
 
+const COMMIT_CACHE_KEY = 'ohaswin_latest_commit';
+const COMMIT_ETAG_KEY = 'ohaswin_events_etag';
+
 async function getMyLatestCommit() {
+    // Return cached result within the same session
     try {
-        const response = await fetch(`https://api.github.com/users/ohaswin/events?per_page=10`);
-        const events = await response.json();
+        const cached = sessionStorage.getItem(COMMIT_CACHE_KEY);
+        if (cached) return JSON.parse(cached);
+    } catch (_) { }
 
-        const pushEvent = events.find(event => event.type === 'PushEvent');
-        if (!pushEvent) {
-            throw new Error('No recent commits found');
-        }
+    try {
+        // Step 1: fetch events, using ETag for conditional request
+        const eventsUrl = 'https://api.github.com/users/ohaswin/events?per_page=5';
+        const headers = { 'Accept': 'application/vnd.github+json' };
+        try {
+            const etag = sessionStorage.getItem(COMMIT_ETAG_KEY);
+            if (etag) headers['If-None-Match'] = etag;
+        } catch (_) { }
 
-        const latestCommit = pushEvent.payload.commits[pushEvent.payload.commits.length - 1];
-        const repoName = pushEvent.repo.name;
+        const eventsRes = await fetch(eventsUrl, { headers });
 
-        return {
+        // 304 → nothing changed since last etag; fall through to null
+        if (eventsRes.status === 304) return null;
+        if (!eventsRes.ok) throw new Error(`Events API ${eventsRes.status}`);
+
+        // Persist new ETag for next call
+        try {
+            const newEtag = eventsRes.headers.get('ETag');
+            if (newEtag) sessionStorage.setItem(COMMIT_ETAG_KEY, newEtag);
+        } catch (_) { }
+
+        const events = await eventsRes.json();
+
+        // Step 2: find the most recent PushEvent to any of ohaswin's own repos
+        const pushEvent = events.find(e =>
+            e.type === 'PushEvent' && e.repo.name.startsWith('ohaswin/')
+        );
+        if (!pushEvent) throw new Error('No recent push found');
+
+        const repoName = pushEvent.repo.name;           // "ohaswin/repo"
+        const headSha = pushEvent.payload.head;         // always present
+
+        // Step 3: fetch the commit object for the head SHA
+        const commitRes = await fetch(
+            `https://api.github.com/repos/${repoName}/commits/${headSha}`,
+            { headers: { 'Accept': 'application/vnd.github+json' } }
+        );
+        if (!commitRes.ok) throw new Error(`Commits API ${commitRes.status}`);
+
+        const { commit, html_url } = await commitRes.json();
+
+        const result = {
             repository: repoName.replace('ohaswin/', ''),
-            hash: latestCommit.sha.substring(0, 7),
-            fullHash: latestCommit.sha,
-            message: latestCommit.message,
-            author: latestCommit.author.name,
-            date: deltadate(pushEvent.created_at),
-            url: `https://github.com/${repoName}/commit/${latestCommit.sha}`
+            hash: headSha.substring(0, 7),
+            message: commit.message.split('\n')[0],  // first line only
+            author: commit.author.name,
+            date: deltadate(commit.author.date),
+            url: html_url,
         };
+
+        // Cache for the rest of the session
+        try { sessionStorage.setItem(COMMIT_CACHE_KEY, JSON.stringify(result)); } catch (_) { }
+
+        return result;
     } catch (error) {
         console.error('Error fetching commit:', error);
         return null;
@@ -199,7 +241,7 @@ function flip() {
     menu.style.marginTop = toggle ? "40dvh" : "20dvh";
     subheader.innerHTML = !toggle ?
         `<br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.` :
-        `<br>I'm a second year CS undergrad. Former freelancer, now I study distributed systems, cellular networks, systems programming and build software I find interesting or useful.<br><br>Built: <a href="https://github.com/ohaswin/pyscan">pyscan</a> (30k+ downloads)<br>Building: <a href="https://github.com/ohaswin/bookends">bookends</a> (WIP)<br><a href="https://linkedin.com/in/ohaswin">LinkedIn</a> | <a href="https://github.com/ohaswin">GitHub</a> | <a href="/resume.pdf">CV</a>`;
+        `<br>I'm a second year CS undergrad. Former freelancer, now I study distributed systems, cellular networks, systems programming and build software I find interesting or useful.<br><br>Built: <a href="https://github.com/ohaswin/pyscan">pyscan</a> (~60k downloads)<br>Building: <a href="https://github.com/ohaswin/bookends">bookends</a> (WIP)<br><a href="https://linkedin.com/in/ohaswin">LinkedIn</a> | <a href="https://github.com/ohaswin">GitHub</a> | <a href="/resume.pdf">CV</a>`;
     toggle = !toggle;
     requestAnimationFrame(positionTapHint);
 }

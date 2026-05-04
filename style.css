@@ -1,14 +1,32 @@
 :root {
     height: 100dvh;
     width: 100dvw;
-    font-display: swap;
     --grid-color: rgba(88, 88, 88, 0.1);
     --grid-size: 40px;
 }
 
+/* Size-adjusted fallbacks to reduce FOUT layout shift */
+@font-face {
+    font-family: 'JetBrains Mono Fallback';
+    src: local('Courier New');
+    size-adjust: 98%;
+    ascent-override: 83%;
+    descent-override: 22%;
+    line-gap-override: 0%;
+}
+
+@font-face {
+    font-family: 'Lexend Deca Fallback';
+    src: local('Arial');
+    size-adjust: 100%;
+    ascent-override: 90%;
+    descent-override: 20%;
+    line-gap-override: 0%;
+}
+
 body {
     display: grid;
-    font-family: 'JetBrains Mono';
+    font-family: 'JetBrains Mono', 'JetBrains Mono Fallback', monospace;
 }
 
 .header {
@@ -465,6 +483,7 @@ body {
         grid-area: commit;
         color: #585858;
         margin-top: 1rem;
+        contain: layout style;
     }
 
     .commit {
@@ -472,6 +491,7 @@ body {
         background: rgba(0, 0, 0, 0.02);
         border-radius: 0.5rem;
         border-left: 3px solid #33333357;
+        min-height: 3.5rem;
     }
 
     .commit small {

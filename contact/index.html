@@ -17,15 +17,18 @@
         }
 
         .header {
-            position: relative;
             justify-self: center;
-            margin-top: 5dvh;
+            margin-top: 4dvh;
             font-family: 'DM Serif Text', serif;
-            font-size: 1.5rem;
+            font-size: 3.5rem;
+            font-weight: normal;
+            color: #1a1a1a;
+            text-align: center;
         }
 
         body {
             display: grid;
+            position: relative;
             font-family: 'Lexend Deca', sans-serif;
             line-height: 1.6;
             padding: 1rem;
@@ -58,15 +61,25 @@
 
         #back {
             position: absolute;
-            top: 1rem;
-            left: 1rem;
-            /* box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1); */
-            background-color: #f0f0f0;
-            border: none;
-            font-size: 0.8rem;
-            border: 1px solid #000000;
+            top: 2rem;
+            left: 2rem;
+            background: transparent;
+            border: 1px solid #2b2b2b;
+            padding: 0.5rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #2b2b2b;
             cursor: pointer;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            z-index: 10;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: lowercase;
+            text-decoration: none;
+        }
+
+        #back:hover {
+            background: #2b2b2b;
+            color: #f8f9fa;
         }
 
         /* Wrapper that lets pinterest peek from behind infobox */
@@ -218,6 +231,19 @@
             pointer-events: auto;
         }
 
+        @media screen and (max-width: 768px) {
+            .header {
+                font-size: 2.5rem;
+                margin-top: 2dvh;
+            }
+
+            #back {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
 
         /* Desktop Media Query */
         @media screen and (min-width: 768px) {
@@ -234,8 +260,7 @@
             }
 
             .header {
-                font-size: 3rem;
-                margin-top: 0;
+                font-size: 3.5rem;
             }
 
             .poster {
@@ -334,32 +359,9 @@
                 font-size: 0.9rem;
             }
 
-            /* #back {
-                position: fixed;
-                top: 2rem;
-                left: 2rem;
-                font-size: 1rem;
-                padding: 0.8rem 1.5rem;
-                background: rgba(255, 255, 255, 0.9);
-                border-radius: 0.5rem;
-                cursor: pointer;
-            } */
-
             #back {
-                font-size: 1rem;
-                padding: 0.5rem 1rem;
                 top: 2rem;
                 left: 2rem;
-                transition: all 0.3s ease;
-                text-decoration: none;
-                color: #333;
-                font-weight: 500;
-            }
-
-            #back:hover {
-                background: #333;
-                color: white;
-                transform: translateY(-2px);
             }
 
             /* Better responsive spacing */
@@ -417,7 +419,7 @@
 
 <body>
     <button id="back" onclick="window.history.back()">back</button>
-    <div class="header">contact</div>
+    <h1 class="header">contact.</h1>
     <section class="poster">
         <hr> <img id="boy" src="/assets/boy.avif" height="100" onclick="flip('boy')">
     </section>

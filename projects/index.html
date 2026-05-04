@@ -15,6 +15,7 @@
         }
         body {
             display: grid;
+            position: relative;
             font-family: 'JetBrains Mono', monospace;
             background-color: #f0f0f0;
             color: #333;
@@ -22,11 +23,13 @@
             padding: 0;
         }
         .header {
-            position: relative;
             justify-self: center;
             margin-top: 5dvh;
+            margin-bottom: 0.5rem;
             font-family: 'DM Serif Text', serif;
-            font-size: 1.5rem;
+            font-size: 3.5rem;
+            font-weight: normal;
+            color: #1a1a1a;
         }
 
         .cards-grid {
@@ -44,7 +47,7 @@
             background-color: attr(data-color type(<color>));
         }
 
-        h1 {
+        .card h1 {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             font-size: 1.2rem;
             margin: 0;
@@ -84,32 +87,38 @@
 
         #back {
             position: absolute;
-            top: 1rem;
-            left: 1rem;
-            /* box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1); */
-            background-color: #f0f0f0;
-            border: none;
-            font-size: 0.8rem;
-            border: 1px solid #000000;
+            top: 2rem;
+            left: 2rem;
+            background: transparent;
+            border: 1px solid #2b2b2b;
+            padding: 0.5rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #2b2b2b;
             cursor: pointer;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            z-index: 10;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: lowercase;
+            text-decoration: none;
         }
 
-        @media screen {
-            #back {
-                font-size: 1rem;
-                padding: 0.5rem 1rem;
-                top: 2rem;
-                left: 2rem;
-                transition: all 0.3s ease;
-                text-decoration: none;
-                color: #333;
-                font-weight: 500;
+        #back:hover {
+            background: #2b2b2b;
+            color: #f8f9fa;
+        }
+
+        @media screen and (max-width: 768px) {
+            .header {
+                font-size: 2.5rem;
+                margin-top: 3dvh;
             }
-            #back:hover {
-                background: #333;
-                color: white;
-                transform: translateY(-2px);
+
+            #back {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
             }
         }
 
@@ -126,7 +135,7 @@
 </head>
 <body>
     <button id="back" onclick="window.history.back()">back</button>
-    <div class="header">projects</div>
+    <h1 class="header">projects.</h1>
     <div class="stats"><span id="repos"></span> repositories on <a href="https://github.com/ohaswin"
             target="_blank">GitHub</a>↝
     </div>
