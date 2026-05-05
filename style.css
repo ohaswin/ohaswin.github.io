@@ -190,7 +190,7 @@ body {
 .menu .item {
     list-style: linear-gradient(to left, #f0f0f0, #d0d0d0);
     margin: 0 15px;
-    font-weight: 400;
+    font-weight: bold;
     padding: 2px;
 }
 
@@ -199,6 +199,7 @@ body {
     /* color: rgb(37, 35, 35); */
     text-decoration: none;
     font-size: 18px;
+    font-weight: bold;
 }
 
 /* .menu .item a::before {
@@ -418,7 +419,7 @@ body {
 
     .menu .item a {
         font-size: 1.2rem;
-        font-weight: 500;
+        font-weight: bold;
         transition: all 0.3s ease;
         position: relative;
         padding: 0.5rem 1rem;
