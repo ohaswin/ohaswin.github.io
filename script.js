@@ -229,7 +229,7 @@ function flip() {
     const subheader = document.querySelector('.subheader');
     const menu = document.querySelector('.menu');
 
-    document.title = toggle ? "Aswin S" : "ohaswin, n.";
+    document.title = toggle ? "Aswin S" : "ohaswin.";
     img.src = toggle ? "/assets/outp.webp" : "/assets/me.avif";
     document.querySelector('.img').style.animation = "none";
     header.style.fontFamily = toggle ? "DM Serif Text" : "JetBrains Mono";
@@ -237,7 +237,7 @@ function flip() {
     subheader.style.fontFamily = toggle ? "Lexend Deca" : "JetBrains Mono";
     subheader.style.fontSize = isMobile ? (toggle ? "0.89rem" : "small") : (toggle ? "1.5rem" : "1.1rem");
     header.style.fontSize = isMobile ? (toggle ? "1.5rem" : "inherit") : (toggle ? "3.5rem" : "3.5rem");
-    header.textContent = isMobile ? (toggle ? "Aswin S, 19" : "ohaswin, n.") : (toggle ? "Aswin S" : "ohaswin, n.")
+    header.textContent = isMobile ? (toggle ? "Aswin S, 19" : "ohaswin.") : (toggle ? "Aswin S" : "ohaswin.")
     menu.style.marginTop = toggle ? "40dvh" : "20dvh";
     subheader.innerHTML = !toggle ?
         `<br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.` :
