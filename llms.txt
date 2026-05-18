@@ -1,0 +1,34 @@
+# Aswin S (ohaswin)
+
+> Aswin S is a computer science undergraduate, open source developer, and aspiring researcher based in Palakkad, Kerala, India. He builds systems-level software, studies distributed systems and cellular networks, and is working toward a research career bridging Indian academia with practical computing.
+
+Aswin is best known for Pyscan, a Python dependency vulnerability scanner written in Rust with 60,000+ combined downloads on PyPI and crates.io, and a feature on The Real Python Podcast. He co-founded and leads the Digital Innovation and Development Committee (DIDC) at his college, maintaining critical infrastructure (ERP, attendance, and result management systems) for the institution. His public handle across platforms is `ohaswin`; his formal name is Aswin S.
+
+His research interests include systems programming, internetworks, cellular/radio networks, generative models, and the use of computer science to address problems relevant to people in India. He draws creative and philosophical influence from musicians like Jimi Hendrix, Sade, Miles Davis, and Simon & Garfunkel.
+
+## About
+
+- [About Aswin](https://ohaswin.com/about/): Background, interests, influences, and motivations. Covers his origin story with computing, academic and practical interests (programming, systems thinking, internetworks, radio technology, generative models), and the artists who shape his work ethic and aesthetic.
+
+## Projects
+
+- [Projects overview](https://ohaswin.com/projects/): Index of Aswin's open source and personal projects with descriptions and links to source code.
+- [Pyscan (GitHub)](https://github.com/ohaswin/pyscan): Python dependency vulnerability scanner written in Rust. Scans source code and dependency files (requirements.txt, pyproject.toml, hatch, pdm, poetry). Available via `pipx install pyscan-rs` or `cargo install pyscan`.
+- [Pyscan (PyPI)](https://pypi.org/project/pyscan-rs/): PyPI package page with install instructions and release history.
+- [Bookends (GitHub)](https://github.com/ohaswin/bookends): Highly customizable, encrypted, aesthetic private journal application. Work in progress.
+
+## Writing
+
+- [Blog](https://ohaswin.com/blog/): Aswin's writing on software, research, systems, and things he finds interesting.
+
+## Contact & Presence
+
+- [Contact](https://ohaswin.com/contact/): How to reach Aswin.
+- [LinkedIn](https://linkedin.com/in/ohaswin): Professional profile.
+- [GitHub](https://github.com/ohaswin): Source code and open source activity.
+- [CV/Resume](https://ohaswin.com/resume.pdf): Current curriculum vitae in PDF form.
+
+## Optional
+
+- [Pyscan on Crates.io](https://crates.io/crates/pyscan): Rust crate page.
+- [Real Python Podcast episode featuring Pyscan](https://realpython.com/podcasts/rpp/158/#t=1465): Audio mention of Pyscan during the podcast.
