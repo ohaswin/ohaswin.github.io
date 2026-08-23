@@ -241,7 +241,7 @@ function flip() {
     menu.style.marginTop = toggle ? "40dvh" : "20dvh";
     subheader.innerHTML = !toggle ?
         `<br>1: Aswin, computer enthusiast.<br>2: An aspiring researcher.<br>3: Open source developer.` :
-        `<br>I'm a second year CS undergrad. Former freelancer, now I study distributed systems, cellular networks, systems programming and build software I find interesting or useful.<br><br>Built: <a href="https://github.com/ohaswin/pyscan">pyscan</a> (~60k downloads)<br>Building: <a href="https://github.com/ohaswin/bookends">bookends</a> (WIP)<br><a href="https://linkedin.com/in/ohaswin">LinkedIn</a> | <a href="https://github.com/ohaswin">GitHub</a> | <a href="/resume.pdf">CV</a>`;
+        `<br>I'm a third year CS undergrad. Former freelancer, now I study systems, networks, systems programming and build software I find interesting or useful.<br><br>Built: <a href="https://github.com/ohaswin/pyscan">pyscan</a> (~60k downloads)<br>Building: <a href="https://github.com/ohaswin/bookends">bookends</a> (WIP)<br><a href="https://linkedin.com/in/ohaswin">LinkedIn</a> | <a href="https://github.com/ohaswin">GitHub</a> | <a href="/resume.pdf">CV</a>`;
     toggle = !toggle;
     requestAnimationFrame(positionTapHint);
 }
