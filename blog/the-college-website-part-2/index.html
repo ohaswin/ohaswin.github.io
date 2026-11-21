@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+    <title>The College Website: Part 2</title>
+    <meta name="title" content="The College Website: Part 2" />
+    <meta name="description" content="Short description of the blog post." />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ohaswin.github.io/blog/the-college-website-part-2" />
+    <meta property="og:title" content="The College Website: Part 2" />
+    <meta property="og:description" content="Short description of the blog post." />
+    <meta property="og:image" content="https://example.com/default-image.jpg" />
+
+    <!-- X (Twitter) -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://ohaswin.github.io/blog/the-college-website-part-2" />
+    <meta property="twitter:title" content="The College Website: Part 2" />
+    <meta property="twitter:description" content="Short description of the blog post." />
+    <meta property="twitter:image" content="https://example.com/default-image.jpg" />
+
+    <!-- Font loading optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload"
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Lexend+Deca:wght@100..900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/blog/style.css">
+    <script src="/blog/js/navbar.js"></script>
+    <script src="/blog/js/callout-box.js"></script>
+    <script>
+        function addElapsedDate() {
+            const timeElements = document.querySelectorAll("time");
+            const now = new Date();
+
+            timeElements.forEach(timeElement => {
+                const date = new Date(timeElement.getAttribute("datetime"));
+                let elapsed = Math.floor((now - date) / 1000); // seconds
+
+                let result = "";
+                if (elapsed < 60) {
+                    result = `${elapsed} seconds ago`;
+                } else if (elapsed < 3600) {
+                    const minutes = Math.floor(elapsed / 60);
+                    result = `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 86400) {
+                    const hours = Math.floor(elapsed / 3600);
+                    result = `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 604800) {
+                    const days = Math.floor(elapsed / 86400);
+                    result = `${days} day${days !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 2592000) {
+                    const weeks = Math.floor(elapsed / 604800);
+                    result = `${weeks} week${weeks !== 1 ? "s" : ""} ago`;
+                } else if (elapsed < 31536000) {
+                    const months = Math.floor(elapsed / 2592000);
+                    result = `${months} month${months !== 1 ? "s" : ""} ago`;
+                } else {
+                    const years = Math.floor(elapsed / 31536000);
+                    result = `${years} year${years !== 1 ? "s" : ""} ago`;
+                }
+
+                timeElement.textContent += ` (${result})`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <glassmorphic-navbar 
+        site-name="ohaswin"
+        logo="/android-chrome-512x512.png"
+        bg-url="https://i.pinimg.com/1200x/a3/8d/38/a38d382d1933376c9cef46a92c479b8f.jpg"
+        blogs-json="/blog.json">
+    </glassmorphic-navbar>
+    <article>
+        <h1>The College Website: Part 2</h1>
+        <time datetime="2026-06-17T00:00:00+05:30">Wednesday, June 17, 2026</time>
+        <script>addElapsedDate();</script>
+        <hr>
+        <callout-box label="TL;DR" imgcorner="/media/icons/eye.png" imgcornerpos="rb" imgcornersize="60px">
+            Transcript of a 30-minute workshop I haphazardly conducted for students at my college on AI tools.
+             Find the (AI generated) slides <a 
+             href="https://gamma.app/docs/Aswins-Survival-Guide-AI-Tools-For-Students-4l18wpd9tnn0s68"
+            target="_blank">here</a>.
+        </callout-box>
+        <!-- Start writing your blog post content below -->
+        <h2>Reflections</h2>
+        <p>The website, in all its dynamic glory has been up in a trial AWS EC2 instance for the past few months. It was... ravishing. Exotic. Indie. Like corporate siren y2k aesthetics. It was like the robot building scene in Enthiran.</p>
+        <p>But it was also a nightmare to maintain. For every small change, I had to push to github, ssh into the server then run a series of commands to deploy the changes. I would solve this using GitHub Actions later but god it was awful.</p>
+        <!-- Example image -->
+        <img src="https://example.com/default-image.jpg" width="600" alt="Blog image">
+        <!-- Example blockquote -->
+        <blockquote>
+            <small>Author Name</small>: Quote goes here.
+        </blockquote>
+        <p><i>- Source, Year</i></p>
+        <!-- Example embed -->
+        <!-- <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allowfullscreen></iframe> -->
+    </article>
+</body>
+</html>

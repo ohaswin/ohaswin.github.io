@@ -1,105 +1,53 @@
-// Ultra-simple preloader - just cache in background, use normal navigation
-(function() {
+// ohaswin. — preloader
+// Registers the SW and prefetches pages on hover/touch. That's it.
+(function () {
   'use strict';
 
-  // Improved DEV detection
   const DEV_MODE = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
 
-  const preloadedUrls = new Set();
-
   function log(msg) {
-    console.log('[Preloader]', DEV_MODE ? '[DEV]' : '[PROD]', msg);
+    if (DEV_MODE) console.log('[Preloader]', msg);
   }
 
-  // Register service worker
+  // ── Service Worker registration ─────────────────────────────────────────────
   function initServiceWorker() {
-    if (DEV_MODE) {
-      log('Dev mode: Skipping service worker registration');
-      return;
-    }
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
-        .then(() => log('SW registered'))
-        .catch(() => log('SW failed'));
-    }
+    if (DEV_MODE) { log('Dev mode: skipping SW registration'); return; }
+    if (!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => log('SW registered'))
+      .catch(e => log('SW failed: ' + e));
   }
 
-  // Check if URL is already cached
-  async function isUrlCached(url) {
-    if (DEV_MODE) return false;
-    if ('caches' in window) {
-      try {
-        const cache = await caches.open('ohaswin-cache-v3');
-        const response = await cache.match(url);
-        return !!response;
-      } catch (e) {
-        return false;
-      }
-    }
-    return false;
-  }
-
-  // Preload a page in background (only if not already cached)
-  async function preloadPage(url) {
-    if (!url || url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('#')) return;
-    if (DEV_MODE) {
-      log(`Dev mode: Skipping preload of ${url}`);
-      return;
-    }
-    if (preloadedUrls.has(url)) {
-      log('Already preloaded:', url);
-      return;
-    }
-    const isCached = await isUrlCached(url);
-    if (isCached) {
-      log('Already cached:', url);
-      preloadedUrls.add(url);
-      return;
-    }
-    preloadedUrls.add(url);
-    fetch(url, { method: 'GET' })
-      .then(response => {
-        if (response.ok) log('Cached:', url);
-      })
-      .catch(() => {});
-  }
-
-  // Preload on hover/touch (debounced)
+  // ── Hover/touch prefetch (intent-based, keeps page cache warm) ──────────────
+  const prefetched = new Set();
   let hoverTimeout;
-  function handlePreload(e) {
+
+  function prefetchPage(url) {
+    if (!url || prefetched.has(url)) return;
+    if (url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('#')) return;
+    prefetched.add(url);
+    fetch(url, { method: 'GET' }).catch(() => {});
+    log('Prefetched: ' + url);
+  }
+
+  function handleHover(e) {
     if (DEV_MODE) return;
     const link = e.target.closest('a');
     if (!link) return;
     const href = link.getAttribute('href');
-    if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('#')) return;
+    if (!href) return;
     clearTimeout(hoverTimeout);
-    hoverTimeout = setTimeout(() => preloadPage(href), 100);
+    hoverTimeout = setTimeout(() => prefetchPage(href), 100);
   }
 
-  // Initialize
+  // ── Init ───────────────────────────────────────────────────────────────────
   function init() {
-    if (DEV_MODE) log('Development mode detected - caching and preloading disabled');
-    document.addEventListener('mouseover', handlePreload);
-    document.addEventListener('touchstart', handlePreload, { passive: true });
-    if (!DEV_MODE) {
-      setTimeout(() => {
-        [
-          '/index.html',
-          '/projects/index.html',
-          '/blog/index.html',
-          '/about/index.html',
-          '/contact/index.html'
-        ].forEach(preloadPage);
-      }, 2000);
-    }
+    document.addEventListener('mouseover', handleHover);
+    document.addEventListener('touchstart', handleHover, { passive: true });
   }
 
-  // Start when ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initServiceWorker();
-      init();
-    });
+    document.addEventListener('DOMContentLoaded', () => { initServiceWorker(); init(); });
   } else {
     initServiceWorker();
     init();

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Mining Module 1 — Introduction to Data Mining</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+  code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+  pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+  .kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+  td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+  tr:nth-child(even) td{background:#f0ede5;}
+  details summary{cursor:pointer;list-style:none;user-select:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+  .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+  .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .teal{background:#0f766e;color:#fff;} .pink{background:#be185d;color:#fff;}
+  .tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .fc-wrap{perspective:700px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+  nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ddd;display:inline-block;}
+  nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+  h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+  h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  /* KDD Pipeline */
+  .pipeline{display:flex;flex-wrap:wrap;align-items:center;gap:4px;}
+  .pipe-step{background:#f0ede5;border:1px solid #ddd8cc;border-radius:4px;padding:6px 10px;font-size:11px;font-weight:700;text-align:center;min-width:70px;}
+  .pipe-step span{display:block;font-size:9px;font-weight:400;color:#666;margin-top:2px;}
+  .pipe-arrow{color:#aaa;font-size:14px;flex-shrink:0;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 01</div>
+  <div class="font-black text-sm tracking-wide mb-1">INTRODUCTION TO DATA MINING — KDD, DATA TYPES &amp; MINING TASKS</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Core Concepts</a>
+    <a href="#s2">Data Types</a>
+    <a href="#s3">Mining Tasks</a>
+    <a href="#s4">Technologies</a>
+    <a href="#fc">Flashcards</a>
+    <a href="#cheat">Cheatsheet</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- ═══ S1: CORE CONCEPTS ═══ -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill blue mb-1">Core Concepts</div><h2>KDD, Data Mining &amp; the Pipeline</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Data Mining (a.k.a. KDD)</strong> = automated discovery of <strong>interesting, non-trivial, implicit, previously unknown, potentially useful patterns</strong> from large data. It is a step in the broader KDD process.
+  </div>
+
+  <div class="card mb-3">
+    <h3>What Makes a Pattern "Interesting"?</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Criterion</th><th>Meaning</th><th>Measure Type</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Easily understood</strong></td><td>Humans can interpret and act on it</td><td>Subjective</td></tr>
+        <tr><td><strong>Valid on new data</strong></td><td>Generalises beyond training set</td><td>Objective (confidence, support)</td></tr>
+        <tr><td><strong>Potentially useful</strong></td><td>Leads to actionable business insight</td><td>Subjective (actionability)</td></tr>
+        <tr><td><strong>Novel</strong></td><td>Not previously known or obvious</td><td>Subjective (unexpectedness)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2"><strong>Objective measures:</strong> support, confidence, lift. <strong>Subjective measures:</strong> unexpectedness, actionability — depend on user's prior knowledge.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>KDD Pipeline — 7 Iterative Steps</h3>
+    <p class="text-sm text-gray-500 mb-3">The pipeline is iterative — results from later steps often require revisiting earlier ones.</p>
+    <div class="pipeline mb-3">
+      <div class="pipe-step">1<span>Data Cleaning</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">2<span>Data Integration</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">3<span>Data Selection</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">4<span>Data Transformation</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">5<span>Data Mining</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">6<span>Pattern Evaluation</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">7<span>Knowledge Presentation</span></div>
+    </div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Step</th><th>What Happens</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1. Data Cleaning</strong></td><td>Remove noise, handle missing values, fix inconsistencies</td></tr>
+        <tr><td><strong>2. Data Integration</strong></td><td>Combine data from multiple heterogeneous sources into a unified store</td></tr>
+        <tr><td><strong>3. Data Selection</strong></td><td>Retrieve only the data relevant to the analysis task</td></tr>
+        <tr><td><strong>4. Data Transformation</strong></td><td>Normalise, aggregate, discretise — form suitable for mining</td></tr>
+        <tr><td><strong>5. Data Mining</strong></td><td>Apply algorithms to extract patterns (the core intelligent step)</td></tr>
+        <tr><td><strong>6. Pattern Evaluation</strong></td><td>Identify truly interesting patterns using interestingness measures</td></tr>
+        <tr><td><strong>7. Knowledge Presentation</strong></td><td>Visualise and present knowledge to end users</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DBMS vs Data Mining — Side-by-Side</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>DBMS</th><th>Data Mining</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Workload</strong></td><td>OLTP (transactions — insert, update, delete)</td><td>OLAP + automated pattern discovery over history</td></tr>
+        <tr><td><strong>Optimised for</strong></td><td>Real-time storage, indexing, concurrent atomic transactions</td><td>Hidden, non-obvious relationships; predictive models</td></tr>
+        <tr><td><strong>Data Access</strong></td><td>Explicit, predefined records via SQL queries</td><td>Generalised descriptions from vast historical data</td></tr>
+        <tr><td><strong>Output</strong></td><td>Exact query results (rows, columns)</td><td>Patterns, models, rules, clusters</td></tr>
+        <tr><td><strong>User skill needed</strong></td><td>SQL knowledge sufficient</td><td>Domain expertise + algorithm understanding</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="good mt-2">Data Mining relies on a DBMS (or Data Warehouse) as its data source. They are complementary, not competing technologies.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Association Rules — Key Metrics</h3>
+    <p class="text-sm mb-2">Association rules have the form $X \Rightarrow Y$ and are measured by:</p>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Measure</th><th>Formula</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Support</strong></td><td>$\text{sup}(X \cup Y) = \dfrac{|T_{XY}|}{|T|}$</td><td>Fraction of all transactions containing both X and Y</td></tr>
+        <tr><td><strong>Confidence</strong></td><td>$\text{conf}(X \Rightarrow Y) = \dfrac{\text{sup}(X \cup Y)}{\text{sup}(X)}$</td><td>Probability Y appears given X appears</td></tr>
+        <tr><td><strong>Lift</strong></td><td>$\text{lift}(X \Rightarrow Y) = \dfrac{\text{conf}(X \Rightarrow Y)}{\text{sup}(Y)}$</td><td>Lift &gt; 1 means positive correlation; filters coincidental co-occurrence</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="info mt-2"><strong>Example:</strong> Diapers ⇒ Beer. If sup = 0.3, conf = 0.6 — 30% of all transactions contain both; 60% of diaper purchases also include beer.</div>
+  </div>
+</section>
+
+<!-- ═══ S2: DATA TYPES ═══ -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill red mb-1">Data Types</div><h2>What Kind of Data Can Be Mined?</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Data Types &amp; Their Characteristics</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Data Type</th><th>Description / Example</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Database data</strong></td><td>Relational tables: attributes (columns), tuples (rows)</td><td>Most common DM source; structured</td></tr>
+        <tr><td><strong>Data warehouse</strong></td><td>Subject-oriented, integrated, time-variant, non-volatile; supports OLAP</td><td>5–10 years of historical data</td></tr>
+        <tr><td><strong>Transactional data</strong></td><td>Records of TID + item list (market basket). T100 = {bread, milk, butter}</td><td>Basis for association rule mining</td></tr>
+        <tr><td><strong>Data streams</strong></td><td>Continuous, high-speed data: sensors, network traffic, financial ticks</td><td>Cannot store all data; must mine in real time</td></tr>
+        <tr><td><strong>Time series / sequences</strong></td><td>Time-ordered observations: stock trends, DNA sequences, server logs</td><td>Order matters; temporal patterns</td></tr>
+        <tr><td><strong>Spatial / spatiotemporal</strong></td><td>Maps, GPS coordinates, moving-object trajectories</td><td>Location-aware mining; GIS data</td></tr>
+        <tr><td><strong>Text and Web</strong></td><td>Documents, XML, hypertext, link graphs, social media posts</td><td>Requires NLP; keyword/semantic analysis</td></tr>
+        <tr><td><strong>Multimedia</strong></td><td>Image, audio, video — high-dimensional feature vectors</td><td>Content-based retrieval; feature extraction needed</td></tr>
+        <tr><td><strong>Graph / network</strong></td><td>Social networks, biological pathways, chemical bonds, citation graphs</td><td>Graph mining; community detection</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Data Warehouse — 4 Defining Properties (W. H. Inmon)</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Property</th><th>Meaning</th><th>Contrast with OLTP DB</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Subject-Oriented</strong></td><td>Organised around major subjects (Sales, HR, Finance)</td><td>OLTP: organised around transactions/applications</td></tr>
+        <tr><td><strong>Integrated</strong></td><td>Data from multiple heterogeneous sources unified into one consistent format</td><td>OLTP: data siloed per application</td></tr>
+        <tr><td><strong>Time-Variant</strong></td><td>Keeps historical snapshots; every record has a time dimension</td><td>OLTP: current state only; records updated in-place</td></tr>
+        <tr><td><strong>Non-Volatile</strong></td><td>Data is loaded in bulk and read-only; no ad-hoc updates/deletes</td><td>OLTP: continuous insert/update/delete</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Warehouse Data Flow — ETL Pipeline</h3>
+    <p class="text-sm text-gray-500 mb-3">Data moves from raw operational sources through ETL into the warehouse for analysis.</p>
+    <!-- ETL pipeline as div chain -->
+    <div class="flex flex-wrap gap-2 items-center mb-3">
+      <div class="bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs font-bold text-center">
+        📦 Source Systems<br><span class="font-normal text-gray-500">OLTP DBs, Files, APIs</span>
+      </div>
+      <div class="text-gray-400 font-bold">→</div>
+      <div class="bg-orange-50 border border-orange-200 rounded px-3 py-2 text-xs font-bold text-center">
+        🔧 ETL<br><span class="font-normal text-gray-500">Extract · Clean · Integrate · Transform · Load</span>
+      </div>
+      <div class="text-gray-400 font-bold">→</div>
+      <div class="bg-purple-50 border border-purple-200 rounded px-3 py-2 text-xs font-bold text-center">
+        🏛 Data Warehouse<br><span class="font-normal text-gray-500">5–10 years of history</span>
+      </div>
+      <div class="text-gray-400 font-bold">→</div>
+      <div class="bg-green-50 border border-green-200 rounded px-3 py-2 text-xs font-bold text-center">
+        📊 OLAP / Reports / Mining<br><span class="font-normal text-gray-500">Drill-down · Roll-up · Slice · Dice</span>
+      </div>
+    </div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>OLAP Operation</th><th>What It Does</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Roll-up</strong></td><td>Aggregate to higher level (climb up hierarchy)</td><td>Daily sales → Monthly sales → Annual sales</td></tr>
+        <tr><td><strong>Drill-down</strong></td><td>Disaggregate to lower level (go into detail)</td><td>Annual → Quarterly → Monthly → Daily</td></tr>
+        <tr><td><strong>Slice</strong></td><td>Select one dimension value (single cut)</td><td>All sales for Q1 2024 only</td></tr>
+        <tr><td><strong>Dice</strong></td><td>Select range of values across multiple dimensions</td><td>Sales in Q1–Q2 for region=North AND product=Laptop</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Relational Database Terminology</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Term</th><th>Meaning</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Attribute</strong></td><td>Column — a property/field of the entity</td><td>Name, Age, Salary</td></tr>
+        <tr><td><strong>Tuple</strong></td><td>Row — one record/instance</td><td>(101, "Alice", 35, 50000)</td></tr>
+        <tr><td><strong>Relation</strong></td><td>Table — set of tuples with same attributes</td><td>EMPLOYEE table</td></tr>
+        <tr><td><strong>Schema</strong></td><td>Structure definition of the relation</td><td>EMPLOYEE(ID, Name, Age, Salary)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="info mt-2">In Data Mining, attributes are also called <strong>features</strong> or <strong>dimensions</strong>, and tuples are called <strong>objects, samples, instances</strong>, or <strong>data points</strong>.</div>
+  </div>
+</section>
+
+<!-- ═══ S3: MINING TASKS ═══ -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill green mb-1">Mining Tasks</div><h2>What Kind of Patterns Can Be Mined?</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+      <div class="bg-blue-50 border border-blue-200 rounded p-3">
+        <div class="pill blue mb-2">Descriptive</div>
+        <p class="text-sm">Summarise general properties of the data. No target variable — the goal is to <em>describe</em> what exists.</p>
+        <ul class="text-xs mt-2 list-disc ml-4 space-y-1 text-gray-700">
+          <li>Characterization</li>
+          <li>Discrimination</li>
+          <li>Frequent patterns &amp; association rules</li>
+          <li>Correlation analysis</li>
+          <li>Cluster analysis</li>
+        </ul>
+      </div>
+      <div class="bg-green-50 border border-green-200 rounded p-3">
+        <div class="pill green mb-2">Predictive</div>
+        <p class="text-sm">Use known data to build a model that <em>forecasts</em> unknown or future values of a target attribute.</p>
+        <ul class="text-xs mt-2 list-disc ml-4 space-y-1 text-gray-700">
+          <li>Classification (discrete labels)</li>
+          <li>Regression (continuous values)</li>
+          <li>Outlier / anomaly detection</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Mining Tasks — Complete Reference Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Task</th><th>Family</th><th>Core Idea</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Characterization</strong></td><td><span class="pill blue">Descriptive</span></td><td>Summarise features of a <em>target class</em></td><td>Profile of top-spending customers: age 25–34, urban, tech-savvy</td></tr>
+        <tr><td><strong>Discrimination</strong></td><td><span class="pill blue">Descriptive</span></td><td>Compare target class vs contrasting classes</td><td>Frequent buyers vs rare buyers — what distinguishes them?</td></tr>
+        <tr><td><strong>Frequent Patterns</strong></td><td><span class="pill blue">Descriptive</span></td><td>Itemsets, subsequences, substructures that recur beyond a minimum support threshold</td><td>{Milk, Bread} appears in 40% of transactions</td></tr>
+        <tr><td><strong>Association Rules</strong></td><td><span class="pill blue">Descriptive</span></td><td>$X \Rightarrow Y$ judged by support and confidence</td><td>Diapers ⇒ Beer [sup=30%, conf=60%]</td></tr>
+        <tr><td><strong>Correlation Analysis</strong></td><td><span class="pill blue">Descriptive</span></td><td>Filters out coincidental co-occurrence using lift/correlation coefficient</td><td>Remove rules with lift ≤ 1 (negatively correlated)</td></tr>
+        <tr><td><strong>Classification</strong></td><td><span class="pill green">Predictive</span> (supervised)</td><td>Model maps objects to predefined discrete labels; trains on labelled data</td><td>Loan application → Safe / Risky; Email → Spam / Not-Spam</td></tr>
+        <tr><td><strong>Regression</strong></td><td><span class="pill green">Predictive</span></td><td>Predicts continuous numerical values from input features</td><td>Future stock price, house price, temperature forecast</td></tr>
+        <tr><td><strong>Cluster Analysis</strong></td><td><span class="pill gray">Unsupervised</span></td><td>Group unlabelled data: maximise intra-class similarity, minimise inter-class similarity; no predefined labels</td><td>Customer segmentation; document clustering</td></tr>
+        <tr><td><strong>Outlier Analysis</strong></td><td><span class="pill red">Anomaly Detection</span></td><td>Objects that deviate significantly from the normal model — may be noise or genuinely interesting</td><td>Credit card fraud detection; network intrusion; medical anomalies</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Classification — Model Types</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Algorithm</th><th>Idea</th><th>Use Case</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Decision Tree</strong></td><td>Recursively split data on best attribute; produces human-readable tree</td><td>Loan approval, medical diagnosis</td></tr>
+        <tr><td><strong>Naïve Bayes</strong></td><td>Probabilistic; assumes feature independence; uses Bayes' theorem: $P(C|X) \propto P(X|C) \cdot P(C)$</td><td>Spam filtering, text classification</td></tr>
+        <tr><td><strong>Neural Network</strong></td><td>Layered weighted nodes; learns non-linear boundaries</td><td>Image recognition, speech, complex patterns</td></tr>
+        <tr><td><strong>k-NN</strong></td><td>Classify by majority vote of k nearest neighbours</td><td>Recommender systems, anomaly detection</td></tr>
+        <tr><td><strong>SVM</strong></td><td>Finds maximum-margin hyperplane separating classes</td><td>Bioinformatics, text categorisation</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Cluster Analysis vs Classification</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>Classification</th><th>Cluster Analysis</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Labels</strong></td><td>Predefined class labels (supervised)</td><td>No labels — discovered by algorithm (unsupervised)</td></tr>
+        <tr><td><strong>Goal</strong></td><td>Assign new instance to known class</td><td>Discover natural groupings in data</td></tr>
+        <tr><td><strong>Training data</strong></td><td>Requires labelled training set</td><td>No training labels needed</td></tr>
+        <tr><td><strong>Output</strong></td><td>Class label for each instance</td><td>Group membership + cluster descriptions</td></tr>
+        <tr><td><strong>Example algorithms</strong></td><td>Decision Tree, Naïve Bayes, SVM, NN</td><td>k-Means, DBSCAN, Hierarchical clustering</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn mt-2">⚠ <strong>Exam trap:</strong> Outlier analysis is <em>not</em> the same as cluster analysis. Outliers are objects that do <em>not</em> belong to any cluster.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Frequent Pattern Mining — Market Basket Example</h3>
+    <div class="scroll-x mb-2">
+    <table>
+      <thead><tr><th>TID</th><th>Items</th></tr></thead>
+      <tbody>
+        <tr><td>T100</td><td>Bread, Milk, Butter</td></tr>
+        <tr><td>T200</td><td>Bread, Diapers, Beer, Eggs</td></tr>
+        <tr><td>T300</td><td>Milk, Diapers, Beer, Cola</td></tr>
+        <tr><td>T400</td><td>Bread, Milk, Diapers, Beer</td></tr>
+        <tr><td>T500</td><td>Bread, Milk, Diapers, Cola</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="good">
+      Frequent itemset {Milk, Bread} appears in T100, T400, T500 → $\text{sup} = 3/5 = 60\%$.<br>
+      Rule: Diapers ⇒ Beer. Diapers in T200,T300,T400,T500. Beer in T200,T300,T400. $\text{conf} = 3/4 = 75\%$.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4: TECHNOLOGIES ═══ -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill gray mb-1">Technologies</div><h2>Technologies Used in Data Mining</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Core Technologies — Overview Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Technology</th><th>Role in Data Mining</th><th>Key Tools / Methods</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Statistics</strong></td><td>Models, distributions, variance, hypothesis tests; handle noise and missing data; validate patterns</td><td>Regression, hypothesis testing, PCA, Bayesian inference</td></tr>
+        <tr><td><strong>Machine Learning</strong></td><td>Supervised, unsupervised, semi-supervised, active learning. ML stresses accuracy; DM stresses scalability and efficiency</td><td>Decision trees, neural networks, SVM, k-Means, random forests</td></tr>
+        <tr><td><strong>Database Systems &amp; Data Warehousing</strong></td><td>Storage, indexing, query processing, data cubes, OLAP operations — provide the data infrastructure</td><td>SQL, B+ Trees, hash indexes, data cubes, OLAP</td></tr>
+        <tr><td><strong>Information Retrieval</strong></td><td>Keyword queries, probabilistic language models, document vector similarity for text and multimedia mining</td><td>TF-IDF, cosine similarity, inverted indexes, BM25</td></tr>
+        <tr><td><strong>Pattern Recognition</strong></td><td>Identify regularities and classify patterns in sensory/image data</td><td>Feature extraction, image processing, Hough transform</td></tr>
+        <tr><td><strong>Visualization</strong></td><td>Present mined knowledge in human-interpretable form; exploratory analysis</td><td>Scatter plots, heat maps, decision tree visualisers</td></tr>
+        <tr><td><strong>Parallel / Distributed Computing</strong></td><td>Scale DM algorithms to very large datasets; handle data too big for one machine</td><td>MapReduce, Hadoop, Spark, GPU acceleration</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Machine Learning Paradigms in Data Mining</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Paradigm</th><th>Labelled Data?</th><th>Goal</th><th>Example Tasks</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Supervised Learning</strong></td><td>Yes — fully labelled</td><td>Learn mapping from inputs to outputs</td><td>Classification, Regression</td></tr>
+        <tr><td><strong>Unsupervised Learning</strong></td><td>No labels</td><td>Discover hidden structure in data</td><td>Clustering, Association rules, Dimensionality reduction</td></tr>
+        <tr><td><strong>Semi-Supervised Learning</strong></td><td>Few labelled + many unlabelled</td><td>Use structure of unlabelled data to improve supervised model</td><td>Web page classification, speech analysis</td></tr>
+        <tr><td><strong>Active Learning</strong></td><td>Minimal — model queries for most informative labels</td><td>Minimise labelling cost while maximising accuracy</td><td>Medical image annotation, rare event detection</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="info mt-2"><strong>Key distinction:</strong> ML stresses <strong>accuracy</strong>. Data Mining additionally stresses <strong>scalability</strong> (terabyte+ datasets), <strong>efficiency</strong>, and <strong>interestingness</strong> of discovered patterns.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Statistics vs Machine Learning vs Data Mining</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>Statistics</th><th>Machine Learning</th><th>Data Mining</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Primary goal</strong></td><td>Inference, hypothesis testing</td><td>Prediction accuracy</td><td>Pattern discovery + scalability</td></tr>
+        <tr><td><strong>Data size</strong></td><td>Small to medium samples</td><td>Medium to large</td><td>Very large (GB to TB)</td></tr>
+        <tr><td><strong>Human involvement</strong></td><td>High — analyst-driven</td><td>Medium — model-driven</td><td>Automated discovery</td></tr>
+        <tr><td><strong>Output</strong></td><td>Statistical models, p-values, confidence intervals</td><td>Learned model (classifier, regressor)</td><td>Rules, patterns, clusters, anomalies</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Information Retrieval vs Data Mining</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>Information Retrieval (IR)</th><th>Data Mining</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Data type</strong></td><td>Primarily text/documents</td><td>Any type (relational, text, graph, media)</td></tr>
+        <tr><td><strong>Query style</strong></td><td>Keyword-based, natural language</td><td>Algorithm-driven, no explicit query</td></tr>
+        <tr><td><strong>Output</strong></td><td>Ranked relevant documents</td><td>Discovered patterns, models</td></tr>
+        <tr><td><strong>Examples</strong></td><td>Google Search, Elasticsearch</td><td>Market basket analysis, fraud detection</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2">IR and DM increasingly overlap in <strong>text mining</strong> and <strong>web mining</strong> — IR tools are used to pre-process text before DM algorithms are applied.</div>
+  </div>
+</section>
+
+<!-- ═══ FLASHCARDS ═══ -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">?</div>
+    <div><div class="pill blue mb-1">Flashcards</div><h2>Tap to Flip</h2><p class="text-sm text-gray-500">Click any card to reveal the answer</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ═══ CHEATSHEET ═══ -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Quick Ref</div><h2>Master Cheatsheet</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Everything in One Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Topic</th><th>Key Fact</th></tr></thead>
+      <tbody>
+        <tr><td>Data Mining definition</td><td>Automated discovery of non-trivial, implicit, previously unknown, potentially useful patterns from large data</td></tr>
+        <tr><td>Other name for Data Mining</td><td>KDD — Knowledge Discovery in Databases</td></tr>
+        <tr><td>KDD pipeline steps (count)</td><td>7 steps: Cleaning → Integration → Selection → Transformation → Mining → Evaluation → Presentation</td></tr>
+        <tr><td>Interesting pattern criteria</td><td>Easily understood, valid on new data, potentially useful, novel</td></tr>
+        <tr><td>Objective interestingness measures</td><td>Support, Confidence, Lift</td></tr>
+        <tr><td>Subjective interestingness measures</td><td>Unexpectedness, Actionability</td></tr>
+        <tr><td>Support formula</td><td>|T_XY| / |T| — fraction of transactions containing both X and Y</td></tr>
+        <tr><td>Confidence formula</td><td>sup(X∪Y) / sup(X) — probability Y appears given X appears</td></tr>
+        <tr><td>Lift formula</td><td>conf(X⇒Y) / sup(Y); lift &gt; 1 means positive correlation</td></tr>
+        <tr><td>DBMS workload</td><td>OLTP — real-time transactions</td></tr>
+        <tr><td>Data Mining workload</td><td>OLAP + pattern discovery over historical data</td></tr>
+        <tr><td>Data Warehouse (Inmon's 4 properties)</td><td>Subject-Oriented, Integrated, Time-Variant, Non-Volatile</td></tr>
+        <tr><td>OLAP: Roll-up</td><td>Aggregate to higher level (daily → monthly)</td></tr>
+        <tr><td>OLAP: Drill-down</td><td>Disaggregate to lower level (annual → daily)</td></tr>
+        <tr><td>OLAP: Slice</td><td>One dimension value selected</td></tr>
+        <tr><td>OLAP: Dice</td><td>Multiple dimension ranges selected</td></tr>
+        <tr><td>Descriptive tasks</td><td>Characterization, Discrimination, Frequent patterns, Association rules, Correlation, Clustering</td></tr>
+        <tr><td>Predictive tasks</td><td>Classification, Regression, Outlier detection</td></tr>
+        <tr><td>Classification</td><td>Supervised — maps to discrete labels (Decision Tree, Naïve Bayes, NN, SVM)</td></tr>
+        <tr><td>Regression</td><td>Predictive — continuous output values</td></tr>
+        <tr><td>Cluster analysis</td><td>Unsupervised — group unlabelled data; max intra-class, min inter-class similarity</td></tr>
+        <tr><td>Outlier analysis</td><td>Anomaly detection — objects deviating from normal (fraud, intrusion)</td></tr>
+        <tr><td>Transactional data format</td><td>TID + item list; e.g. T100 = {bread, milk, butter}</td></tr>
+        <tr><td>Data streams property</td><td>Continuous, high-speed; cannot store all; mine in real time</td></tr>
+        <tr><td>ML vs DM emphasis</td><td>ML: accuracy. DM: scalability + efficiency + interestingness</td></tr>
+        <tr><td>Semi-supervised learning</td><td>Few labelled + many unlabelled examples</td></tr>
+        <tr><td>Active learning</td><td>Model queries user for most informative labels to minimise labelling cost</td></tr>
+        <tr><td>IR tools used in DM</td><td>TF-IDF, cosine similarity, inverted indexes — for text/web mining</td></tr>
+        <tr><td>Naïve Bayes formula</td><td>P(C|X) ∝ P(X|C) · P(C) — assumes feature independence</td></tr>
+        <tr><td>Graph data examples</td><td>Social networks, biological pathways, chemical bonds, citation graphs</td></tr>
+        <tr><td>Multimedia data property</td><td>High-dimensional feature vectors; requires feature extraction before mining</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  Data Mining Module 1 &nbsp;·&nbsp; Introduction to Data Mining — KDD, Data Types &amp; Mining Tasks
+</footer>
+
+<script>
+const cards=[
+  {q:"What is Data Mining / KDD? Give the full definition.",a:"Data Mining (Knowledge Discovery in Databases) = automated discovery of INTERESTING, NON-TRIVIAL, IMPLICIT, PREVIOUSLY UNKNOWN, POTENTIALLY USEFUL patterns from large data.\nIt is an interactive and iterative process, not just a single algorithm."},
+  {q:"Name the 7 steps of the KDD Pipeline in order.",a:"1. Data Cleaning (remove noise, handle missing values)\n2. Data Integration (combine multiple sources)\n3. Data Selection (retrieve relevant data)\n4. Data Transformation (normalise, aggregate)\n5. Data Mining (apply algorithms — the core step)\n6. Pattern Evaluation (filter interesting patterns)\n7. Knowledge Presentation (visualise, report)"},
+  {q:"What are the 4 properties that make a pattern 'interesting'?",a:"1. Easily understood — humans can interpret and act on it\n2. Valid on new data — generalises beyond training set\n3. Potentially useful — leads to actionable insight\n4. Novel — not previously known or obvious\n\nObjective measures: support, confidence, lift.\nSubjective measures: unexpectedness, actionability."},
+  {q:"What are Support, Confidence, and Lift in association rules?",a:"Support = |T_XY| / |T| — fraction of all transactions containing both X and Y.\n\nConfidence = sup(X∪Y) / sup(X) — P(Y | X).\n\nLift = conf(X⇒Y) / sup(Y).\n• Lift > 1: positive correlation\n• Lift = 1: independent\n• Lift < 1: negative correlation (rule coincidental)"},
+  {q:"What are Inmon's 4 defining properties of a Data Warehouse?",a:"1. Subject-Oriented: organised around major subjects (Sales, HR, Finance)\n2. Integrated: data from multiple heterogeneous sources unified\n3. Time-Variant: keeps historical snapshots; every record has a time dimension\n4. Non-Volatile: data loaded in bulk and read-only; no ad-hoc updates/deletes"},
+  {q:"Name the 4 OLAP operations and explain each.",a:"Roll-up: aggregate to higher level (daily → monthly → annual)\nDrill-down: disaggregate to lower level (annual → daily)\nSlice: select one value for one dimension (Q1 only)\nDice: select ranges across multiple dimensions (Q1-Q2, North region, Laptop product)"},
+  {q:"What is the difference between Classification and Cluster Analysis?",a:"Classification (Supervised):\n• Predefined class labels exist\n• Trains on labelled data\n• Assigns new instances to known classes\n• Example: loan → Safe/Risky\n\nCluster Analysis (Unsupervised):\n• No predefined labels\n• Discovers natural groupings\n• No training labels needed\n• Example: customer segments discovered from purchase history"},
+  {q:"Name all 9 mining tasks and their family (descriptive/predictive).",a:"Descriptive:\n1. Characterization — summarise target class\n2. Discrimination — compare target vs contrasting class\n3. Frequent Patterns — recurring itemsets/sequences\n4. Association Rules — X⇒Y by support & confidence\n5. Correlation Analysis — filter coincidental co-occurrence\n6. Cluster Analysis — group unlabelled data\n\nPredictive:\n7. Classification — discrete labels (supervised)\n8. Regression — continuous values\n9. Outlier Analysis — anomaly detection"},
+  {q:"What is Outlier Analysis? Why are outliers important?",a:"Outlier Analysis = identifying objects that deviate significantly from the normal model.\n\nOutliers may be:\n• Noise (errors to be removed)\n• Genuinely interesting (fraud, intrusion, medical anomaly)\n\nApplications: credit card fraud detection, network intrusion detection, medical anomaly detection, industrial equipment failure prediction."},
+  {q:"What 4 technologies does Data Mining rely on? Describe each.",a:"1. Statistics: models, distributions, hypothesis tests; handle noise/missing data; validate patterns\n2. Machine Learning: supervised/unsupervised/semi-supervised/active learning; ML=accuracy, DM=scalability+efficiency\n3. Database Systems & DW: storage, indexing, query processing, data cubes, OLAP\n4. Information Retrieval: keyword queries, TF-IDF, cosine similarity for text & media mining"},
+  {q:"What is the difference between ML and Data Mining emphasis?",a:"Machine Learning:\n• Primary goal: prediction accuracy\n• Assumes data fits in memory\n• Stresses generalisation\n\nData Mining:\n• Primary goal: pattern discovery + scalability + efficiency\n• Must handle terabyte+ datasets\n• Additionally stresses interestingness of patterns\n• Works with any data type (not just labelled examples)"},
+  {q:"Name the 4 ML paradigms used in Data Mining.",a:"1. Supervised Learning: fully labelled data → Classification, Regression\n2. Unsupervised Learning: no labels → Clustering, Association rules, Dimensionality reduction\n3. Semi-supervised Learning: few labelled + many unlabelled → web page classification\n4. Active Learning: model queries for most informative labels → minimises labelling cost"},
+  {q:"What are the 9 types of data that can be mined?",a:"1. Database data (relational tables)\n2. Data warehouse (subject-oriented, integrated, time-variant, non-volatile)\n3. Transactional data (TID + item list; market basket)\n4. Data streams (sensors, network traffic — real-time)\n5. Time series/sequences (stock, DNA)\n6. Spatial/spatiotemporal (maps, trajectories)\n7. Text and Web (documents, link graphs)\n8. Multimedia (image, audio, video)\n9. Graph/network (social networks, biological pathways)"},
+  {q:"How is Data Mining different from DBMS?",a:"DBMS:\n• Workload: OLTP (insert/update/delete transactions)\n• Optimised for: real-time storage, indexing, concurrent atomic ops\n• Access: explicit, predefined SQL queries → exact rows\n\nData Mining:\n• Workload: OLAP + automated pattern discovery\n• Optimised for: hidden, non-obvious relationships; predictive models\n• Access: generalised descriptions from vast historical data → patterns, rules, models\n\nThey are complementary, not competing."},
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.length>200?200:160;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>

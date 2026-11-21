@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Mining Module 4 — Clustering, Outliers & Recommender Systems</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+  code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+  pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+  .kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+  td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+  tr:nth-child(even) td{background:#f0ede5;}
+  details summary{cursor:pointer;list-style:none;user-select:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+  .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+  .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .teal{background:#0f766e;color:#fff;} .pink{background:#be185d;color:#fff;}
+  .tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .fc-wrap{perspective:700px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+  nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ddd;display:inline-block;}
+  nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+  h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+  h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 04</div>
+  <div class="font-black text-sm tracking-wide mb-1">CLUSTERING, OUTLIERS & RECOMMENDERS — K-MEANS, DBSCAN, HIERARCHICAL & MORE</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Clustering</a>
+    <a href="#s2">K-Means</a>
+    <a href="#s3">Variants</a>
+    <a href="#s4">Hierarchical</a>
+    <a href="#s5">DBSCAN</a>
+    <a href="#s6">Outliers</a>
+    <a href="#s7">Recommenders</a>
+    <a href="#fc">Flashcards</a>
+    <a href="#cheat">Cheatsheet</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- ═══ S1: CLUSTERING BASICS ═══ -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill blue mb-1">Unsupervised Learning</div><h2>Cluster Analysis & Major Challenges</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Cluster Analysis:</strong> Partitioning unlabeled objects into groups (clusters) such that <strong>intra-cluster similarity is maximized</strong> (points within a cluster are very close) and <strong>inter-cluster similarity is minimized</strong> (distinct clusters are far apart). No prior class labels exist.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Key Requirements of Clustering in Data Mining</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+      <div class="border p-2 rounded bg-gray-50"><strong>1. Scalability:</strong> Handle millions of tuples ($O(n)$ or $O(n \log n)$ time) without memory breakdown.</div>
+      <div class="border p-2 rounded bg-gray-50"><strong>2. Different Attribute Types:</strong> Work on numeric, nominal, binary, ordinal, and mixed data types.</div>
+      <div class="border p-2 rounded bg-gray-50"><strong>3. Arbitrary Shapes:</strong> Discover non-convex, elongated, nested, or intertwined clusters (not just spherical blobs).</div>
+      <div class="border p-2 rounded bg-gray-50"><strong>4. Noise Robustness:</strong> Isolate outliers and missing values without distorting genuine cluster centers.</div>
+      <div class="border p-2 rounded bg-gray-50"><strong>5. High Dimensionality:</strong> Resist curse of dimensionality where distance metrics lose discriminating power.</div>
+      <div class="border p-2 rounded bg-gray-50"><strong>6. Interpretability:</strong> Cluster boundaries and meanings must be easily understandable and actionable by domain experts.</div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Cluster Types</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Cluster Type</th><th>Core Concept</th><th>Example Algorithm</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Center-Based (Prototype)</strong></td><td>Points assigned to nearest prototype (mean or medoid). Spherical.</td><td>K-Means, K-Medoids (PAM)</td></tr>
+        <tr><td><strong>Density-Based</strong></td><td>Dense areas separated by sparse regions; arbitrary shapes & noise removal.</td><td>DBSCAN, OPTICS, DENCLUE</td></tr>
+        <tr><td><strong>Hierarchical</strong></td><td>Tree of nested clusters (dendrogram) built agglomeratively or divisively.</td><td>AGNES, DIANA, BIRCH</td></tr>
+        <tr><td><strong>Grid-Based</strong></td><td>Quantizes space into finite grid cells for fast spatial query processing.</td><td>STING, CLIQUE</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S2: K-MEANS ═══ -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill red mb-1">Partitioning</div><h2>K-Means Algorithm & Objective Function</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Sum of Squared Errors (SSE)</h3>
+    <p class="text-sm mb-1">K-Means iteratively partitions $n$ points into $k$ clusters to minimize the overall SSE objective function:</p>
+    $$\text{SSE} = \sum_{i=1}^{k} \sum_{x \in C_i} \|x - \mu_i\|^2 = \sum_{i=1}^{k} \sum_{x \in C_i} d(x, \mu_i)^2$$
+    <p class="text-xs text-gray-500 mt-1">where $\mu_i = \frac{1}{|C_i|}\sum_{x \in C_i} x$ is the mean centroid of cluster $C_i$, and Euclidean distance is $d(x,y) = \sqrt{\sum_{j=1}^{d}(x_j - y_j)^2}$.</p>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Algorithm Steps & Complexity</h3>
+    <ol class="list-decimal list-inside space-y-1 text-sm mb-3">
+      <li><strong>Initialize:</strong> Arbitrarily select $k$ objects from dataset $D$ as initial cluster centroids $\mu_1, \dots, \mu_k$.</li>
+      <li><strong>Assignment:</strong> Assign each object $x$ to its nearest centroid based on Euclidean distance: $x \in C_i$ if $d(x, \mu_i) = \min_j d(x, \mu_j)$.</li>
+      <li><strong>Update:</strong> Recompute each centroid $\mu_i$ as the arithmetic mean of all points assigned to $C_i$.</li>
+      <li><strong>Repeat:</strong> Iterate steps 2 and 3 until convergence (centroids no longer move or SSE change $< \epsilon$).</li>
+    </ol>
+    <div class="grid grid-cols-2 gap-2 text-xs">
+      <div class="good p-2"><strong>Time Complexity:</strong> $O(n \cdot k \cdot t)$ where $n = \text{points}$, $k = \text{clusters}$, $t = \text{iterations}$. Linear in $n$!</div>
+      <div class="tip p-2"><strong>Space Complexity:</strong> $O(n + k)$ storage needed for data and centroids.</div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Strengths & Critical Limitations</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+      <div class="bg-green-50 border border-green-200 p-2 rounded">
+        <div class="font-bold text-green-800 mb-1">STRENGTHS</div>
+        • Fast, simple, and intuitive<br>
+        • Scales linearly to very large datasets<br>
+        • Guaranteed convergence to a local minimum
+      </div>
+      <div class="bg-red-50 border border-red-200 p-2 rounded">
+        <div class="font-bold text-red-800 mb-1">LIMITATIONS</div>
+        • $k$ must be predetermined upfront<br>
+        • Sensitive to random initial seed selection<br>
+        • Highly distorted by outliers / noise<br>
+        • Restricted to spherical / convex clusters of similar size
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S3: K-MEANS VARIANTS ═══ -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill green mb-1">Variants & Diagnostics</div><h2>K-Medoids, Categorical Extensions & Choosing K</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>K-Means Family Variants</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Variant</th><th>Core Mechanism</th><th>Advantage / Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><strong>K-Medoids (PAM)</strong></td><td>Uses actual data points (medoids) instead of virtual means. Swaps points to reduce absolute error.</td><td>Highly robust to outliers and extreme noise. Time: $O(k(n-k)^2)$.</td></tr>
+        <tr><td><strong>K-Medians</strong></td><td>Calculates dimension-wise median instead of mean for centers ($L_1$ norm).</td><td>Resistant to outliers; handles skewed distributions.</td></tr>
+        <tr><td><strong>K-Modes</strong></td><td>Replaces means with modes (most frequent categories) and uses simple matching dissimilarity.</td><td>Extends clustering directly to categorical / nominal data.</td></tr>
+        <tr><td><strong>K-Prototypes</strong></td><td>Combines K-Means Euclidean distance for numeric features + K-Modes dissimilarity for categorical features.</td><td>Handles mixed datasets seamlessly without forced encodings.</td></tr>
+        <tr><td><strong>Bisecting K-Means</strong></td><td>Starts with 1 cluster; recursively splits the cluster with largest SSE using 2-means until $k$ clusters exist.</td><td>Less sensitive to random initial seed; forms hierarchical dendrogram.</td></tr>
+        <tr><td><strong>Mini-Batch K-Means</strong></td><td>Samples small random subsets (mini-batches) to update centroids incrementally.</td><td>Huge speedup on big data with negligible loss in cluster quality.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Determining Optimal $k$</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+      <div class="card border p-3">
+        <h4 class="font-bold mb-1">1. Elbow Method</h4>
+        Plot total $\text{SSE}$ against increasing $k$. $\text{SSE}$ monotonically drops as $k \to n$. Look for the distinct inflection point ("elbow") where SSE reduction sharply levels off.
+      </div>
+      <div class="card border p-3">
+        <h4 class="font-bold mb-1">2. Silhouette Coefficient</h4>
+        For point $i$, $s(i) = \frac{b(i) - a(i)}{\max(a(i), b(i))}$, where $a(i)$ is mean distance to points in same cluster, and $b(i)$ is mean distance to nearest neighboring cluster. Range is $[-1, +1]$; values close to $+1$ indicate outstanding clustering.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4: HIERARCHICAL CLUSTERING ═══ -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill gray mb-1">Hierarchy</div><h2>Hierarchical Clustering — Dendrograms & Linkages</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Agglomerative vs Divisive</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>Agglomerative (AGNES) — Bottom-Up</th><th>Divisive (DIANA) — Top-Down</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Starting Point</strong></td><td>Each object starts as its own individual singleton cluster ($n$ clusters).</td><td>All objects start grouped together in a single grand cluster ($1$ cluster).</td></tr>
+        <tr><td><strong>Operation</strong></td><td>Successively merge the two closest clusters at each step.</td><td>Successively split clusters into smaller sub-clusters recursively.</td></tr>
+        <tr><td><strong>Termination</strong></td><td>Stops when all points merge into 1 cluster or distance threshold met.</td><td>Stops when each cluster holds 1 point or threshold met.</td></tr>
+        <tr><td><strong>Complexity</strong></td><td>$O(n^2)$ space, $O(n^2 \log n)$ or $O(n^3)$ time. Irreversible merges.</td><td>Computationally prohibitive without heuristics ($2^{n-1}-1$ possible splits).</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Cluster Linkage Methods</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Linkage</th><th>Definition & Formula</th><th>Behavior & Trade-offs</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Single Linkage (MIN)</strong></td><td>$d(A, B) = \min_{x \in A, y \in B} d(x, y)$</td><td>Can handle non-elliptical shapes; prone to undesirable <strong>chaining effect</strong> (thin bridges connect distinct groups).</td></tr>
+        <tr><td><strong>Complete Linkage (MAX)</strong></td><td>$d(A, B) = \max_{x \in A, y \in B} d(x, y)$</td><td>Produces compact, spherical clusters with equal diameters; highly sensitive to outliers.</td></tr>
+        <tr><td><strong>Average Linkage (UPGMA)</strong></td><td>$d(A, B) = \frac{1}{|A||B|} \sum_{x \in A} \sum_{y \in B} d(x, y)$</td><td>Balanced compromise between Single and Complete; robust to noise and outliers.</td></tr>
+        <tr><td><strong>Ward's Method</strong></td><td>Merges pair that minimizes increase in total within-cluster SSE.</td><td>Favors spherical, equally sized clusters; widely used in social sciences and biology.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S5: DBSCAN ═══ -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill orange mb-1">Density-Based</div><h2>DBSCAN — Density-Based Spatial Clustering</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>DBSCAN:</strong> Density-Based Spatial Clustering of Applications with Noise. Discovers clusters of <strong>arbitrary shapes</strong> by connecting points situated in high-density regions separated by sparse noise zones.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Core Parameters & Point Classifications</h3>
+    <div class="scroll-x mb-3">
+    <table>
+      <thead><tr><th>Parameter / Concept</th><th>Definition</th><th>Role in DBSCAN</th></tr></thead>
+      <tbody>
+        <tr><td><strong>$\epsilon$ (Eps)</strong></td><td>Maximum radius of the neighborhood around any point.</td><td>Defines spatial locality $N_\epsilon(p) = \{q \in D \mid d(p,q) \le \epsilon\}$.</td></tr>
+        <tr><td><strong>$\text{MinPts}$</strong></td><td>Minimum number of points within $\epsilon$-neighborhood to form dense region.</td><td>Density threshold. Default heuristic: $\text{MinPts} \ge 2 \times \text{dim}$.</td></tr>
+        <tr><td><strong>Core Point</strong></td><td>$|N_\epsilon(p)| \ge \text{MinPts}$</td><td>Forms dense cluster interior; expands cluster to neighbors.</td></tr>
+        <tr><td><strong>Border Point</strong></td><td>$|N_\epsilon(p)| < \text{MinPts}$, but $p \in N_\epsilon(\text{Core})$</td><td>Resides on cluster periphery; belongs to cluster but cannot expand it.</td></tr>
+        <tr><td><strong>Noise Point</strong></td><td>Neither Core nor Border</td><td>Outlier; does not belong to any cluster.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- Minimalist DBSCAN visual schematic -->
+    <div class="p-4 bg-[#fcfbfa] border rounded-md text-xs font-mono">
+      <div class="font-bold text-gray-700 mb-2">DBSCAN Point Typology Diagram:</div>
+      <div class="flex flex-wrap items-center justify-around gap-4 text-center">
+        <div class="border p-2 rounded bg-white w-40">
+          <div class="w-8 h-8 rounded-full bg-blue-600 mx-auto mb-1 flex items-center justify-center text-white font-bold text-xs">C</div>
+          <div class="font-bold text-blue-700">Core Point</div>
+          <div class="text-[10px] text-gray-500">$\ge \text{MinPts}$ neighbors in $\epsilon$-radius</div>
+        </div>
+        <div class="border p-2 rounded bg-white w-40">
+          <div class="w-8 h-8 rounded-full border-2 border-green-600 bg-green-50 mx-auto mb-1 flex items-center justify-center text-green-700 font-bold text-xs">B</div>
+          <div class="font-bold text-green-700">Border Point</div>
+          <div class="text-[10px] text-gray-500">$< \text{MinPts}$, but in $\epsilon$ of a Core</div>
+        </div>
+        <div class="border p-2 rounded bg-white w-40">
+          <div class="w-8 h-8 rounded-full border border-dashed border-red-500 bg-red-50 mx-auto mb-1 flex items-center justify-center text-red-600 font-bold text-xs">N</div>
+          <div class="font-bold text-red-700">Noise / Outlier</div>
+          <div class="text-[10px] text-gray-500">Isolated; outside any Core neighborhood</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Density Reachability vs Connectivity</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Relation</th><th>Formal Condition</th><th>Symmetry Property</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Directly Density-Reachable</strong></td><td>$p \in N_\epsilon(q)$ and $q$ is a Core point.</td><td><strong>Asymmetric</strong> (cannot reach core from non-core).</td></tr>
+        <tr><td><strong>Density-Reachable</strong></td><td>Chain of core points $p_1, \dots, p_n$ where $p_{i+1}$ is directly reachable from $p_i$.</td><td><strong>Asymmetric</strong>.</td></tr>
+        <tr><td><strong>Density-Connected</strong></td><td>Both $p$ and $q$ are density-reachable from some common core point $o$.</td><td><strong>Symmetric & Transitive</strong> (defines cluster).</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>K-Means vs DBSCAN Head-to-Head</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Dimension</th><th>K-Means</th><th>DBSCAN</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Cluster Shapes</strong></td><td>Convex, spherical clusters only</td><td>Arbitrary shapes (spirals, rings, elongated)</td></tr>
+        <tr><td><strong>Cluster Count ($k$)</strong></td><td>Must be specified upfront</td><td>Determined automatically by data density</td></tr>
+        <tr><td><strong>Noise / Outliers</strong></td><td>Forces every point into a cluster (distorts means)</td><td>Explicitly detects and isolates noise</td></tr>
+        <tr><td><strong>Density Variance</strong></td><td>Assumes equal cluster sizes/densities</td><td>Struggles when clusters have widely varying densities</td></tr>
+        <tr><td><strong>Time Complexity</strong></td><td>$O(n \cdot k \cdot t)$</td><td>$O(n \log n)$ with spatial index; $O(n^2)$ without</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S6: OUTLIERS & NOVELTY DETECTION ═══ -->
+<section id="s6">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">06</div>
+    <div><div class="pill purple mb-1">Anomaly Detection</div><h2>Outliers, Novelty Detection & IQR Fences</h2></div>
+  </div>
+
+  <div class="card tip mb-3">
+    <strong>Noise vs Outlier (Vital Exam Distinction):</strong><br>
+    • <strong>Noise:</strong> Random error or measurement variance. Uninteresting garbage to be smoothed and removed in preprocessing.<br>
+    • <strong>Outlier:</strong> Legitimate, rare, exceptional data objects generated by a different underlying mechanism. Highly interesting for fraud detection, network intrusion, and fault diagnosis!
+  </div>
+
+  <div class="card mb-3">
+    <h3>Taxonomy of Outlier Types</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Outlier Type</th><th>Definition</th><th>Real-World Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Global (Point) Outlier</strong></td><td>An individual data point deviates significantly from the entire dataset.</td><td>A monthly salary of $1,000,000 when average is $4,000.</td></tr>
+        <tr><td><strong>Contextual (Conditional)</strong></td><td>Object is anomalous in a specific context (judged against behavioral attributes).</td><td>$30^\circ\text{C}$ temperature in Antarctica during winter.</td></tr>
+        <tr><td><strong>Collective Outlier</strong></td><td>A collection of objects is anomalous as a group, though individual points appear normal.</td><td>Repeated burst of $1 transactions triggering credit card alert.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Outlier Detection Approaches & IQR Method</h3>
+    <p class="text-sm mb-2">IQR (Interquartile Range) identifies outliers without assuming a normal distribution:</p>
+    $$\text{IQR} = Q_3 - Q_1, \quad \text{Lower Fence} = Q_1 - 1.5 \times \text{IQR}, \quad \text{Upper Fence} = Q_3 + 1.5 \times \text{IQR}$$
+    <div class="good text-xs mt-2">
+      <strong>Worked Example:</strong> Data: $10, 10, 11, 11, 12, 12, 13, 95$.<br>
+      $Q_1 = 10.5, \, Q_3 = 12.5, \, \text{IQR} = 12.5 - 10.5 = 2.0$.<br>
+      Lower Fence $= 10.5 - 1.5(2) = 7.5$; Upper Fence $= 12.5 + 1.5(2) = 15.5$.<br>
+      Since $95 > 15.5$, it is flagged as an outlier! (Note: a $3\sigma$ test fails here because 95 inflates $\sigma$).
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7: RECOMMENDER SYSTEMS ═══ -->
+<section id="s7">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">07</div>
+    <div><div class="pill teal mb-1">Information Filtering</div><h2>Recommender Systems — Content-Based & Collaborative</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Recommendation Paradigms</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Paradigm</th><th>Core Philosophy</th><th>Key Advantage</th><th>Critical Limitation</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Content-Based</strong></td><td>Recommends items similar to those previously liked by user (using item tags, genres).</td><td>User-independent; no cold-start for new items; explainable.</td><td>Overspecialization (no serendipitous discovery); needs rich tags.</td></tr>
+        <tr><td><strong>Collaborative Filtering (CF)</strong></td><td>Leverages collective behavior ("users who agreed in the past will agree now").</td><td>Domain-free; uncovers novel interests without feature engineering.</td><td><strong>Cold-start</strong> for new users/items; rating matrix sparsity.</td></tr>
+        <tr><td><strong>Hybrid Systems</strong></td><td>Blends Content-Based and CF models (e.g., Netflix, Spotify).</td><td>Eases cold-start and sparsity significantly.</td><td>Increased computational complexity and pipeline engineering.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>User-Based Collaborative Filtering Formulation</h3>
+    <p class="text-xs mb-1">Cosine similarity between user $u$ and user $v$ across co-rated item set $I_{uv}$:</p>
+    $$\text{sim}(u, v) = \frac{\sum_{i \in I_{uv}} r_{ui} \cdot r_{vi}}{\sqrt{\sum_{i \in I_{uv}} r_{ui}^2} \cdot \sqrt{\sum_{i \in I_{uv}} r_{vi}^2}}$$
+    <p class="text-xs mb-1">Predicted rating for user $u$ on unrated item $j$ using $k$-nearest neighbors:</p>
+    $$\hat{r}_{uj} = \frac{\sum_{v \in N(u)} \text{sim}(u, v) \cdot r_{vj}}{\sum_{v \in N(u)} |\text{sim}(u, v)|}$$
+    <div class="good text-xs mt-2">
+      <strong>Worked Example:</strong> Predict Asha's rating for Movie 3.<br>
+      $\text{sim}(\text{Asha}, \text{Ben}) = 0.999$, $\text{sim}(\text{Asha}, \text{Dev}) = 0.47$. Ben rates M3 $= 5$, Dev rates M3 $= 2$.<br>
+      $$\hat{r}_{\text{Asha}, M3} = \frac{0.999(5) + 0.47(2)}{0.999 + 0.47} = \frac{4.995 + 0.94}{1.469} \approx \mathbf{4.04} \quad (\text{Recommend!})$$
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLASHCARDS ═══ -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">?</div>
+    <div><div class="pill blue mb-1">Flashcards</div><h2>Tap to Flip</h2><p class="text-sm text-gray-500">Click any card to reveal the answer</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ═══ CHEATSHEET ═══ -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Quick Ref</div><h2>Master Cheatsheet</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Module 4 Reference Summary</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Concept / Formula</th><th>Summary / Quick Reference</th></tr></thead>
+      <tbody>
+        <tr><td>SSE Formula</td><td>$\sum_{i=1}^k \sum_{x \in C_i} \|x - \mu_i\|^2$ — K-Means objective to minimize</td></tr>
+        <tr><td>K-Means Complexity</td><td>$O(n \cdot k \cdot t)$ — Linear in samples $n$, clusters $k$, iterations $t$</td></tr>
+        <tr><td>K-Medoids (PAM)</td><td>Uses actual data points; more robust to outliers than K-Means</td></tr>
+        <tr><td>K-Modes & K-Prototypes</td><td>K-Modes handles categorical; K-Prototypes handles mixed numeric & categorical</td></tr>
+        <tr><td>Single Linkage (MIN)</td><td>Minimum pairwise distance; prone to chaining effect</td></tr>
+        <tr><td>Complete Linkage (MAX)</td><td>Maximum pairwise distance; sensitive to outliers, forms spherical clusters</td></tr>
+        <tr><td>DBSCAN Core Point</td><td>$|N_\epsilon(p)| \ge \text{MinPts}$ (can spawn / expand clusters)</td></tr>
+        <tr><td>DBSCAN Border Point</td><td>$< \text{MinPts}$ in $\epsilon$-radius, but inside neighborhood of a Core Point</td></tr>
+        <tr><td>DBSCAN Complexity</td><td>$O(n \log n)$ with spatial index (k-d tree); $O(n^2)$ without</td></tr>
+        <tr><td>Noise vs Outlier</td><td>Noise = random measurement error; Outlier = genuine rare event of interest</td></tr>
+        <tr><td>IQR Fences</td><td>$[Q_1 - 1.5\times\text{IQR},\; Q_3 + 1.5\times\text{IQR}]$ — Nonparametric outlier filter</td></tr>
+        <tr><td>Collaborative Filtering</td><td>"Users who agreed in the past will agree now"; struggles with cold-start</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  Data Mining Module 4 Study Guide &nbsp;·&nbsp; Clustering, Outliers & Recommender Systems
+</footer>
+
+<script>
+const cards=[
+  {q:"What is the objective function of K-Means?", a:"Sum of Squared Errors (SSE): Minimize total squared Euclidean distance from each point to its assigned cluster centroid."},
+  {q:"What are the main limitations of K-Means?", a:"1. k must be pre-specified\n2. Sensitive to random initialization (local minima)\n3. Sensitive to outliers\n4. Restricted to spherical/convex clusters of similar density."},
+  {q:"How does K-Medoids differ from K-Means?", a:"K-Medoids chooses actual data points as centers (medoids) instead of virtual means, making it much more robust to outliers."},
+  {q:"What are the two parameters of DBSCAN?", a:"1. Eps (ε): Neighborhood distance radius\n2. MinPts: Minimum number of points within ε-neighborhood to form a dense region."},
+  {q:"Define Core, Border, and Noise points in DBSCAN.", a:"Core: ≥ MinPts points in ε-neighborhood\nBorder: < MinPts, but belongs to ε-neighborhood of a Core point\nNoise: Neither Core nor Border (isolated outlier)."},
+  {q:"Why can DBSCAN find arbitrary shapes while K-Means cannot?", a:"DBSCAN groups points based on continuous dense chains rather than distance to a single central centroid."},
+  {q:"What is the chaining effect in Single Linkage hierarchical clustering?", a:"Single Linkage merges clusters based on the minimum distance between points, so a thin chain of intermediate points can improperly bridge two completely distinct clusters."},
+  {q:"Difference between Noise and Outliers?", a:"Noise: Random errors or recording variance to be removed in preprocessing.\nOutliers: Genuine, exceptional objects that often represent the primary target of investigation (e.g. fraud, attacks)."},
+  {q:"How do IQR fences detect outliers?", a:"IQR = Q3 - Q1.\nValues < Q1 - 1.5*IQR or > Q3 + 1.5*IQR are flagged as outliers without assuming a normal distribution."},
+  {q:"Compare Content-Based and Collaborative Filtering.", a:"Content-Based: Recommends items similar to past liked items based on item metadata. No cold-start for new items.\nCollaborative Filtering: Recommends items liked by similar users. Subject to cold-start and sparsity."},
+  {q:"What is the Cold-Start problem in recommender systems?", a:"The inability to provide reliable recommendations for new users (no interaction history) or new items (no ratings received yet)."},
+  {q:"What is the Silhouette Coefficient and its range?", a:"s(i) = (b(i) - a(i)) / max(a(i), b(i)). Measures how similar a point is to its own cluster compared to neighboring clusters. Range is [-1, +1]; close to +1 is optimal."}
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.length>200?200:160;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>

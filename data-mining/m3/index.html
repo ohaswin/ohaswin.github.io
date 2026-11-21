@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Mining Module 3 — Association Rules &amp; Classification</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+  code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+  pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+  .kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+  td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+  tr:nth-child(even) td{background:#f0ede5;}
+  details summary{cursor:pointer;list-style:none;user-select:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+  .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+  .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .teal{background:#0f766e;color:#fff;} .pink{background:#be185d;color:#fff;}
+  .tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .fc-wrap{perspective:700px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+  nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ddd;display:inline-block;}
+  nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+  h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+  h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 03</div>
+  <div class="font-black text-sm tracking-wide mb-1">ASSOCIATION RULES &amp; CLASSIFICATION — APRIORI, DECISION TREES, BAYES &amp; ENSEMBLES</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Assoc Rules</a>
+    <a href="#s2">Apriori</a>
+    <a href="#s3">Rule Gen</a>
+    <a href="#s4">Decision Trees</a>
+    <a href="#s5">Attribute Selection</a>
+    <a href="#s6">Bayes</a>
+    <a href="#s7">Ensembles</a>
+    <a href="#s8">Evaluation</a>
+    <a href="#fc">Flashcards</a>
+    <a href="#cheat">Cheatsheet</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- ═══ S1: ASSOCIATION RULE MINING ═══ -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill blue mb-1">Foundations</div><h2>Association Rule Mining — Concepts &amp; Itemsets</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Association Rule:</strong> Implication of the form $X \Rightarrow Y$, where $X, Y \subset I$ and $X \cap Y = \emptyset$. $X$ is antecedent, $Y$ is consequent. Discovers co-occurrence relations like $\{\text{Diapers}\} \Rightarrow \{\text{Beer}\}$.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Core Terminology</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Term</th><th>Meaning &amp; Formula</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Itemset</strong></td><td>A set of items. A $k$-itemset contains $k$ distinct items.</td></tr>
+        <tr><td><strong>Support Count ($\sigma$)</strong></td><td>Absolute frequency of an itemset in dataset $D$: $\sigma(X) = |\{t \in D \mid X \subseteq t\}|$</td></tr>
+        <tr><td><strong>Support</strong></td><td>Fraction of total transactions containing $X \cup Y$: $$\text{Support}(X \Rightarrow Y) = P(X \cup Y) = \frac{\text{count}(X \cup Y)}{|D|}$$</td></tr>
+        <tr><td><strong>Confidence</strong></td><td>Conditional certainty of $Y$ given $X$: $$\text{Confidence}(X \Rightarrow Y) = P(Y \mid X) = \frac{\text{count}(X \cup Y)}{\text{count}(X)}$$</td></tr>
+        <tr><td><strong>Strong Rule</strong></td><td>A rule that satisfies both $\text{min\_sup}$ and $\text{min\_conf}$ thresholds.</td></tr>
+        <tr><td><strong>Subsequence / Substructure</strong></td><td>Ordered pattern (e.g. $A \to B$) or subgraph / subtree in structured graphs.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Closed vs Maximal Frequent Itemsets</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Feature</th><th>Closed Frequent Itemset</th><th>Maximal Frequent Itemset</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Definition</strong></td><td>Frequent itemset where no proper superset has the <strong>same support count</strong>.</td><td>Frequent itemset where no proper superset is <strong>frequent</strong>.</td></tr>
+        <tr><td><strong>Compression Type</strong></td><td><strong>Lossless:</strong> Supports of all subsets can be fully derived.</td><td><strong>Maximal / Lossy:</strong> More compact, but exact subset supports are lost.</td></tr>
+        <tr><td><strong>Relationship</strong></td><td>Every maximal frequent itemset is closed ($\text{Maximal} \subseteq \text{Closed} \subseteq \text{Frequent}$).</td><td>A strict subset of closed itemsets are maximal.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="good mt-2 text-xs">
+      <strong>Worked Example:</strong> $D = \{T_1:\{A,B,C\}, T_2:\{A,B,C\}, T_3:\{A,B\}, T_4:\{A,D\}\}$, $\text{min\_sup}=2$.<br>
+      Supports: $A:4, B:3, C:2, AB:3, AC:2, BC:2, ABC:2$ ($D, AD$ infrequent).<br>
+      • <strong>Closed:</strong> $\{A\}:4$, $\{A,B\}:3$, $\{A,B,C\}:2$<br>
+      • <strong>Maximal:</strong> $\{A,B,C\}:2$ only (its proper supersets are not frequent).
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S2: APRIORI ALGORITHM ═══ -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill red mb-1">Frequent Patterns</div><h2>Apriori Algorithm &amp; Level-Wise Pruning</h2></div>
+  </div>
+
+  <div class="card tip mb-3">
+    <strong>Apriori Property (Anti-monotonicity):</strong> Any non-empty subset of a frequent itemset must also be frequent. If an itemset $I$ is infrequent, <em>all of its supersets are immediately pruned</em> without scanning the database!
+  </div>
+
+  <div class="card mb-3">
+    <h3>Level-Wise Candidate Generation &amp; Pruning</h3>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+      <li><strong>Find $L_1$:</strong> Scan $D$ to count 1-itemsets; retain itemsets with count $\ge \text{min\_sup}$.</li>
+      <li><strong>Join Step ($C_k$):</strong> Join $L_{k-1}$ with itself ($L_{k-1} \Join L_{k-1}$) on matching prefix of length $k-2$.</li>
+      <li><strong>Prune Step:</strong> Discard candidate $c \in C_k$ if any $(k-1)$-subset of $c$ is not in $L_{k-1}$.</li>
+      <li><strong>Count &amp; Select ($L_k$):</strong> Scan database $D$ to compute support of surviving candidates. Keep those $\ge \text{min\_sup}$. Repeat until $C_k = \emptyset$.</li>
+    </ol>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Worked Example: Full Run</h3>
+    <p class="text-xs text-gray-500 mb-2">$D = \{T_1:\{A,B,C\}, T_2:\{A,C\}, T_3:\{A,D\}, T_4:\{B,E\}\}$, $\text{min\_sup} = 2$.</p>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Iteration</th><th>Candidate Set ($C_k$)</th><th>Counts</th><th>Frequent Itemset ($L_k$)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>k=1</strong></td><td>$\{A\}, \{B\}, \{C\}, \{D\}, \{E\}$</td><td>$A:3, B:2, C:2, D:1, E:1$</td><td>$L_1 = \{\{A\}, \{B\}, \{C\}\}$</td></tr>
+        <tr><td><strong>k=2</strong></td><td>$\{AB\}, \{AC\}, \{BC\}$</td><td>$AB:1, AC:2, BC:1$</td><td>$L_2 = \{\{A, C\}\}$</td></tr>
+        <tr><td><strong>k=3</strong></td><td>No 3-candidates constructible from $L_2$</td><td>—</td><td>Stop</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn mt-2 text-xs">
+      <strong>Bottlenecks &amp; Enhancements:</strong> Apriori needs $k$ database scans and generates huge candidate sets. Optimizations include: <em>Hash-based item filtering (PCY)</em>, <em>Transaction reduction</em>, <em>Partitioning</em>, and <em>Sampling</em>.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S3: RULE GENERATION ═══ -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill green mb-1">Rule Extraction</div><h2>Generating Strong Rules from Frequent Itemsets</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Confidence Calculation &amp; Anti-Monotonicity</h3>
+    <p class="text-sm mb-2">For each frequent itemset $l \in L_k$, generate all non-empty proper subsets $s \subset l$. Candidate rule $s \Rightarrow (l - s)$ is valid if:</p>
+    $$\text{Confidence}(s \Rightarrow l - s) = \frac{\text{Support}(l)}{\text{Support}(s)} \ge \text{min\_conf}$$
+    <div class="info text-xs">
+      <strong>Pruning Property:</strong> If $s \Rightarrow (l - s)$ fails $\text{min\_conf}$, then any $s' \Rightarrow (l - s')$ with $s' \subset s$ also fails confidence and is pruned immediately.
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Worked Example: Rules from $\{B, C, E\}$</h3>
+    <p class="text-xs text-gray-500 mb-2">Given frequent itemset $L = \{B,C,E\}$, $\sigma(BCE)=2, \sigma(BC)=2, \sigma(CE)=2, \sigma(BE)=3, \sigma(B)=3, \sigma(C)=3, \sigma(E)=3$. $\text{min\_conf} = 70\%$.</p>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Candidate Rule</th><th>Confidence Formula</th><th>Calculated Value</th><th>Status ($\ge 70\%$)</th></tr></thead>
+      <tbody>
+        <tr><td>$B \wedge C \Rightarrow E$</td><td>$\sigma(BCE) / \sigma(BC) = 2/2$</td><td><strong>100%</strong></td><td><span class="pill green">Strong Rule</span></td></tr>
+        <tr><td>$C \wedge E \Rightarrow B$</td><td>$\sigma(BCE) / \sigma(CE) = 2/2$</td><td><strong>100%</strong></td><td><span class="pill green">Strong Rule</span></td></tr>
+        <tr><td>$B \wedge E \Rightarrow C$</td><td>$\sigma(BCE) / \sigma(BE) = 2/3$</td><td>66.7%</td><td><span class="pill red">Pruned</span></td></tr>
+        <tr><td>$B \Rightarrow C \wedge E$</td><td>$\sigma(BCE) / \sigma(B) = 2/3$</td><td>66.7%</td><td><span class="pill red">Pruned</span></td></tr>
+        <tr><td>$C \Rightarrow B \wedge E$</td><td>$\sigma(BCE) / \sigma(C) = 2/3$</td><td>66.7%</td><td><span class="pill red">Pruned</span></td></tr>
+        <tr><td>$E \Rightarrow B \wedge C$</td><td>$\sigma(BCE) / \sigma(E) = 2/3$</td><td>66.7%</td><td><span class="pill red">Pruned</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4: DECISION TREES ═══ -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill gray mb-1">Supervised Learning</div><h2>Classification &amp; Decision Tree Induction</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Two Phases of Classification</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+      <div class="bg-blue-50 border border-blue-200 rounded p-3">
+        <div class="font-bold text-blue-800 mb-1">1. LEARNING / TRAINING</div>
+        Supervised step. Algorithm builds model $y = f(X)$ from labeled training tuples.
+      </div>
+      <div class="bg-green-50 border border-green-200 rounded p-3">
+        <div class="font-bold text-green-800 mb-1">2. TESTING / PREDICTION</div>
+        Model is evaluated on an independent test dataset to estimate generalization accuracy without overfitting.
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Tree Components &amp; Visualization</h3>
+    <div class="scroll-x mb-3">
+    <table>
+      <thead><tr><th>Component</th><th>Representation</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Root Node</strong></td><td>Topmost node</td><td>Represents entire dataset before any partition.</td></tr>
+        <tr><td><strong>Internal Node</strong></td><td>Decision box</td><td>Test condition on an attribute (e.g., $\text{Age} \le 30$).</td></tr>
+        <tr><td><strong>Branch</strong></td><td>Edge / Line</td><td>Outcome of test condition ($Yes$ / $No$ or categories).</td></tr>
+        <tr><td><strong>Leaf Node</strong></td><td>Terminal box</td><td>Target class label / final classification.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- Tree diagram -->
+    <div class="p-4 bg-[#fcfbfa] border rounded-md text-xs font-mono flex flex-col items-center">
+      <div class="px-3 py-1 bg-gray-900 text-white rounded font-bold">Root: [Age?]</div>
+      <div class="w-48 h-4 border-l border-r border-t border-gray-400 mt-1"></div>
+      <div class="flex justify-between w-64 text-[10px] text-gray-600 mb-1">
+        <span>youth</span>
+        <span>middle-aged</span>
+        <span>senior</span>
+      </div>
+      <div class="flex gap-3 items-start">
+        <div class="flex flex-col items-center">
+          <div class="px-2 py-1 bg-blue-100 border border-blue-300 rounded">[Student?]</div>
+          <div class="text-[10px] text-gray-500 mt-1">yes: Buy | no: Don't</div>
+        </div>
+        <div class="px-2 py-1 bg-green-100 border border-green-300 text-green-800 font-bold rounded">
+          Class: Buy (100%)
+        </div>
+        <div class="flex flex-col items-center">
+          <div class="px-2 py-1 bg-orange-100 border border-orange-300 rounded">[Credit?]</div>
+          <div class="text-[10px] text-gray-500 mt-1">fair: Buy | exc: Don't</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warn mt-3 text-xs">
+      <strong>Pruning Strategies:</strong> <em>Prepruning</em> stops tree construction early based on statistical thresholds. <em>Postpruning</em> grows the complete tree and subsequently prunes subtrees with validation data (more robust).
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S5: ATTRIBUTE SELECTION MEASURES ═══ -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill orange mb-1">Splitting Criteria</div><h2>Information Gain, Gain Ratio &amp; Gini Index</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Attribute Selection Comparison</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Measure</th><th>Origin Algorithm</th><th>Key Characteristics &amp; Bias</th><th>Splitting Formula</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Information Gain</strong></td><td>ID3</td><td>Biased towards multi-valued attributes (e.g. ID numbers).</td><td>$\text{Gain}(A) = \text{Info}(D) - \text{Info}_A(D)$</td></tr>
+        <tr><td><strong>Gain Ratio</strong></td><td>C4.5</td><td>Normalizes by SplitInfo to penalize fragmented splits.</td><td>$\text{GainRatio}(A) = \frac{\text{Gain}(A)}{\text{SplitInfo}_A(D)}$</td></tr>
+        <tr><td><strong>Gini Index</strong></td><td>CART</td><td>Enforces strictly binary splits; measures dataset impurity.</td><td>$\Delta\text{Gini}(A) = \text{Gini}(D) - \text{Gini}_A(D)$</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Mathematical Formulations</h3>
+    <div class="space-y-2 text-xs">
+      <div>$$\text{Info}(D) = -\sum_{i=1}^{m} p_i \log_2(p_i), \quad \text{Info}_A(D) = \sum_{j=1}^{v} \frac{|D_j|}{|D|} \text{Info}(D_j)$$</div>
+      <div>$$\text{SplitInfo}_A(D) = -\sum_{j=1}^{v} \frac{|D_j|}{|D|} \log_2\left(\frac{|D_j|}{|D|}\right)$$</div>
+      <div>$$\text{Gini}(D) = 1 - \sum_{i=1}^{m} p_i^2, \quad \text{Gini}_A(D) = \frac{|D_1|}{|D|} \text{Gini}(D_1) + \frac{|D_2|}{|D|} \text{Gini}(D_2)$$</div>
+    </div>
+    <div class="good mt-3 text-xs">
+      <strong>Worked Example (AllElectronics 14 tuples: 9 yes, 5 no):</strong><br>
+      $$\text{Info}(D) = -\frac{9}{14}\log_2\frac{9}{14} - \frac{5}{14}\log_2\frac{5}{14} = 0.940$$
+      Splitting on <em>Age</em>: $\text{Info}_{\text{age}}(D) = \frac{5}{14}(0.971) + \frac{4}{14}(0) + \frac{5}{14}(0.971) = 0.694$<br>
+      $$\text{Gain}(\text{Age}) = 0.940 - 0.694 = \mathbf{0.246} \quad (\text{highest gain among all features } \to \text{Age selected as Root}).$$
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S6: BAYES CLASSIFICATION ═══ -->
+<section id="s6">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">06</div>
+    <div><div class="pill purple mb-1">Probabilistic Models</div><h2>Bayes Theorem &amp; Naive Bayes Classifier</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Bayes Theorem</h3>
+    $$P(C_i \mid X) = \frac{P(X \mid C_i) \cdot P(C_i)}{P(X)}$$
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-2">
+      <div class="border p-2 rounded bg-gray-50"><strong>$P(C_i)$:</strong> Prior probability of class $C_i$</div>
+      <div class="border p-2 rounded bg-gray-50"><strong>$P(X \mid C_i)$:</strong> Likelihood of seeing $X$ given $C_i$</div>
+      <div class="border p-2 rounded bg-gray-50"><strong>$P(X)$:</strong> Evidence constant (equal for all classes)</div>
+      <div class="border p-2 rounded bg-gray-50"><strong>$P(C_i \mid X)$:</strong> Posterior probability</div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Naive Bayes Conditional Independence</h3>
+    <p class="text-sm mb-1">Assumes all attributes $x_1, \dots, x_n$ are conditionally independent given class $C_i$:</p>
+    $$P(X \mid C_i) = \prod_{k=1}^{n} P(x_k \mid C_i) = P(x_1 \mid C_i) \times P(x_2 \mid C_i) \times \dots \times P(x_n \mid C_i)$$
+    <div class="tip text-xs mt-2">
+      <strong>Zero Probability &amp; Laplace Correction:</strong> If an attribute value never appears with a class ($P(x_k \mid C_i) = 0$), the product becomes zero! To prevent this, add 1 to each count:
+      $$P(x_k \mid C_i) = \frac{\text{count}(x_k, C_i) + 1}{\text{count}(C_i) + q}$$
+      where $q$ is the number of distinct values of attribute $k$.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S7: ENSEMBLE METHODS ═══ -->
+<section id="s7">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">07</div>
+    <div><div class="pill teal mb-1">Meta-Classifiers</div><h2>Ensemble Methods — Bagging, Boosting &amp; Random Forest</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Comparison of Ensembles</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Feature</th><th>Bagging (Bootstrap Aggregation)</th><th>Boosting (AdaBoost)</th><th>Random Forest</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Sampling</strong></td><td>Bootstrap sampling with replacement (equal weights)</td><td>Weighted tuples, updated sequentially</td><td>Bootstrap + random attribute subspace</td></tr>
+        <tr><td><strong>Training</strong></td><td>Parallel and independent</td><td>Sequential and adaptive</td><td>Parallel and independent trees</td></tr>
+        <tr><td><strong>Voting</strong></td><td>Simple unweighted majority</td><td>Weighted voting based on learner accuracy</td><td>Unweighted majority voting</td></tr>
+        <tr><td><strong>Error Target</strong></td><td>Reduces <strong>Variance</strong></td><td>Reduces <strong>Bias and Variance</strong></td><td>Reduces <strong>Variance and Correlation</strong></td></tr>
+        <tr><td><strong>Robustness</strong></td><td>High noise robustness</td><td>Low (sensitive to noise/outliers)</td><td>High noise robustness</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>AdaBoost Formulation</h3>
+    $$\text{error}(M_i) = \sum_j w_j \cdot I(M_i(x_j) \ne y_j), \quad \alpha_i = \frac{1}{2}\ln\left(\frac{1 - \text{error}(M_i)}{\text{error}(M_i)}\right)$$
+    <p class="text-xs text-gray-600 mt-2">
+      Misclassified instances have their weights boosted by $\exp(\alpha_i)$, while correct instances are downweighted by $\exp(-\alpha_i)$, forcing later models to concentrate on difficult cases.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ S8: EVALUATION METRICS ═══ -->
+<section id="s8">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">08</div>
+    <div><div class="pill pink mb-1">Model Assessment</div><h2>Classifier Evaluation &amp; Validation Protocols</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Confusion Matrix (2x2)</h3>
+    <div class="scroll-x">
+    <table class="text-center">
+      <thead><tr><th>Actual \ Predicted</th><th>Predicted Positive</th><th>Predicted Negative</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Actual Positive</strong></td><td class="bg-green-100 font-bold">TP (True Positive)</td><td class="bg-red-50">FN (False Negative - Type II)</td></tr>
+        <tr><td><strong>Actual Negative</strong></td><td class="bg-red-50">FP (False Positive - Type I)</td><td class="bg-green-100 font-bold">TN (True Negative)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Evaluation Formulas</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+      <div>$$\text{Accuracy} = \frac{TP + TN}{P + N}$$</div>
+      <div>$$\text{Precision} = \frac{TP}{TP + FP}$$</div>
+      <div>$$\text{Recall} = \frac{TP}{TP + FN}$$</div>
+      <div>$$\text{Specificity} = \frac{TN}{TN + FP}$$</div>
+      <div class="sm:col-span-2">$$F_1\text{-score} = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}} = \frac{2 \cdot TP}{2 \cdot TP + FP + FN}$$</div>
+    </div>
+    <div class="tip mt-3 text-xs">
+      <strong>Class Imbalance Warning:</strong> On imbalanced data (e.g. 99% normal, 1% fraud), a dummy classifier predicting 'Normal' achieves 99% accuracy but 0% recall. Always report <strong>Precision, Recall, and F1-score</strong>!
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FLASHCARDS ═══ -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">?</div>
+    <div><div class="pill blue mb-1">Flashcards</div><h2>Tap to Flip</h2><p class="text-sm text-gray-500">Click any card to reveal the answer</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ═══ CHEATSHEET ═══ -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Quick Ref</div><h2>Master Cheatsheet</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Module 3 Reference Summary</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Concept / Formula</th><th>Summary / Quick Reference</th></tr></thead>
+      <tbody>
+        <tr><td>Support $(X \Rightarrow Y)$</td><td>$\text{count}(X \cup Y) / |D|$ — Frequency of co-occurrence</td></tr>
+        <tr><td>Confidence $(X \Rightarrow Y)$</td><td>$\text{count}(X \cup Y) / \text{count}(X)$ — Conditional probability</td></tr>
+        <tr><td>Apriori Property</td><td>Anti-monotonicity: Every subset of a frequent itemset is frequent</td></tr>
+        <tr><td>Closed vs Maximal</td><td>Closed = lossless support recovery; Maximal = lossy, max compression</td></tr>
+        <tr><td>Information Gain</td><td>$\text{Info}(D) - \text{Info}_A(D)$ (used in ID3; favors high branching)</td></tr>
+        <tr><td>Gain Ratio</td><td>$\text{Gain}(A) / \text{SplitInfo}_A(D)$ (used in C4.5; penalizes broad splits)</td></tr>
+        <tr><td>Gini Impurity</td><td>$1 - \sum p_i^2$ (used in CART; creates binary splits)</td></tr>
+        <tr><td>Naive Bayes Assumption</td><td>Attributes are conditionally independent given class label</td></tr>
+        <tr><td>Laplace Correction</td><td>Add 1 to numerator, $q$ to denominator to avoid zero probability product</td></tr>
+        <tr><td>Bagging vs Boosting</td><td>Bagging = parallel/reduces variance; Boosting = sequential/reduces bias</td></tr>
+        <tr><td>Precision vs Recall</td><td>Precision = TP/(TP+FP) (exactness); Recall = TP/(TP+FN) (completeness)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  Data Mining Module 3 Study Guide &nbsp;·&nbsp; Association Rules, Classification &amp; Ensembles
+</footer>
+
+<script>
+const cards=[
+  {q:"State the Apriori property.", a:"All non-empty subsets of a frequent itemset must also be frequent (anti-monotonicity of support). If an itemset is infrequent, all its supersets are pruned without DB scans."},
+  {q:"Difference between Closed and Maximal frequent itemsets?", a:"Closed: No proper superset has the SAME support (lossless compression).\n\nMaximal: No proper superset is FREQUENT (lossy compression, maximal compactness)."},
+  {q:"Define Support and Confidence of a rule X => Y.", a:"Support = P(X ∪ Y) = count(X ∪ Y) / |D|\nConfidence = P(Y | X) = count(X ∪ Y) / count(X)"},
+  {q:"Why is Information Gain biased towards attributes with many values?", a:"Attributes with unique values (like Transaction ID) partition data into pure single-tuple subsets, yielding Info_A(D) = 0 and maximal Gain without useful predictive value."},
+  {q:"How does Gain Ratio resolve Information Gain's bias?", a:"It divides Gain by SplitInfo_A(D), which measures potential information from splitting. High-branch attributes get a very large SplitInfo, penalizing their score."},
+  {q:"What is the core assumption of Naive Bayes?", a:"Class conditional independence: given the class label, the values of all attributes are independent of one another."},
+  {q:"What is the Laplace correction and why is it needed?", a:"If an attribute-class combination has zero count, the posterior product becomes 0. Laplace correction adds 1 to each count so no factor is zero."},
+  {q:"Compare Bagging and Boosting on variance and bias.", a:"Bagging trains independent models in parallel to reduce VARIANCE.\nBoosting trains sequential models focusing on previous errors to reduce BIAS and VARIANCE."},
+  {q:"What are the two sources of randomness in Random Forests?", a:"1. Bootstrap sampling of data instances with replacement.\n2. Random selection of F attributes at each split node."},
+  {q:"Formula for F1-score?", a:"F1 = 2 * (Precision * Recall) / (Precision + Recall) = 2*TP / (2*TP + FP + FN). Harmonic mean of Precision and Recall."},
+  {q:"When does Accuracy become a misleading metric?", a:"When classes are highly imbalanced (e.g., 99% negative, 1% positive). A dummy classifier guessing negative gets 99% accuracy but fails all positive cases."},
+  {q:"Difference between Pre-pruning and Post-pruning in decision trees?", a:"Pre-pruning: Halt tree construction early (e.g., min sample threshold reached).\nPost-pruning: Grow full tree first, then prune branches back using validation data."}
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.length>200?200:160;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>

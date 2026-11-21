@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Mining Module 2 — Data Preprocessing</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<style>
+  body{font-family:system-ui,-apple-system,sans-serif;background:#f8f7f4;color:#1a1a1a;font-size:15px;}
+  code,pre,.mono{font-family:ui-monospace,monospace;font-size:13px;}
+  pre{background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:6px;overflow-x:auto;line-height:1.5;}
+  .kw{color:#89b4fa;} .fn{color:#a6e3a1;} .str{color:#f9e2af;} .cm{color:#585b70;}
+  table{border-collapse:collapse;width:100%;}
+  th{background:#1a1a1a;color:#fff;padding:8px 10px;text-align:left;font-size:13px;}
+  td{padding:7px 10px;font-size:13px;border-bottom:1px solid #e5e0d5;}
+  tr:nth-child(even) td{background:#f0ede5;}
+  details summary{cursor:pointer;list-style:none;user-select:none;}
+  details summary::-webkit-details-marker{display:none;}
+  .card{background:#fff;border:1px solid #ddd8cc;border-radius:6px;padding:14px;}
+  .pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+  .red{background:#dc2626;color:#fff;} .blue{background:#1d4ed8;color:#fff;}
+  .green{background:#15803d;color:#fff;} .gray{background:#374151;color:#fff;}
+  .purple{background:#7c3aed;color:#fff;} .orange{background:#b45309;color:#fff;}
+  .teal{background:#0f766e;color:#fff;} .pink{background:#be185d;color:#fff;}
+  .tip{border-left:3px solid #dc2626;background:#fff5f5;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .info{border-left:3px solid #1d4ed8;background:#eff6ff;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .good{border-left:3px solid #15803d;background:#f0fdf4;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .warn{border-left:3px solid #b45309;background:#fffbeb;padding:8px 12px;border-radius:0 4px 4px 0;font-size:13px;}
+  .fc-wrap{perspective:700px;}
+  .fc{cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .35s;}
+  .fc.flipped{transform:rotateY(180deg);}
+  .fc-f,.fc-b{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;text-align:center;border-radius:6px;}
+  .fc-b{transform:rotateY(180deg);background:#1a1a1a;color:#fff;}
+  nav a{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:5px 10px;border-radius:3px;border:1px solid #555;cursor:pointer;text-decoration:none;color:#ddd;display:inline-block;}
+  nav a:hover{background:#fff;color:#1a1a1a;border-color:#fff;}
+  h2{font-size:1.4rem;font-weight:800;margin-bottom:4px;}
+  h3{font-size:1rem;font-weight:700;margin-bottom:6px;}
+  .secnum{font-size:2.5rem;font-weight:800;color:#ddd;line-height:1;}
+  .scroll-x{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  /* Pipeline visualization */
+  .pipeline{display:flex;flex-wrap:wrap;align-items:center;gap:0;margin:12px 0;}
+  .pipe-step{flex:1;min-width:100px;padding:10px 8px;text-align:center;border-radius:6px;font-size:12px;font-weight:700;}
+  .pipe-arrow{font-size:1.2rem;color:#9ca3af;padding:0 4px;flex-shrink:0;}
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="sticky top-0 z-50 bg-[#1a1a1a] text-white px-3 py-2">
+  <div class="text-xs text-gray-400 font-mono">MODULE 02</div>
+  <div class="font-black text-sm tracking-wide mb-1">DATA PREPROCESSING — CLEANING, INTEGRATION, REDUCTION &amp; TRANSFORMATION</div>
+  <nav class="flex flex-wrap gap-1">
+    <a href="#s1">Overview</a>
+    <a href="#s2">Cleaning</a>
+    <a href="#s3">Integration</a>
+    <a href="#s4">Reduction</a>
+    <a href="#s5">Transformation</a>
+    <a href="#fc">Flashcards</a>
+    <a href="#cheat">Cheatsheet</a>
+  </nav>
+</header>
+
+<main class="max-w-3xl mx-auto px-3 py-6 space-y-10">
+
+<!-- ═══ S1: OVERVIEW ═══ -->
+<section id="s1">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">01</div>
+    <div><div class="pill blue mb-1">Overview</div><h2>Data Quality &amp; The 4 Preprocessing Tasks</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Why Preprocessing?</strong> Real-world data is <strong>incomplete</strong> (missing values), <strong>noisy</strong> (errors, outliers) and <strong>inconsistent</strong> (code/format discrepancies). Quality decisions require quality data — garbage in, garbage out.
+  </div>
+
+  <!-- Pipeline visualization -->
+  <div class="card mb-3">
+    <h3>Preprocessing Pipeline</h3>
+    <div class="pipeline">
+      <div class="pipe-step bg-red-100 border border-red-300 text-red-800">🧹 Cleaning<br><span class="font-normal text-xs">Fill, smooth, fix</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step bg-green-100 border border-green-300 text-green-800">🔗 Integration<br><span class="font-normal text-xs">Merge sources</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step bg-gray-100 border border-gray-300 text-gray-800">📉 Reduction<br><span class="font-normal text-xs">Smaller repr.</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step bg-orange-100 border border-orange-300 text-orange-800">⚙️ Transform<br><span class="font-normal text-xs">Scale &amp; bin</span></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step bg-blue-100 border border-blue-300 text-blue-800">⛏ Mining-Ready<br><span class="font-normal text-xs">Clean dataset</span></div>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Data Quality Dimensions</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Dimension</th><th>Meaning</th><th>Failure Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Accuracy</strong></td><td>Values are correct and reflect reality</td><td>Age stored as 999 instead of 29</td></tr>
+        <tr><td><strong>Completeness</strong></td><td>All required values are present</td><td>Customer phone number is NULL</td></tr>
+        <tr><td><strong>Consistency</strong></td><td>No discrepancy in codes or representations</td><td>DOB=1999 but Age=14</td></tr>
+        <tr><td><strong>Timeliness</strong></td><td>Data fits the operational window (not stale)</td><td>Last year's prices used for today's billing</td></tr>
+        <tr><td><strong>Believability</strong></td><td>Data is trusted by users</td><td>Source unknown, conflicting figures</td></tr>
+        <tr><td><strong>Interpretability</strong></td><td>Data is understandable and documented</td><td>Column "F1" with no description</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>The 4 Preprocessing Tasks</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>#</th><th>Task</th><th>What It Does</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong><span class="pill red">Cleaning</span></strong></td><td>Fill missing values, smooth noise, remove outliers, fix inconsistencies</td><td>Corrected, complete data</td></tr>
+        <tr><td>2</td><td><strong><span class="pill green">Integration</span></strong></td><td>Merge data from heterogeneous sources into one store</td><td>Unified data warehouse</td></tr>
+        <tr><td>3</td><td><strong><span class="pill gray">Reduction</span></strong></td><td>Obtain smaller representation; (near) identical analytical results</td><td>Compact dataset</td></tr>
+        <tr><td>4</td><td><strong><span class="pill orange">Transformation</span></strong></td><td>Scale and consolidate data into mining-ready forms (normalize, discretize)</td><td>Normalized, binned data</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2"><strong>Exam tip:</strong> These tasks are <em>not</em> always sequential — integration and cleaning often interleave. Reduction and transformation are applied before running algorithms like K-Means or KNN.</div>
+  </div>
+</section>
+
+<!-- ═══ S2: DATA CLEANING ═══ -->
+<section id="s2">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">02</div>
+    <div><div class="pill red mb-1">Cleaning</div><h2>Data Cleaning — Missing Values, Noise &amp; Binning</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Handling Missing Values — 6 Methods</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>#</th><th>Method</th><th>When to Use</th><th>Drawback</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Ignore the tuple</strong></td><td>When class label is missing; small dataset</td><td>Poor if missingness varies by attribute; loses data</td></tr>
+        <tr><td>2</td><td><strong>Fill manually</strong></td><td>Small datasets with domain experts available</td><td>Impractical for large data; time-consuming</td></tr>
+        <tr><td>3</td><td><strong>Global constant</strong></td><td>Quick placeholder needed (e.g. <code>"Unknown"</code> or <code>−∞</code>)</td><td>Mining algorithm may treat "Unknown" as interesting</td></tr>
+        <tr><td>4</td><td><strong>Attribute mean / median</strong></td><td>Numeric attributes; mean for symmetric distributions</td><td>May distort distributions; use median for skewed data</td></tr>
+        <tr><td>5</td><td><strong>Class-conditional mean / median</strong></td><td>When class label is known; more accurate than global mean</td><td>Requires class labels; still an estimate</td></tr>
+        <tr><td>6</td><td><strong>Most probable value</strong></td><td>Best accuracy needed; regression, Bayesian, decision tree</td><td>Computationally expensive; risk of bias</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="good mt-2">✅ <strong>Preferred method:</strong> Most probable value (method 6) — uses the data's own structure to infer missing entries via regression or Bayesian inference.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Noisy Data — Sources &amp; Smoothing Techniques</h3>
+    <div class="info mb-2"><strong>Noise</strong> = random error or variance in a measured variable. It corrupts the actual value, making patterns harder to detect.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Technique</th><th>How It Works</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Binning</strong></td><td>Sort data, place into bins; replace values with bin mean / median / boundary</td><td>Local smoothing; ordered data</td></tr>
+        <tr><td><strong>Regression</strong></td><td>Fit data to a linear (or multiple) function; predictions lie on the line</td><td>Smooth trends; numeric data with linear relationships</td></tr>
+        <tr><td><strong>Outlier analysis / Clustering</strong></td><td>Group data into clusters; values far from all clusters are outliers</td><td>Detecting anomalies; non-linear data</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Binning Variants — Detailed</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Variant</th><th>Rule</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td><strong>By bin means</strong></td><td>Replace each value in bin with the bin's average</td><td>All values in bin become the same (mean) value</td></tr>
+        <tr><td><strong>By bin medians</strong></td><td>Replace each value with the bin's median</td><td>Robust to outliers within the bin</td></tr>
+        <tr><td><strong>By bin boundaries</strong></td><td>Replace each value with nearest boundary (min or max of bin)</td><td>Values snap to either end of their bin</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Binning Worked Example — Equal-Depth (3 per bin)</h3>
+    <div class="info mb-2">Sorted data: <code>4, 8, 15, 21, 21, 24, 25, 28, 34</code> → split into 3 equal-depth bins of size 3.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Bin</th><th>Original Values</th><th>By Means</th><th>By Medians</th><th>By Boundaries</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bin 1</strong></td><td>4, 8, 15</td><td>9, 9, 9 <span class="text-gray-400 text-xs">(avg=9)</span></td><td>8, 8, 8</td><td>4, 4, 15 <span class="text-gray-400 text-xs">(near min=4 or max=15)</span></td></tr>
+        <tr><td><strong>Bin 2</strong></td><td>21, 21, 24</td><td>22, 22, 22 <span class="text-gray-400 text-xs">(avg=22)</span></td><td>21, 21, 21</td><td>21, 21, 24</td></tr>
+        <tr><td><strong>Bin 3</strong></td><td>25, 28, 34</td><td>29, 29, 29 <span class="text-gray-400 text-xs">(avg=29)</span></td><td>28, 28, 28</td><td>25, 25, 34</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2"><strong>Boundaries rule:</strong> For each value in the bin, find which boundary (min or max of that bin) it is closer to, and replace it with that boundary value.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Data Cleaning as a Process — 2 Steps</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Step</th><th>Name</th><th>Tools / Methods</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Discrepancy Detection</strong></td><td>Use metadata, statistics (mean ± 2σ), data profiling, constraint checking</td></tr>
+        <tr><td>2</td><td><strong>Data Transformation</strong></td><td>Apply corrections via ETL tools, migration scripts, or interactive editors</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="card mt-3" style="background:#f9f9f9;">
+      <h3>Data Rules for Cleaning</h3>
+      <div class="scroll-x">
+      <table>
+        <thead><tr><th>Rule Type</th><th>Description</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Unique</strong></td><td>Every value in the attribute must be distinct</td><td>Employee ID must be unique across all rows</td></tr>
+          <tr><td><strong>Consecutive</strong></td><td>No gaps allowed between min and max values</td><td>Invoice numbers 1–1000 with no missing numbers</td></tr>
+          <tr><td><strong>Null</strong></td><td>Defines how blank/null/missing values are handled</td><td>Age cannot be NULL; substitute 0 or flag for review</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S3: DATA INTEGRATION ═══ -->
+<section id="s3">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">03</div>
+    <div><div class="pill green mb-1">Integration</div><h2>Data Integration — Merging Heterogeneous Sources</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Goal:</strong> Combine data from multiple, heterogeneous sources (databases, flat files, data cubes) into a coherent, unified data store without introducing additional errors.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Integration Issues</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Issue</th><th>Description</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Entity identification</strong></td><td>Same real-world entity has different names across schemas</td><td><code>customer_id</code> vs <code>cust_number</code></td></tr>
+        <tr><td><strong>Redundancy</strong></td><td>Attribute is derivable from others (computed); detected via correlation analysis</td><td><code>annual_salary</code> = <code>monthly_salary × 12</code></td></tr>
+        <tr><td><strong>Tuple duplication</strong></td><td>Same real entity recorded multiple times (denormalized tables, manual updates)</td><td>Customer "Ravi Kumar" appears 3 times with different IDs</td></tr>
+        <tr><td><strong>Value conflicts</strong></td><td>Different units, currencies, grading scales, or encodings for same attribute</td><td>Weight in kg vs pounds; grade A=90 vs A=80</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Chi-Square Test — Detecting Redundancy in Nominal Data</h3>
+    <div class="info mb-3">Used to test if two <strong>nominal (categorical)</strong> attributes A and B are correlated. A large χ² value → strong correlation → likely redundant.</div>
+
+    <div class="mb-3">
+      $$\chi^2 = \sum_{i=1}^{r}\sum_{j=1}^{c}\frac{(o_{ij}-e_{ij})^2}{e_{ij}}, \quad e_{ij} = \frac{\text{count}(A=a_i)\times\text{count}(B=b_j)}{n}$$
+    </div>
+
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>$o_{ij}$</td><td>Observed frequency in cell (i, j)</td></tr>
+        <tr><td>$e_{ij}$</td><td>Expected frequency if A and B were independent</td></tr>
+        <tr><td>$r, c$</td><td>Number of rows and columns in the contingency table</td></tr>
+        <tr><td>$n$</td><td>Total number of tuples</td></tr>
+        <tr><td>df</td><td>Degrees of freedom = $(r-1)(c-1)$</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3 class="mt-4">Worked Example — Chess vs Fiction (n = 1500)</h3>
+    <div class="scroll-x mb-2">
+    <table>
+      <thead><tr><th></th><th>Fiction</th><th>Not Fiction</th><th>Total</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Chess</strong></td><td>250 <span class="text-gray-400 text-xs">(exp 90)</span></td><td>200 <span class="text-gray-400 text-xs">(exp 360)</span></td><td>450</td></tr>
+        <tr><td><strong>Not Chess</strong></td><td>50 <span class="text-gray-400 text-xs">(exp 210)</span></td><td>1000 <span class="text-gray-400 text-xs">(exp 840)</span></td><td>1050</td></tr>
+        <tr><td><strong>Total</strong></td><td>300</td><td>1200</td><td>1500</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="card" style="background:#f9f9f9;">
+      <div class="text-sm space-y-1">
+        <div>$e_{11} = \frac{450 \times 300}{1500} = 90$ &nbsp;&nbsp; $e_{12} = \frac{450 \times 1200}{1500} = 360$</div>
+        <div>$e_{21} = \frac{1050 \times 300}{1500} = 210$ &nbsp;&nbsp; $e_{22} = \frac{1050 \times 1200}{1500} = 840$</div>
+        <div class="mt-2">$$\chi^2 = \frac{(250-90)^2}{90} + \frac{(50-210)^2}{210} + \frac{(200-360)^2}{360} + \frac{(1000-840)^2}{840} \approx 507.93$$</div>
+        <div>df = $(2-1)(2-1) = 1$. Critical value at 0.001 level = <strong>10.828</strong>.</div>
+      </div>
+    </div>
+    <div class="good mt-2">✅ Since 507.93 &gt; 10.828, we <strong>reject independence</strong>. Chess-playing and fiction-reading are <strong>strongly correlated</strong> → one may be redundant if both are in the dataset.</div>
+    <div class="warn mt-2">⚠ χ² does NOT imply causality, only correlation. High χ² means redundancy is likely.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Pearson Correlation — Detecting Redundancy in Numeric Data</h3>
+    <div class="info mb-3">Used for <strong>numeric</strong> attributes. Range of $r_{A,B}$ is $[-1, +1]$. Values near ±1 indicate strong correlation (likely redundant).</div>
+
+    $$r_{A,B} = \frac{\sum_{i=1}^{n}(a_i-\bar{A})(b_i-\bar{B})}{n\sigma_A\sigma_B} = \frac{\sum a_i b_i - n\bar{A}\bar{B}}{n\sigma_A\sigma_B}$$
+
+    $$\text{Cov}(A,B) = \frac{\sum_{i=1}^{n}(a_i-\bar{A})(b_i-\bar{B})}{n}$$
+
+    <div class="scroll-x mt-3">
+    <table>
+      <thead><tr><th>$r_{A,B}$ value</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td>$r = +1$</td><td>Perfect positive correlation — A increases, B increases proportionally</td></tr>
+        <tr><td>$0 &lt; r &lt; 1$</td><td>Positive correlation — may be redundant</td></tr>
+        <tr><td>$r = 0$</td><td>No linear correlation — independent</td></tr>
+        <tr><td>$-1 &lt; r &lt; 0$</td><td>Negative correlation — inversely related</td></tr>
+        <tr><td>$r = -1$</td><td>Perfect negative correlation</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3 class="mt-4">Worked Example — Covariance</h3>
+    <div class="card" style="background:#f9f9f9;">
+      <div class="text-sm space-y-1">
+        <div>A = (6, 5, 4, 3, 2), B = (20, 10, 14, 5, 5) &nbsp;&nbsp; $\bar{A} = 4$, $\bar{B} = 10.8$, $n = 5$</div>
+        <div class="mt-1">$$\text{Cov}(A,B) = \frac{\sum a_i b_i}{n} - \bar{A}\cdot\bar{B} = \frac{6(20)+5(10)+4(14)+3(5)+2(5)}{5} - 4 \times 10.8$$</div>
+        <div>$= \frac{120+50+56+15+10}{5} - 43.2 = \frac{251}{5} - 43.2 = 50.2 - 43.2 = \mathbf{7}$</div>
+        <div class="mt-1">Positive covariance (Cov = 7 &gt; 0) confirms A and B are <strong>positively correlated</strong>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S4: DATA REDUCTION ═══ -->
+<section id="s4">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">04</div>
+    <div><div class="pill gray mb-1">Reduction</div><h2>Data Reduction — Smaller Representation, Same Insight</h2></div>
+  </div>
+
+  <div class="card info mb-3">
+    <strong>Goal:</strong> Obtain a reduced representation of the dataset that is much smaller in volume, yet produces the same (or nearly the same) analytical results as the original.
+  </div>
+
+  <div class="card mb-3">
+    <h3>Reduction Techniques Overview</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Technique</th><th>Type</th><th>Key Idea</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Wavelet Transform (DWT)</strong></td>
+          <td>Non-parametric, lossy</td>
+          <td>Linear transform of vector X into equal-length coefficient vector X'. Keep strongest coefficients, zero the rest.</td>
+          <td>O(n) time. Better than DFT: spatial localization. Families: Haar-2, Daubechies-4. Suits sparse data &amp; images.</td>
+        </tr>
+        <tr>
+          <td><strong>PCA (Karhunen-Loève)</strong></td>
+          <td>Parametric, lossy</td>
+          <td>Find $k \le n$ orthogonal principal components sorted by decreasing variance; drop weak components.</td>
+          <td>Normalize first. Numeric data only. New axes (PCs) are hard to interpret but capture max variance.</td>
+        </tr>
+        <tr>
+          <td><strong>Attribute Subset Selection</strong></td>
+          <td>Non-parametric</td>
+          <td>Remove irrelevant, weak-predictor, and redundant attributes. Reduces dimensionality without transformation.</td>
+          <td>Preserves original attributes. Multiple heuristic methods (see below).</td>
+        </tr>
+        <tr>
+          <td><strong>Regression</strong></td>
+          <td>Parametric, lossy</td>
+          <td>Fit $y = wx + b$ by least squares. Store only model parameters $(w, b)$ instead of all data points.</td>
+          <td>Works for linear relationships. Multiple linear regression extends to multiple predictors.</td>
+        </tr>
+        <tr>
+          <td><strong>Log-linear Models</strong></td>
+          <td>Parametric, lossy</td>
+          <td>Approximate discrete multi-dimensional distributions with lower-dimensional ones.</td>
+          <td>Useful for sparse high-dimensional categorical data.</td>
+        </tr>
+        <tr>
+          <td><strong>Histograms</strong></td>
+          <td>Non-parametric</td>
+          <td>Partition attribute values into disjoint buckets; store (bucket_range, count) pairs instead of raw data.</td>
+          <td>Equal-width or equal-frequency buckets. Very compact summary of numeric distributions.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Attribute Subset Selection — Heuristic Methods</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Method</th><th>Start With</th><th>Strategy</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Stepwise Forward Selection</strong></td><td>Empty set {}</td><td>At each step, add the attribute that most improves the model; stop when no improvement</td></tr>
+        <tr><td><strong>Stepwise Backward Elimination</strong></td><td>Full attribute set</td><td>At each step, remove the worst (least useful) attribute; stop when removal hurts model</td></tr>
+        <tr><td><strong>Combined Forward + Backward</strong></td><td>Arbitrary</td><td>Alternate between adding best and removing worst attributes each iteration</td></tr>
+        <tr><td><strong>Decision Tree Induction</strong></td><td>Full set</td><td>Build a decision tree; attributes appearing at non-leaf nodes form the selected subset</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="tip mt-2"><strong>Exam tip:</strong> PCA creates <em>new</em> axes (principal components). Attribute subset selection keeps <em>original</em> attributes. PCA is lossy and transformative; selection is a filter.</div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>DWT vs PCA — Quick Comparison</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Aspect</th><th>DWT (Wavelet)</th><th>PCA</th></tr></thead>
+      <tbody>
+        <tr><td>Data type</td><td>Any numeric; great for time series, images</td><td>Numeric tabular data</td></tr>
+        <tr><td>Output</td><td>Coefficient vector (same length as input)</td><td>k principal components (new axes)</td></tr>
+        <tr><td>Spatial/temporal localization</td><td>✅ Yes — advantage over DFT</td><td>❌ No</td></tr>
+        <tr><td>Interpretability</td><td>Moderate (wavelet basis)</td><td>Low (components are linear combos)</td></tr>
+        <tr><td>Time complexity</td><td>O(n) — very fast</td><td>O(n·k) or O(n³) for full SVD</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ S5: TRANSFORMATION & DISCRETIZATION ═══ -->
+<section id="s5">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum">05</div>
+    <div><div class="pill orange mb-1">Transformation</div><h2>Transformation &amp; Discretization</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Transformation Strategies</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Strategy</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Smoothing</strong></td><td>Remove noise from data (binning, regression)</td></tr>
+        <tr><td><strong>Attribute construction</strong></td><td>Derive new attributes from existing ones (e.g. BMI from height &amp; weight)</td></tr>
+        <tr><td><strong>Aggregation</strong></td><td>Summarize data (daily sales → monthly totals)</td></tr>
+        <tr><td><strong>Normalization</strong></td><td>Scale attribute values to a small range (critical for distance-based methods)</td></tr>
+        <tr><td><strong>Discretization</strong></td><td>Convert continuous values to interval/ordinal labels (binning)</td></tr>
+        <tr><td><strong>Concept hierarchy generation</strong></td><td>Map fine-grained values to higher-level concepts (age → young/middle/senior)</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Normalization Methods</h3>
+    <div class="info mb-3"><strong>Why normalize?</strong> Prevents large-range attributes (e.g. income: 0–100,000) from dominating small-range ones (e.g. age: 0–100) in distance-based methods like K-Means and KNN.</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Method</th><th>Formula</th><th>Output Range</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Min-Max</strong></td>
+          <td>$v' = \dfrac{v - \min_A}{\max_A - \min_A}(\text{new\_max} - \text{new\_min}) + \text{new\_min}$</td>
+          <td>[new_min, new_max]</td>
+          <td>Known min/max; preserves relationships; common [0,1]</td>
+        </tr>
+        <tr>
+          <td><strong>Z-Score</strong></td>
+          <td>$v' = \dfrac{v - \bar{A}}{\sigma_A}$ &nbsp;(or use MAD for outlier robustness)</td>
+          <td>Approx. [−3, +3]</td>
+          <td>Unknown min/max; outliers present; Gaussian-like distributions</td>
+        </tr>
+        <tr>
+          <td><strong>Decimal Scaling</strong></td>
+          <td>$v' = \dfrac{v}{10^j}$ &nbsp;where $j$ = smallest integer with $\max(|v'|) &lt; 1$</td>
+          <td>$(−1, +1)$</td>
+          <td>Quick scaling; integer-friendly; magnitude-based</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Normalization Worked Example</h3>
+    <div class="card" style="background:#f9f9f9;">
+      <div class="text-sm space-y-2">
+        <div>Attribute: <strong>Income</strong> &nbsp;|&nbsp; $\min = 12{,}000$ &nbsp;|&nbsp; $\max = 98{,}000$ &nbsp;|&nbsp; $\bar{A} = 54{,}000$ &nbsp;|&nbsp; $\sigma = 16{,}000$ &nbsp;|&nbsp; $v = 73{,}600$</div>
+        <div class="mt-2"><strong>Min-Max to [0, 1]:</strong>
+          $$v' = \frac{73600 - 12000}{98000 - 12000} = \frac{61600}{86000} \approx 0.716$$
+        </div>
+        <div><strong>Z-Score:</strong>
+          $$v' = \frac{73600 - 54000}{16000} = \frac{19600}{16000} = 1.225$$
+        </div>
+        <div><strong>Decimal Scaling:</strong> If $\max|v| = 986$, then $j = 3$ (since $\frac{986}{10^3} = 0.986 &lt; 1$). So every value is divided by 1000.</div>
+      </div>
+    </div>
+    <div class="scroll-x mt-3">
+    <table>
+      <thead><tr><th>Method</th><th>Advantage</th><th>Limitation</th></tr></thead>
+      <tbody>
+        <tr><td>Min-Max</td><td>Preserves original relationships; bounded output</td><td>Fails for new values outside [min, max] (clipping needed)</td></tr>
+        <tr><td>Z-Score</td><td>Handles outliers better; works without known bounds</td><td>Output range is unbounded; not intuitive</td></tr>
+        <tr><td>Decimal Scaling</td><td>Simple, integer-friendly</td><td>Depends on magnitude of data; loses relative spacing</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Discretization by Binning (Unsupervised)</h3>
+    <div class="scroll-x mb-3">
+    <table>
+      <thead><tr><th>Method</th><th>Rule</th><th>Formula</th><th>Characteristic</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Equal-Width</strong></td><td>All bins have the same interval size $w$</td><td>$w = \dfrac{\max - \min}{k}$</td><td>Simple; outlier-sensitive (creates very uneven population bins)</td></tr>
+        <tr><td><strong>Equal-Frequency (Equal-Depth)</strong></td><td>All bins contain the same number of values</td><td>Sort, then split into $k$ groups of size $\lfloor n/k \rfloor$</td><td>Balanced bins; better for skewed data</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Discretization Worked Example</h3>
+    <div class="info mb-2">Data: <code>5, 10, 11, 13, 15, 35, 50, 55, 72, 92, 204, 215</code> → $k = 3$ bins</div>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Method</th><th>Bin 1</th><th>Bin 2</th><th>Bin 3</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Equal-Width</strong><br><span class="text-xs text-gray-500">w = (215−5)/3 = 70</span></td>
+          <td>[5, 75): 5, 10, 11, 13, 15, 35, 50, 55, 72<br><span class="text-xs text-gray-500">9 values</span></td>
+          <td>[75, 145): 92<br><span class="text-xs text-gray-500">1 value</span></td>
+          <td>[145, 215]: 204, 215<br><span class="text-xs text-gray-500">2 values</span></td>
+        </tr>
+        <tr>
+          <td><strong>Equal-Frequency</strong><br><span class="text-xs text-gray-500">4 values per bin</span></td>
+          <td>5, 10, 11, 13</td>
+          <td>15, 35, 50, 55</td>
+          <td>72, 92, 204, 215</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn mt-2">⚠ <strong>Equal-width is outlier-sensitive</strong>: outlier 215 causes the last bins to be very sparse (only 1–2 values), while the first bin is overloaded. Equal-frequency is preferred for skewed distributions.</div>
+    <div class="good mt-2">✅ <strong>Concept hierarchy:</strong> Recursive binning can build hierarchies, e.g. age → {young: 0–30, middle-aged: 31–55, senior: 56+}.</div>
+  </div>
+</section>
+
+<!-- ═══ FLASHCARDS ═══ -->
+<section id="fc">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">?</div>
+    <div><div class="pill blue mb-1">Flashcards</div><h2>Tap to Flip</h2><p class="text-sm text-gray-500">Click any card to reveal the answer</p></div>
+  </div>
+  <div id="fcgrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+</section>
+
+<!-- ═══ CHEATSHEET ═══ -->
+<section id="cheat">
+  <div class="flex gap-3 items-start mb-3">
+    <div class="secnum" style="color:#1d4ed8;">∑</div>
+    <div><div class="pill blue mb-1">Quick Ref</div><h2>Master Cheatsheet</h2></div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Formulas — Must Memorize</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Formula</th><th>Name</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>$\chi^2 = \sum\sum\frac{(o_{ij}-e_{ij})^2}{e_{ij}}$</td>
+          <td>Chi-Square Test</td>
+          <td>Nominal data; $e_{ij}=\frac{\text{count}(A=a_i)\cdot\text{count}(B=b_j)}{n}$</td>
+        </tr>
+        <tr>
+          <td>$r_{A,B} = \frac{\sum a_i b_i - n\bar{A}\bar{B}}{n\sigma_A\sigma_B}$</td>
+          <td>Pearson Correlation</td>
+          <td>Numeric data; range $[-1,+1]$</td>
+        </tr>
+        <tr>
+          <td>$\text{Cov}(A,B) = \frac{\sum(a_i-\bar{A})(b_i-\bar{B})}{n}$</td>
+          <td>Covariance</td>
+          <td>Building block for Pearson $r$</td>
+        </tr>
+        <tr>
+          <td>$v' = \frac{v-\min_A}{\max_A-\min_A}(\text{new\_max}-\text{new\_min})+\text{new\_min}$</td>
+          <td>Min-Max Normalization</td>
+          <td>Preserves relationships; bounded</td>
+        </tr>
+        <tr>
+          <td>$v' = \frac{v-\bar{A}}{\sigma_A}$</td>
+          <td>Z-Score Normalization</td>
+          <td>Use MAD instead of σ for outlier robustness</td>
+        </tr>
+        <tr>
+          <td>$v' = \frac{v}{10^j}$, $j=\lceil\log_{10}(\max|v|)\rceil$</td>
+          <td>Decimal Scaling</td>
+          <td>$\max(|v'|) < 1$</td>
+        </tr>
+        <tr>
+          <td>$w = \frac{\max - \min}{k}$</td>
+          <td>Equal-Width Bin Width</td>
+          <td>$k$ = number of bins</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <h3>Everything in One Table</h3>
+    <div class="scroll-x">
+    <table>
+      <thead><tr><th>Topic</th><th>Key Fact</th></tr></thead>
+      <tbody>
+        <tr><td>3 problems with real data</td><td>Incomplete (missing), Noisy (errors/outliers), Inconsistent (format/code conflicts)</td></tr>
+        <tr><td>4 quality dimensions (core)</td><td>Accuracy, Completeness, Consistency, Timeliness</td></tr>
+        <tr><td>4 preprocessing tasks</td><td>Cleaning → Integration → Reduction → Transformation</td></tr>
+        <tr><td>Best missing value method</td><td>Most probable value (regression / Bayesian / decision tree)</td></tr>
+        <tr><td>Noise definition</td><td>Random error or variance in a measured variable</td></tr>
+        <tr><td>Binning variants</td><td>By means, by medians, by boundaries (3 variants)</td></tr>
+        <tr><td>Equal-depth binning</td><td>Same number of values per bin (sort first, then split)</td></tr>
+        <tr><td>Equal-width binning</td><td>Same interval size; $w = (\max-\min)/k$; outlier-sensitive</td></tr>
+        <tr><td>Cleaning rules</td><td>Unique (distinct values), Consecutive (no gaps), Null (handle blanks)</td></tr>
+        <tr><td>Chi-square: data type</td><td>Nominal (categorical) data only</td></tr>
+        <tr><td>Pearson $r$: data type</td><td>Numeric data only; range $[-1, +1]$</td></tr>
+        <tr><td>High χ² means</td><td>Attributes are correlated → likely redundant</td></tr>
+        <tr><td>df for χ²</td><td>$(r-1)(c-1)$ where r = rows, c = columns in contingency table</td></tr>
+        <tr><td>DWT advantage over DFT</td><td>Spatial localization — captures local patterns in time/space</td></tr>
+        <tr><td>DWT time complexity</td><td>O(n) — linear</td></tr>
+        <tr><td>PCA output</td><td>$k$ orthogonal principal components (new axes, not original)</td></tr>
+        <tr><td>PCA limitation</td><td>New axes are hard to interpret; numeric data only</td></tr>
+        <tr><td>Forward selection starts with</td><td>Empty set; adds best attribute each step</td></tr>
+        <tr><td>Backward elimination starts with</td><td>Full set; removes worst attribute each step</td></tr>
+        <tr><td>Min-Max limitation</td><td>Fails for values outside training [min, max] (clipping/out-of-range issue)</td></tr>
+        <tr><td>Z-score uses</td><td>Mean and standard deviation (or MAD for outlier robustness)</td></tr>
+        <tr><td>Decimal scaling j</td><td>Smallest integer such that $\max(|v'|) &lt; 1$</td></tr>
+        <tr><td>Why normalize for KNN/K-Means</td><td>Large-range attributes (income) dominate small-range ones (age) in distance calculations</td></tr>
+        <tr><td>Concept hierarchy example</td><td>age → young (0–30), middle-aged (31–55), senior (56+)</td></tr>
+        <tr><td>MAD stands for</td><td>Mean Absolute Deviation — used in z-score when σ is too sensitive to outliers</td></tr>
+        <tr><td>Equal-freq vs equal-width for skewed data</td><td>Equal-frequency is preferred; equal-width creates very unbalanced bins</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="text-center py-4 text-xs text-gray-400 border-t mt-8">
+  Data Mining Module 2 &nbsp;·&nbsp; Data Preprocessing — Cleaning, Integration, Reduction &amp; Transformation
+</footer>
+
+<script>
+const cards=[
+  {q:"What are the 3 main problems with real-world data?",a:"1. Incomplete — missing values, missing attributes\n2. Noisy — errors, outliers, random variance\n3. Inconsistent — code/format discrepancies (DOB vs Age mismatch, different currencies)\n\nQuality data = quality decisions. Garbage in, garbage out."},
+  {q:"Name the 4 Data Preprocessing Tasks in order.",a:"1. Data Cleaning — fill missing, smooth noise, fix inconsistencies\n2. Data Integration — merge heterogeneous sources into one store\n3. Data Reduction — smaller representation, near-identical results\n4. Transformation & Discretization — normalize, bin, build concept hierarchies"},
+  {q:"What are the 6 methods for handling missing values?",a:"1. Ignore the tuple (remove row)\n2. Fill manually (impractical for large data)\n3. Global constant (e.g. 'Unknown' or −∞)\n4. Attribute mean/median\n5. Class-conditional mean/median\n6. Most probable value (regression, Bayesian, decision tree) ← BEST"},
+  {q:"What is Noisy Data? Name 3 smoothing techniques.",a:"Noise = random error or variance in a measured variable.\n\n3 Techniques:\n1. Binning — sort into bins; replace by mean/median/boundary\n2. Regression — fit to linear function; predictions on the line\n3. Outlier analysis/Clustering — values outside clusters are outliers"},
+  {q:"Explain the 3 Binning Variants.",a:"Sorted data placed into equal-depth bins, then:\n\n1. By Means — replace each value with the bin's average\n2. By Medians — replace each value with the bin's median (robust to outliers)\n3. By Boundaries — replace each value with the nearest bin boundary (min or max)\n\nAll variants smooth data locally."},
+  {q:"What is the Chi-Square test? When is it used?",a:"χ² = Σ Σ (o_ij − e_ij)² / e_ij\nwhere e_ij = count(A=a_i) × count(B=b_j) / n\n\nUsed for: NOMINAL (categorical) data\nPurpose: Test if two attributes are correlated (redundant)\nLarger χ² → stronger correlation → more likely redundant\ndf = (r-1)(c-1); compare to critical value"},
+  {q:"Chess vs Fiction example: χ² = ?",a:"n=1500; Chess: 450 total; Fiction: 300 total\ne₁₁ = 450×300/1500 = 90\ne₁₂ = 450×1200/1500 = 360\ne₂₁ = 1050×300/1500 = 210\ne₂₂ = 1050×1200/1500 = 840\n\nχ² = (250-90)²/90 + (50-210)²/210 + (200-360)²/360 + (1000-840)²/840 ≈ 507.93\n\ndf=1; critical value at 0.001 = 10.828 → REJECT independence (strongly correlated)"},
+  {q:"What is Pearson Correlation? When used?",a:"r(A,B) = [Σaᵢbᵢ − nĀB̄] / (nσ_A σ_B)\n\nUsed for: NUMERIC data\nRange: [−1, +1]\n+1: perfect positive correlation\n0: no linear correlation\n−1: perfect negative correlation\n\nCov(A,B) = Σ(aᵢ−Ā)(bᵢ−B̄) / n\n\nPositive covariance → positively correlated"},
+  {q:"What is PCA? List its key properties.",a:"PCA (Karhunen-Loève Transform)\n• Find k ≤ n orthogonal Principal Components\n• PC axes sorted by decreasing variance\n• Drop weak (low-variance) components\n• Normalize data first!\n\nProperties:\n• Numeric data only\n• Lossy compression\n• New axes = linear combos of originals (hard to interpret)\n• Reduces dimensionality significantly"},
+  {q:"DWT vs DFT — what is DWT's main advantage?",a:"DWT (Discrete Wavelet Transform) advantage over DFT:\n• Spatial/temporal LOCALIZATION — captures where in time/space a pattern occurs\n• DFT only captures frequency, not location\n\nOther DWT properties:\n• O(n) time — very fast (linear)\n• Suits sparse data and images\n• Families: Haar-2, Daubechies-4\n• Keep strongest coefficients, zero the rest (lossy)"},
+  {q:"Explain the 3 Normalization methods with formulas.",a:"1. Min-Max: v' = (v−min)/(max−min) × (new_max−new_min) + new_min\n   → Bounded; preserves relationships; fails for out-of-range values\n\n2. Z-Score: v' = (v − Ā) / σ_A\n   → Unbounded; works without known min/max; use MAD for outlier robustness\n\n3. Decimal Scaling: v' = v / 10^j\n   where j = smallest int with max|v'| < 1"},
+  {q:"Normalization worked example: income=73600, min=12000, max=98000, mean=54000, σ=16000",a:"Min-Max to [0,1]:\nv' = (73600−12000)/(98000−12000) = 61600/86000 ≈ 0.716\n\nZ-Score:\nv' = (73600−54000)/16000 = 19600/16000 = 1.225\n\nDecimal Scaling:\nif max|v|=986 → j=3 → v'=986/1000=0.986"},
+  {q:"Equal-Width vs Equal-Frequency Binning — differences",a:"Equal-Width:\n• Same interval size: w = (max−min)/k\n• Easy to compute\n• OUTLIER-SENSITIVE: outliers create very sparse bins\n\nEqual-Frequency (Equal-Depth):\n• Same number of values per bin (~n/k each)\n• Sort first, then split\n• Better for skewed distributions\n• More balanced bins\n\nChoice: Equal-frequency preferred for real-world skewed data"},
+  {q:"Equal-width example: data 5–215, k=3 bins",a:"w = (215−5)/3 = 70\n\nBin 1: [5, 75) → 5,10,11,13,15,35,50,55,72 (9 values)\nBin 2: [75,145) → 92 (1 value)\nBin 3: [145,215] → 204,215 (2 values)\n\nVery unbalanced! Outlier 204,215 caused sparse bins 2 and 3.\nEqual-frequency would be: (5,10,11,13),(15,35,50,55),(72,92,204,215)"},
+  {q:"What are the 4 Attribute Subset Selection methods?",a:"1. Stepwise Forward Selection\n   Start: empty set\n   Add best attribute each step\n\n2. Stepwise Backward Elimination\n   Start: full attribute set\n   Remove worst attribute each step\n\n3. Combined Forward + Backward\n   Alternate adding and removing\n\n4. Decision Tree Induction\n   Attributes at non-leaf nodes = selected subset"},
+  {q:"What is a Concept Hierarchy? Give an example.",a:"Concept Hierarchy = mapping fine-grained values to higher-level concepts through recursive discretization.\n\nExample — Age:\nRaw: 0–100 continuous\nLevel 1: young (0–30), middle-aged (31–55), senior (56+)\nLevel 2: child (0–12), teen (13–19), adult (20–30)...\n\nUseful for multi-level mining and data generalization."},
+];
+
+const g=document.getElementById('fcgrid');
+cards.forEach((c,i)=>{
+  const h=c.a.length>200?200:160;
+  g.innerHTML+=`
+  <div class="fc-wrap" style="height:${h}px;" onclick="this.querySelector('.fc').classList.toggle('flipped')">
+    <div class="fc" style="height:100%;">
+      <div class="fc-f card border cursor-pointer">
+        <div>
+          <div class="pill gray text-xs mb-2">${String(i+1).padStart(2,'0')}</div>
+          <div class="font-bold text-sm">${c.q}</div>
+          <div class="text-xs text-gray-400 mt-2">tap to flip</div>
+        </div>
+      </div>
+      <div class="fc-b">
+        <div class="text-xs leading-relaxed whitespace-pre-line">${c.a}</div>
+      </div>
+    </div>
+  </div>`;
+});
+</script>
+</body>
+</html>
